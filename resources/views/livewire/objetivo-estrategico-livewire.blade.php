@@ -1,6 +1,6 @@
 <x-slot name="header">
     <h2 class="font-semibold text-xl text-blue-800 leading-tight">
-        Administração do Planejamento Estratégico Integrado - PEI
+        Administração do Objetivo Estratégico
     </h2>
 </x-slot>
 <div class="" style="margin-top: 6px!Important; padding-top: 6px!Important;">
@@ -28,32 +28,44 @@
 
                     </div>
 
-                    <div class="w-full md:w-3/5 px-3 mb-6 md:mb-0 pt-1">
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-1">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-label for="dsc_pei" value="Descrição" />
-                            {!! Form::text('dsc_pei', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-1', 'style' => 'width: 100% !Important;','placeholder' => 'Ex.: Planejamento Estratégico Integrado da Presidência da República 2020 - 2023', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'dsc_pei']) !!}
-                            <x-jet-input-error for="dsc_pei" class="mt-2" />
+                            <x-jet-label for="cod_pei" value="Planejamento Estratégico Integrado - PEI:" />
+                            {!! Form::select('cod_pei', $this->pei, null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_pei']) !!}
+                            <x-jet-input-error for="cod_pei" class="mt-2" />
                         </div>
 
                     </div>
 
-                    <div class="w-full md:w-1/5 px-3 mb-6 md:mb-0 pt-1">
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-1">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-label for="num_ano_inicio_pei" value="Ano de Incialização do PEI" />
-                            {!! Form::select('num_ano_inicio_pei', $this->anos, null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-1', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'num_ano_inicio_pei']) !!}
-                            <x-jet-input-error for="sgl_organizacao" class="mt-2" />
+                            <x-jet-label for="cod_perspectiva" value="Perspectiva:" />
+                            {!! Form::select('cod_perspectiva', $this->perspectiva, null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_perspectiva']) !!}
+                            <div class="p-2 text-gray-500 text-xs md:list-disc">Os elementos desse campo só serão visíveis após a escolha do PEI.</div>
+                            <x-jet-input-error for="cod_perspectiva" class="mt-2" />
                         </div>
 
                     </div>
 
-                    <div class="w-full md:w-1/5 px-3 mb-6 md:mb-0 pt-1">
+                    <div class="w-full md:w-1/3 px-3 pt-2 mb-1 md:mb-0">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-label for="num_ano_fim_pei" value="Ano de Finalização do PEI" />
-                            {!! Form::select('num_ano_fim_pei', $this->anos, null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-1', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'num_ano_fim_pei']) !!}
-                            <x-jet-input-error for="sgl_organizacao" class="mt-2" />
+                            <x-jet-label for="num_nivel_hierarquico_apresentacao" value="Código:" />
+                            {!! Form::select('num_nivel_hierarquico_apresentacao', $this->niveis_hierarquico_apresentacao, null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'num_nivel_hierarquico_apresentacao']) !!}
+                            <div class="p-2 text-gray-500 text-xs md:list-disc">Este campo será preenchido automaticamente após a escolha da perspectiva, mas pode ser alterado se necessário.</div>
+                            <x-jet-input-error for="num_nivel_hierarquico_apresentacao" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-2/3 px-3 pt-2 mb-1 md:mb-0">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-label for="dsc_objetivo_estrategico" value="Objetivo Estratégico:" />
+                            {!! Form::textarea('dsc_objetivo_estrategico',null,['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2','id' => 'dsc_objetivo_estrategico', 'placeholder' => 'Escreva aqui o objetivo estratégico', 'rows' => 3, 'required' => 'required', 'style' => 'width: 100%', 'wire:model' => 'dsc_objetivo_estrategico']) !!}
+                            <x-jet-input-error for="dsc_objetivo_estrategico" class="mt-2" />
                         </div>
 
                     </div>
@@ -89,32 +101,28 @@
                     <table class="divide-gray-300 min-w-full border-collapse block md:table ">
                         <thead class="hidden shadow-lg inset-x-0 top-16 block md:table-header-group">
                             <tr class="shadow-lg">
-                                <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Descrição</th>
-                                <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Ano de Incialização do PEI</th>
-                                <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Ano de Finalização do PEI</th>
+                                <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Objetivo Estratégico</th>
+                                <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Perspectiva</th>
                                 <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Ação</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-300 block md:table-row-group">
 
-                            @foreach ($this->pei as $result)
+                            @foreach ($this->objetivoEstragico as $result)
 
                             <tr class="border border-gray-500 md:border-none block md:table-row">
                                 <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
-                                    {{ $result->dsc_pei }}
+                                    {{ $result->num_nivel_hierarquico_apresentacao }}. {{ $result->dsc_objetivo_estrategico }}
                                 </td>
                                 <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
-                                    {{ $result->num_ano_inicio_pei }}
+                                    {{ $result->perspectiva->num_nivel_hierarquico_apresentacao }}. {!! $result->perspectiva->dsc_perspectiva !!}
                                 </td>
                                 <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
-                                    {{ $result->num_ano_fim_pei }}
-                                </td>
-                                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
-                                    <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $result->cod_pei !!}')" onclick="javascript: document.documentElement.scrollTop = 0;"><i class="fas fa-edit text-green-600"></i></a>
+                                    <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $result->cod_objetivo_estrategico !!}')" onclick="javascript: document.documentElement.scrollTop = 0;"><i class="fas fa-edit text-green-600"></i></a>
 
                                     &nbsp;
                                     &nbsp;
-                                    <button type="button" wire:click.prevent="deleteForm('{!! $result->cod_pei !!}')"><i class="fas fa-trash-alt text-red-600"></i></button>
+                                    <button type="button" wire:click.prevent="deleteForm('{!! $result->cod_objetivo_estrategico !!}')"><i class="fas fa-trash-alt text-red-600"></i></button>
 
                                 </td>
                             </tr>
@@ -162,7 +170,7 @@
                 <x-jet-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled">
                     {{ __('Closer') }}
                 </x-jet-button>
-                <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled" wire:click.prevent="delete('{!! $this->cod_pei !!}')">
+                <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled" wire:click.prevent="delete('{!! $this->cod_objetivo_estrategico !!}')">
                     Sim, quero excluir
                 </x-jet-danger-button>
             </x-slot>

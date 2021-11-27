@@ -30,7 +30,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-jet-nav-link href="{{ url('/'.session('ano')) }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('Planejamento Estratégico Integrado') }}
                     </x-jet-nav-link>
                 </div>
 
@@ -45,7 +45,7 @@
                 <!-- Início da parte do menu para a alteração do Ano -->
 
                 @if(request()->path() != 'user/profile')
-                <div class="hidden lg:flex sm:ml-6 pt-4">
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex pt-4">
 
                     <div class="ml-3 relative">
                         <x-jet-dropdown align="right" width="48">
@@ -90,11 +90,11 @@
 
                                 if($ano == $result) {
 
-                                    $valor = 'true';
+                                    $valor = 1;
 
                                 } else {
 
-                                    $valor = 'false';
+                                    $valor = 0;
 
                                 }
 
@@ -118,7 +118,7 @@
 
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
                     <div class="ml-3 relative">
-                        <x-jet-dropdown align="right" width="48">
+                        <x-jet-dropdown align="right" width="48" :active="request()->routeIs('organization')">
                             <x-slot name="trigger">
                                 <span class="inline-flex rounded-md">
                                     <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
@@ -137,18 +137,38 @@
                                     Selecione o tema de administração
                                 </div>
 
-                                <x-jet-dropdown-link href="{{ url($ano.'/organization/show') }}">
-                                    {{ __('Organization') }}
+                                <x-jet-dropdown-link href="{{ url($ano.'/organization/show') }}" :active="request()->routeIs('organization')">
+                                    {{ __('Unidades da Organização') }}
                                 </x-jet-dropdown-link>
 
-                                <x-jet-dropdown-link href="{{ url($ano.'/pei/show') }}">
+                                <div class="border-t blue-gray-100"></div>
+
+                                <x-jet-dropdown-link href="{{ url($ano.'/pei/show') }}" :active="request()->routeIs('PlanejamentoEstrategicoIntegrado')">
                                     Planejamento Estratégico Integrado
                                 </x-jet-dropdown-link>
 
-                                <div class="border-t border-gray-100"></div>
+                                <div class="border-t blue-gray-100"></div>
 
-                                <x-jet-dropdown-link href="{{ route('profile.show') }}">
+                                <x-jet-dropdown-link href="{{ url($ano.'/missao-visao-valores/show') }}" :active="request()->routeIs('missao')">
+                                    Missão, Visão e Valores
+                                </x-jet-dropdown-link>
+
+                                <div class="border-t blue-gray-100"></div>
+
+                                <x-jet-dropdown-link href="{{ url($ano.'/perspectiva') }}" :active="request()->routeIs('perspectiva')">
                                     {{ __('Perspective') }}
+                                </x-jet-dropdown-link>
+
+                                <div class="border-t blue-gray-100"></div>
+
+                                <x-jet-dropdown-link href="{{ url($ano.'/adm/objetivo-estrategico') }}" :active="request()->routeIs('objetivoEstragico')">
+                                    {{ __('Objetivo Estratégico') }}
+                                </x-jet-dropdown-link>
+
+                                <div class="border-t blue-gray-100"></div>
+
+                                <x-jet-dropdown-link href="{{ url($ano.'/adm/plano-de-acao') }}" :active="request()->routeIs('planoAcao')">
+                                    {{ __('Plano de Ação') }}
                                 </x-jet-dropdown-link>
 
                                 
@@ -198,7 +218,7 @@
                                 </x-jet-dropdown-link>
                                 @endcan
 
-                                <div class="border-t border-gray-100"></div>
+                                <div class="border-t blue-gray-100"></div>
 
                                 <!-- Team Switcher -->
                                 <div class="block px-4 py-2 text-xs text-gray-400">
@@ -253,7 +273,7 @@
                             </x-jet-dropdown-link>
                             @endif
 
-                            <div class="border-t border-gray-100"></div>
+                            <div class="border-t blue-gray-100"></div>
 
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}">

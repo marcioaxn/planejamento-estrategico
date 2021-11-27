@@ -22,11 +22,40 @@ class ShowOrganization extends Component
     public $sgl_organizacao = null;
     public $rel_cod_organizacao = null;
     public $editarForm = false;
-    public $totalRecords;
-    public $loadAmount = 1;
-    public $textoModalDelete = null;
     public $showModalResultadoEdicao = false;
     public $mensagemResultadoEdicao = null;
+
+    public $hierarquiaUnidade = null;
+
+    public $abrirFecharForm = 'none';
+    public $iconAbrirFechar = 'fas fa-plus text-xs';
+    public $iconFechar = 'fas fa-minus text-xs';
+
+    public function abrirFecharForm() {
+
+        if($this->abrirFecharForm === 'none') {
+
+            $this->nom_organizacao = null;
+            $this->sgl_organizacao = null;
+            $this->rel_cod_organizacao = null;
+            $this->editarForm = false;
+
+            $this->abrirFecharForm = 'block';
+            $this->iconAbrirFechar = 'fas fa-minus text-xs';
+
+        } else {
+
+            $this->nom_organizacao = null;
+            $this->sgl_organizacao = null;
+            $this->rel_cod_organizacao = null;
+            $this->editarForm = false;
+
+            $this->abrirFecharForm = 'none';
+            $this->iconAbrirFechar = 'fas fa-plus text-xs';
+
+        }
+
+    }
 
     public function create() {
 
@@ -165,6 +194,10 @@ class ShowOrganization extends Component
         $this->nom_organizacao = null;
         $this->sgl_organizacao = null;
         $this->rel_cod_organizacao = null;
+
+        $this->abrirFecharForm = 'none';
+        $this->iconAbrirFechar = 'fas fa-plus text-xs';
+        
         $this->editarForm = false;
 
     }
@@ -175,6 +208,9 @@ class ShowOrganization extends Component
         $this->sgl_organizacao = $singleData->sgl_organizacao;
         $this->rel_cod_organizacao = $singleData->rel_cod_organizacao;
         $this->cod_organizacao = $singleData->cod_organizacao;
+
+        $this->abrirFecharForm = 'block';
+        $this->iconAbrirFechar = 'fas fa-minus text-xs';
 
         $this->editarForm = true;
 
@@ -230,32 +266,85 @@ class ShowOrganization extends Component
 
         $nom_organizacao = $this->nom_organizacao;
 
-        $rel_cod_organizacao_lista = Organization::select(db::raw("sgl_organizacao||' - '||nom_organizacao as nom_organizacao, cod_organizacao"))
-        ->where('nom_organizacao','!=','')
-        ->whereNotNull('nom_organizacao')
-        ->orderBy('nom_organizacao')
-        ->pluck('nom_organizacao', 'cod_organizacao');
+        $organizacoes = [];
 
         $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
-        ->with('deshierarquia');
+        ->get();
 
-        $organization = $organization->get();
+        $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
+        ->orderBy('nom_organizacao')
+        ->get();
 
-        $organizationChild = Organization::with('deshierarquia')
-        ->whereRaw('cod_organizacao != rel_cod_organizacao')
-        ->orderBy('nom_organizacao');
+        foreach ($organization as $result) {
 
-        $organizationChild = $organizationChild->get();
+            $organizacoes[$result->cod_organizacao] = $result->nom_organizacao.$this->hierarquiaUnidade($result->cod_organizacao);
 
-        $totalRecords = $this->totalRecords;
+            foreach($organizationChild as $resultChild1) {
+
+                if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
+
+                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao.$this->hierarquiaUnidade($resultChild1->cod_organizacao);
+
+                    foreach ($resultChild1->deshierarquia as $resultChild2) {
+
+                        if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
+
+                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao.$this->hierarquiaUnidade($resultChild2->cod_organizacao);
+
+                            foreach ($resultChild2->deshierarquia as $resultChild3) {
+
+                                if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
+
+                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao.$this->hierarquiaUnidade($resultChild3->cod_organizacao);
+
+                                    foreach ($resultChild3->deshierarquia as $resultChild4) {
+
+                                        if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
+
+                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao.$this->hierarquiaUnidade($resultChild4->cod_organizacao);
+
+                                            foreach ($resultChild4->deshierarquia as $resultChild5) {
+
+                                                if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
+
+                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao.$this->hierarquiaUnidade($resultChild5->cod_organizacao);
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        $rel_cod_organizacao_lista = $organizacoes;
+
+        $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
+        ->get();
+
+        $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
+        ->orderBy('nom_organizacao')
+        ->get();
 
         return view('livewire.organization.show')
         ->with('rel_cod_organizacao_lista',$rel_cod_organizacao_lista)
         ->with('organization',$organization)
         ->with('organizationChild',$organizationChild)
-        ->with('totalRecords',$totalRecords)
-        ->with('nom_organizacao',$nom_organizacao)
-        ->with('textoModalDelete',$this->textoModalDelete);
+        ->with('nom_organizacao',$nom_organizacao);
     }
 
     protected function estruturaTable() {
@@ -270,6 +359,86 @@ class ShowOrganization extends Component
             AND column_name NOT IN ('cod_organizacao','created_at','updated_at','deleted_at');");
 
         return $estrutura;
+
+    }
+
+    protected function hierarquiaUnidade($cod_organizacao) {
+
+        $organizacao = Organization::with('hierarquia')
+        ->where('cod_organizacao',$cod_organizacao)
+        ->get();
+
+        $hierarquiaSuperior = null;
+
+        foreach($organizacao as $result1) {
+
+            if($result1->hierarquia) {
+
+                foreach($result1->hierarquia as $result2) {
+
+                    $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result2->sgl_organizacao;
+
+                    $organizacao2 = Organization::with('hierarquia')
+                    ->where('cod_organizacao',$result2->cod_organizacao)
+                    ->get();
+
+                    foreach($organizacao2 as $result3) {
+
+                        if($result3->hierarquia) {
+
+                            foreach($result3->hierarquia as $result4) {
+
+                                $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result4->sgl_organizacao;
+
+                                $organizacao3 = Organization::with('hierarquia')
+                                ->where('cod_organizacao',$result4->cod_organizacao)
+                                ->get();
+
+                                foreach($organizacao3 as $result5) {
+
+                                    if($result5->hierarquia) {
+
+                                        foreach($result5->hierarquia as $result6) {
+
+                                            $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result6->sgl_organizacao;
+
+                                            $organizacao4 = Organization::with('hierarquia')
+                                            ->where('cod_organizacao',$result6->cod_organizacao)
+                                            ->get();
+
+                                            foreach($organizacao4 as $result7) {
+
+                                                if($result7->hierarquia) {
+
+                                                    foreach($result7->hierarquia as $result8) {
+
+                                                        $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result8->sgl_organizacao;
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return $hierarquiaSuperior;
 
     }
 }

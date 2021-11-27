@@ -18,6 +18,6 @@ class Acoes extends Model
     protected $guarded = array();
     
     public function usuario(){
-        return $this->belongsTo('App\User', 'id_user');
+        return $this->belongsTo(User::class, 'id_user');
     }
 }

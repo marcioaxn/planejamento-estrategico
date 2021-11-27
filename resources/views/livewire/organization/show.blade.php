@@ -1,61 +1,78 @@
+<x-slot name="header">
+    <h2 class="font-semibold text-xl text-blue-800 leading-tight">
+        Administração das Unidades da Organização
+    </h2>
+</x-slot>
+
 <div class="" style="margin-top: 6px!Important; padding-top: 6px!Important;">
 
-    <div class="max-w-34xl mx-auto px-2 sm:px-4 lg:px-3">
+    <form wire:submit.prevent="create" method="post">
 
-        <form wire:submit.prevent="create" method="post">
+        <div class="w-full px-2 sm:px-4 lg:px-3">
 
-            <div class="flex items-center px-4 py-6 bg-white rounded-md shadow-md">
+            <div class="flex flex-wrap w-full">
 
-                <div class="">
+                <div class="w-full md:w-1/1 pr-3 mb-1 text-right">
+                    <span class="text-gray-600 pr-1 text-sm">Incluir</span>
+                    <div class="rounded-full h-6 w-6 flex items-center justify-center inline-flex items-center bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition " style="cursor: pointer;" wire:click.prevent="abrirFecharForm()"><i id="iconAbrirFecharForm" class="<?php print($iconAbrirFechar) ?>"></i></div>
+                </div>
 
-                    <div class="flex flex-wrap -mx-3 mb-6">
+            </div>
 
-                        <div class="w-full md:w-2/3 px-3 mb-6 md:mb-0 pt-3">
+            <div id="divForm" class="flex items-center px-4 py-6 bg-white rounded-md bg-indigo-50 bg-opacity-50 shadow-md" style="display: <?php print($this->abrirFecharForm) ?>;">
 
-                            <div class="col-span-6 sm:col-span-4">
-                                <x-jet-label for="nom_organizacao" value="Nome da Unidade" />
-                                {!! Form::text('nom_organizacao', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-1', 'style' => 'width: 100% !Important;', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'nom_organizacao']) !!}
-                                <x-jet-input-error for="nom_organizacao" class="mt-2" />
-                            </div>
+                <div class="flex flex-wrap w-full">
 
+                    <div class="w-full md:w-1/1 mb-2">
+
+                        <p><strong>Formulário de cadastro e edição</strong></p>
+
+                    </div>
+
+                    <div class="w-full md:w-2/3 px-3 mb-6 md:mb-0 pt-3">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-label for="nom_organizacao" value="Nome da Unidade" />
+                            {!! Form::text('nom_organizacao', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-1', 'style' => 'width: 100% !Important;', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'nom_organizacao']) !!}
+                            <x-jet-input-error for="nom_organizacao" class="mt-2" />
                         </div>
 
-                        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0 pt-3">
+                    </div>
 
-                            <div class="col-span-6 sm:col-span-4">
-                                <x-jet-label for="sgl_organizacao" value="Sigla da Unidade" />
-                                {!! Form::text('sgl_organizacao', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-1', 'style' => 'width: 100% !Important;', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'sgl_organizacao']) !!}
-                                <x-jet-input-error for="sgl_organizacao" class="mt-2" />
-                            </div>
+                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0 pt-3">
 
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-label for="sgl_organizacao" value="Sigla da Unidade" />
+                            {!! Form::text('sgl_organizacao', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-1', 'style' => 'width: 100% !Important;', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'sgl_organizacao']) !!}
+                            <x-jet-input-error for="sgl_organizacao" class="mt-2" />
                         </div>
 
-                        <div class="w-full md:w-2/3 px-3 mb-6 md:mb-0 pt-3">
+                    </div>
 
-                            <div class="col-span-6 sm:col-span-4">
-                                <x-jet-label for="sgl_organizacao" value="Vinculada ou Subordinada a qual Unidade?" />
-                                {!! Form::select('rel_cod_organizacao', $rel_cod_organizacao_lista, null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-1', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'wire:model' => 'rel_cod_organizacao']) !!}
-                                <div class="p-2 text-gray-500 text-xs md:list-disc">Caso a Unidade que esteja cadastrando seja a base da Organização, por exemplo a Presidência da República, não é necessário o preenchimento desse campo.</div>
-                                <x-jet-input-error for="sgl_organizacao" class="mt-2" />
-                            </div>
+                    <div class="w-full md:w-2/3 px-3 mb-6 md:mb-0 pt-3">
 
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-label for="sgl_organizacao" value="Vinculada ou Subordinada a qual Unidade?" />
+                            {!! Form::select('rel_cod_organizacao', $rel_cod_organizacao_lista, null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-1', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'wire:model' => 'rel_cod_organizacao']) !!}
+                            <div class="p-2 text-gray-500 text-xs md:list-disc">Caso a Unidade que esteja cadastrando seja a base da Organização, por exemplo a Presidência da República, não é necessário o preenchimento desse campo.</div>
+                            <x-jet-input-error for="sgl_organizacao" class="mt-2" />
                         </div>
 
-                        <div class="w-full md:w-1/3 px-3 mt-6 mb-6 md:mb-0 pt-3">
+                    </div>
 
-                            @if($this->editarForm == true)
+                    <div class="w-full md:w-1/3 px-3 mt-6 mb-6 md:mb-0 pt-3">
 
-                            <a class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring focus:ring-red-300 disabled:opacity-25 transition" href="javascript: void(0);" wire:click.prevent="cancelar()" >Cancelar</a>
+                        @if($this->editarForm == true)
 
-                            <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition" type="submit">Editar</button>
+                        <a class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring focus:ring-red-300 disabled:opacity-25 transition" href="javascript: void(0);" wire:click.prevent="cancelar()" >Cancelar</a>
 
-                            @else
+                        <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition" type="submit">Editar</button>
 
-                            <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition" type="submit">Salvar</button>
+                        @else
 
-                            @endif
+                        <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition" type="submit">Salvar</button>
 
-                        </div>
+                        @endif
 
                     </div>
 
@@ -72,31 +89,25 @@
                 <div class="border-b border-gray-200 shadow rounded-md">
 
                     <table class="divide-gray-300 min-w-full border-collapse block md:table ">
-                        <thead class="sticky inset-x-0 top-16 block md:table-header-group">
-                            <tr class="block shadow-lg md:table-row absolute -top-full md:top-auto -left-full md:left-auto  md:relative z-50 ">
-                                <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Unidade</th>
+                        <thead class="hidden shadow-lg inset-x-0 top-16 block md:table-header-group">
+                            <tr class="shadow-lg">
+                                <th class="bg-gray-400 px-6 py-2 pl-3 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Unidade</th>
                                 <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Sigla</th>
                                 <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Ação</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-300 block md:table-row-group">
 
-                            <?php
-
-                            $cod_organizacao_impressos = [];
-
-                            ?>
-
                             @foreach ($organization as $result)
 
                             <tr class="border border-gray-500 md:border-none block md:table-row">
-                                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                                <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600">
                                     <strong>{{ $result->nom_organizacao }}</strong>
                                 </td>
-                                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
-                                    <strong>{{ $result->sgl_organizacao }}</strong>
+                                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
+                                    <strong>{{ $result->sgl_organizacao }}</strong>{!! $this->hierarquiaUnidade($result->cod_organizacao) !!}
                                 </td>
-                                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
                                     <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $result->cod_organizacao !!}')" onclick="javascript: document.documentElement.scrollTop = 0;"><i class="fas fa-edit text-green-600"></i></a>
                                     @if($result->deshierarquia()->count() <= 0)
                                     &nbsp;
@@ -149,13 +160,13 @@
                         @if($result->cod_organizacao == $resultChild1->rel_cod_organizacao)
 
                         <tr class="border border-gray-500 md:border-none block md:table-row">
-                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                            <td class="md:border md:border-gray-100 text-left block md:table-cell pl-5 text-sm text-gray-600">
                                 {{ $resultChild1->nom_organizacao }}
                             </td>
-                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
-                                <strong>{{ $resultChild1->sgl_organizacao }}</strong><span class="text-gray-400">/{{ $result->sgl_organizacao }}</span>
+                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
+                                <strong>{{ $resultChild1->sgl_organizacao }}</strong>{!! $this->hierarquiaUnidade($resultChild1->cod_organizacao) !!}
                             </td>
-                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
                                 <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $resultChild1->cod_organizacao !!}')" onclick="javascript: document.documentElement.scrollTop = 0;"><i class="fas fa-edit text-green-600"></i></a>
 
                                 @if($resultChild1->deshierarquia()->count() <= 0)
@@ -208,13 +219,13 @@
 
                     @if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao)
                     <tr class="border border-gray-500 md:border-none block md:table-row">
-                        <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-7 text-sm text-gray-600">
                             {{ $resultChild2->nom_organizacao }}
                         </td>
-                        <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
-                            <strong>{{ $resultChild2->sgl_organizacao }}</strong><span class="text-gray-400">/{{ $resultChild1->sgl_organizacao }}/{{ $result->sgl_organizacao }}</span>
+                        <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
+                            <strong>{{ $resultChild2->sgl_organizacao }}</strong>{!! $this->hierarquiaUnidade($resultChild2->cod_organizacao) !!}
                         </td>
-                        <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                        <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
                             <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $resultChild2->cod_organizacao !!}')" onclick="javascript: document.documentElement.scrollTop = 0;"><i class="fas fa-edit text-green-600"></i></a>
 
                             @if($resultChild2->deshierarquia()->count() <= 0)
@@ -269,13 +280,13 @@
 
                 @if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao)
                 <tr class="border border-gray-500 md:border-none block md:table-row">
-                    <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                    <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-9 text-sm text-gray-600">
                         {{ $resultChild3->nom_organizacao }}
                     </td>
-                    <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
-                        <strong>{{ $resultChild3->sgl_organizacao }}</strong><span class="text-gray-400">/{{ $resultChild3->sgl_organizacao }}/{{ $resultChild1->sgl_organizacao }}/{{ $result->sgl_organizacao }}</span>
+                    <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
+                        <strong>{{ $resultChild3->sgl_organizacao }}</strong>{!! $this->hierarquiaUnidade($resultChild3->cod_organizacao) !!}
                     </td>
-                    <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                    <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
                         <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $resultChild3->cod_organizacao !!}')" onclick="javascript: document.documentElement.scrollTop = 0;"><i class="fas fa-edit text-green-600"></i></a>
 
                         @if($resultChild3->deshierarquia()->count() <= 0)
@@ -328,13 +339,13 @@
 
             @if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao)
             <tr class="border border-gray-500 md:border-none block md:table-row">
-                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-11 text-sm text-gray-600">
                     {{ $resultChild4->nom_organizacao }}
                 </td>
-                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
-                    <strong>{{ $resultChild4->sgl_organizacao }}</strong><span class="text-gray-400">/{{ $resultChild3->sgl_organizacao }}/{{ $resultChild2->sgl_organizacao }}/{{ $resultChild1->sgl_organizacao }}/{{ $result->sgl_organizacao }}</span>
+                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
+                    <strong>{{ $resultChild4->sgl_organizacao }}</strong>{!! $this->hierarquiaUnidade($resultChild4->cod_organizacao) !!}
                 </td>
-                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
                     <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $resultChild4->cod_organizacao !!}')" onclick="javascript: document.documentElement.scrollTop = 0;"><i class="fas fa-edit text-green-600"></i></a>
 
                     @if($resultChild4->deshierarquia()->count() <= 0)
@@ -387,13 +398,13 @@
 
         @if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao)
         <tr class="border border-gray-500 md:border-none block md:table-row">
-            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-14 text-sm text-gray-600">
                 {{ $resultChild5->nom_organizacao }}
             </td>
-            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
-                <strong>{{ $resultChild5->sgl_organizacao }}</strong><span class="text-gray-400">/{{ $resultChild4->sgl_organizacao }}/{{ $resultChild3->sgl_organizacao }}/{{ $resultChild2->sgl_organizacao }}/{{ $resultChild1->sgl_organizacao }}/{{ $result->sgl_organizacao }}</span>
+            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
+                <strong>{{ $resultChild5->sgl_organizacao }}</strong>{!! $this->hierarquiaUnidade($resultChild5->cod_organizacao) !!}
             </td>
-            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-6 py-4 text-sm text-gray-600">
+            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
                 <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $resultChild5->cod_organizacao !!}')" onclick="javascript: document.documentElement.scrollTop = 0;"><i class="fas fa-edit text-green-600"></i></a>
 
                 @if($resultChild5->deshierarquia()->count() <= 0)

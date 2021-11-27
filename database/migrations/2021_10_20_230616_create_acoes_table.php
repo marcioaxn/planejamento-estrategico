@@ -13,7 +13,7 @@ class CreateAcoesTable extends Migration
             $table->string('id_table')->nullable(false);
             $table->uuid('id_user')->nullable(false);
             $table->string('table')->nullable(false);
-            $table->string('acao')->nullable(false);
+            $table->text('acao')->nullable(false);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -22,6 +22,10 @@
 
     <script src="https://kit.fontawesome.com/1d96c2b4cc.js" crossorigin="anonymous"></script>
 
+    <script src="{{ asset('js/jquery-3.6.0.js') }}"></script>
+
+    <script src="{{ asset('js/jquery.mask.js') }}" type="text/javascript"></script>
+
     @livewireStyles
 
     <!-- Scripts -->
@@ -35,8 +39,8 @@
 
         <!-- Page Heading -->
         @if (isset($header))
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <header class="bg-white shadow-md">
+            <div class="max-w-34xl mx-auto pt-2 pb-2 sm:pl-3 sm:px-6 lg:px-8">
                 {{ $header }}
             </div>
         </header>

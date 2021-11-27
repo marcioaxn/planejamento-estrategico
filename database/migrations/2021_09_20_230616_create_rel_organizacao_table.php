@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrganizacaosTable extends Migration
+class CreateRelOrganizacaoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateOrganizacaosTable extends Migration
      */
     public function up()
     {
-        Schema::create('tab_organizacoes', function (Blueprint $table) {
-            $table->uuid('cod_organizacao')->primary();
-            $table->string('sgl_organizacao')->nullable(false);
-            $table->string('nom_organizacao')->nullable(false);
-            $table->uuid('cod_organizacao_child')->nullable(true);
+        Schema::create('rel_organizacao', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('cod_organizacao')->references('cod_organizacao')->on('tab_organizacoes');
+            $table->foreignUuid('rel_cod_organizacao')->references('cod_organizacao')->on('tab_organizacoes');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +29,6 @@ class CreateOrganizacaosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tab_organizacoes');
+        Schema::dropIfExists('rel_organizacao');
     }
 }
