@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateTabPerspectivaTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    
     public function up()
     {
         Schema::create('pei.tab_perspectiva', function (Blueprint $table) {
@@ -23,11 +19,6 @@ class CreateTabPerspectivaTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('pei.tab_perspectiva');

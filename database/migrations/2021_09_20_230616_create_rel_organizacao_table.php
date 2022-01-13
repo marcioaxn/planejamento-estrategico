@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateRelOrganizacaoTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    
     public function up()
     {
         Schema::create('rel_organizacao', function (Blueprint $table) {
@@ -22,11 +18,6 @@ class CreateRelOrganizacaoTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('rel_organizacao');

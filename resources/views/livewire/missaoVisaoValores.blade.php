@@ -1,5 +1,5 @@
 <x-slot name="header">
-    <h2 class="font-semibold text-xl text-blue-800 leading-tight">
+    <h2 class="font-semibold text-xl text-blue-800 leading-tight pl-3">
         Administração da Missão, Visão e Valores
     </h2>
 </x-slot>

@@ -7,11 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class CreateOrganizacaosTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    
     public function up()
     {
         Schema::create('tab_organizacoes', function (Blueprint $table) {
@@ -26,11 +22,6 @@ class CreateOrganizacaosTable extends Migration
         DB::select("INSERT INTO public.tab_organizacoes (cod_organizacao, sgl_organizacao, nom_organizacao, rel_cod_organizacao, deleted_at, created_at, updated_at) VALUES ('3834910f-66f7-46d8-9104-2904d59e1241', 'MDR', 'Ministério do Desenvolvimento Regional', '3834910f-66f7-46d8-9104-2904d59e1241', NULL, '2021-10-21 10:38:09', '2021-10-21 13:20:45');");
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('tab_organizacoes');

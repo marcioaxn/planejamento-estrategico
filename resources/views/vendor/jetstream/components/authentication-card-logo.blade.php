@@ -1,3 +1,3 @@
-<a href="2021/dashboard">
+<a href="{!! date('Y') !!}">
     <img src="{{ asset('img/brasao.png') }}">
 </a>

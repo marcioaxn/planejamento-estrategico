@@ -11,7 +11,8 @@ use App\Http\Livewire\{
     MissaoVisaoValoresLivewire,
     PerspectivaLivewire,
     ObjetivoEstrategicoLivewire,
-    PlanoAcaoLivewire
+    PlanoAcaoLivewire,
+    IndicadoresLivewire
 };
 
 
@@ -39,17 +40,19 @@ Route::get('{ano?}/{cod_organizacao?}', ShowDashboard::class)->name('dashboard')
 
 Route::group(['middleware' => ['auth', 'trocarSenha']], function () {
 
-    Route::get('{ano}/organization/show', ShowOrganization::class)->name('organization');
+    Route::get('{ano}/adm/organization', ShowOrganization::class)->name('organization');
 
-    Route::get('{ano}/pei/show',PlanejamentoEstrategicoIntegrado::class)->name('PlanejamentoEstrategicoIntegrado');
+    Route::get('{ano}/adm/pei',PlanejamentoEstrategicoIntegrado::class)->name('PlanejamentoEstrategicoIntegrado');
 
-    Route::get('{ano}/missao-visao-valores/show',MissaoVisaoValoresLivewire::class)->name('missao');
+    Route::get('{ano}/adm/missao-visao-valores',MissaoVisaoValoresLivewire::class)->name('missao');
 
-    Route::get('{ano}/perspectiva',PerspectivaLivewire::class)->name('perspectiva');
+    Route::get('{ano}/adm/perspectiva',PerspectivaLivewire::class)->name('perspectiva');
 
     Route::get('{ano}/adm/objetivo-estrategico',ObjetivoEstrategicoLivewire::class)->name('objetivoEstragico');
 
     Route::get('{ano}/adm/plano-de-acao',PlanoAcaoLivewire::class)->name('planoAcao');
+
+    Route::get('{ano}/adm/indicador',IndicadoresLivewire::class)->name('indicadores');
 
 });
 

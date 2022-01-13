@@ -90,7 +90,7 @@ class MissaoVisaoValoresLivewire extends Component
             $acao = Acoes::create(array(
                 'table' => 'tab_pei',
                 'id_table' => $save->cod_missao_visao_valores,
-                'id_user' => Auth::user()->id,
+                'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));
 
@@ -151,7 +151,7 @@ class MissaoVisaoValoresLivewire extends Component
                 $acao = Acoes::create(array(
                     'table' => 'tab_missao_visao_valores',
                     'id_table' => $this->cod_missao_visao_valores,
-                    'id_user' => Auth::user()->id,
+                    'user_id' => Auth::user()->id,
                     'acao' => $modificacoes
                 ));
 
@@ -308,7 +308,7 @@ class MissaoVisaoValoresLivewire extends Component
 
         $texto = '';
 
-        $texto .= '<p class="my-2 text-gray-500 text-xs leading-relaxed">Missão: <strong>'.$singleData->dsc_missao.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Visão: <strong>'.$singleData->dsc_visao.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Valores: <strong>'.$singleData->dsc_valores.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Planejamento: <strong>'.$consultarPei->dsc_pei.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade: <strong>'.$consultarOrganizacao->nom_organizacao.'</strong></p><p class="my-2 text-gray-500 text-xs font-semibold leading-relaxed text-red-600">Quer, realmente, excluir?</p>';
+        $texto .= '<p class="my-2 text-gray-500 text-xs leading-relaxed">Missão: <strong>'.$singleData->dsc_missao.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Visão: <strong>'.$singleData->dsc_visao.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Valores: <strong>'.$singleData->dsc_valores.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Planejamento: <strong>'.$consultarPei->dsc_pei.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade: <strong>'.$consultarOrganizacao->nom_organizacao.'</strong></p><p class="my-2 text-gray-500 text-xs font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
 
         $this->mensagemDelete = $texto;
 
@@ -341,7 +341,7 @@ class MissaoVisaoValoresLivewire extends Component
         $acao = Acoes::create(array(
             'table' => 'tab_pei',
             'id_table' => $singleData->cod_missao_visao_valores,
-            'id_user' => Auth::user()->id,
+            'user_id' => Auth::user()->id,
             'acao' => $modificacoes
         ));
 
@@ -587,57 +587,61 @@ class MissaoVisaoValoresLivewire extends Component
 
     }
 
-    protected function hierarquiaUnidade($cod_organizacao) {
+    protected function hierarquiaUnidade($cod_organizacao = '') {
 
-        $organizacao = Organization::with('hierarquia')
-        ->where('cod_organizacao',$cod_organizacao)
-        ->get();
+        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
-        $hierarquiaSuperior = null;
+            $organizacao = Organization::with('hierarquia')
+            ->where('cod_organizacao',$cod_organizacao)
+            ->get();
 
-        foreach($organizacao as $result1) {
+            $hierarquiaSuperior = null;
 
-            if($result1->hierarquia) {
+            foreach($organizacao as $result1) {
 
-                foreach($result1->hierarquia as $result2) {
+                if($result1->hierarquia) {
 
-                    $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result2->sgl_organizacao;
+                    foreach($result1->hierarquia as $result2) {
 
-                    $organizacao2 = Organization::with('hierarquia')
-                    ->where('cod_organizacao',$result2->cod_organizacao)
-                    ->get();
+                        $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result2->sgl_organizacao;
 
-                    foreach($organizacao2 as $result3) {
+                        $organizacao2 = Organization::with('hierarquia')
+                        ->where('cod_organizacao',$result2->cod_organizacao)
+                        ->get();
 
-                        if($result3->hierarquia) {
+                        foreach($organizacao2 as $result3) {
 
-                            foreach($result3->hierarquia as $result4) {
+                            if($result3->hierarquia) {
 
-                                $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result4->sgl_organizacao;
+                                foreach($result3->hierarquia as $result4) {
 
-                                $organizacao3 = Organization::with('hierarquia')
-                                ->where('cod_organizacao',$result4->cod_organizacao)
-                                ->get();
+                                    $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result4->sgl_organizacao;
 
-                                foreach($organizacao3 as $result5) {
+                                    $organizacao3 = Organization::with('hierarquia')
+                                    ->where('cod_organizacao',$result4->cod_organizacao)
+                                    ->get();
 
-                                    if($result5->hierarquia) {
+                                    foreach($organizacao3 as $result5) {
 
-                                        foreach($result5->hierarquia as $result6) {
+                                        if($result5->hierarquia) {
 
-                                            $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result6->sgl_organizacao;
+                                            foreach($result5->hierarquia as $result6) {
 
-                                            $organizacao4 = Organization::with('hierarquia')
-                                            ->where('cod_organizacao',$result6->cod_organizacao)
-                                            ->get();
+                                                $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result6->sgl_organizacao;
 
-                                            foreach($organizacao4 as $result7) {
+                                                $organizacao4 = Organization::with('hierarquia')
+                                                ->where('cod_organizacao',$result6->cod_organizacao)
+                                                ->get();
 
-                                                if($result7->hierarquia) {
+                                                foreach($organizacao4 as $result7) {
 
-                                                    foreach($result7->hierarquia as $result8) {
+                                                    if($result7->hierarquia) {
 
-                                                        $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result8->sgl_organizacao;
+                                                        foreach($result7->hierarquia as $result8) {
+
+                                                            $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result8->sgl_organizacao;
+
+                                                        }
 
                                                     }
 
@@ -661,9 +665,9 @@ class MissaoVisaoValoresLivewire extends Component
 
             }
 
-        }
+            return $hierarquiaSuperior;
 
-        return $hierarquiaSuperior;
+        }
 
     }
     

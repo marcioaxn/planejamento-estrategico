@@ -1,5 +1,5 @@
 <x-slot name="header">
-    <h2 class="font-semibold text-xl text-blue-800 leading-tight">
+    <h2 class="font-semibold text-xl text-blue-800 leading-tight pl-3">
         Administração da Perspectiva
     </h2>
 </x-slot>
@@ -91,7 +91,6 @@
                         <thead class="hidden shadow-lg inset-x-0 top-16 block md:table-header-group">
                             <tr class="shadow-lg">
                                 <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Perspectiva</th>
-                                <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Nível hierarquico de apresentação</th>
                                 <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">PEI</th>
                                 <th class="bg-gray-400 px-6 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Ação</th>
                             </tr>
@@ -102,10 +101,7 @@
 
                             <tr class="border border-gray-500 md:border-none block md:table-row">
                                 <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
-                                    {{ $result->dsc_perspectiva }}
-                                </td>
-                                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
-                                    {{ $result->num_nivel_hierarquico_apresentacao }}
+                                    {{ $result->num_nivel_hierarquico_apresentacao }}. {{ $result->dsc_perspectiva }}
                                 </td>
                                 <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 text-sm text-gray-600">
                                     {{ $result->planejamentoEstrategicoIntegrado->dsc_pei }} ( {!! $result->planejamentoEstrategicoIntegrado->num_ano_inicio_pei !!} a {!! $result->planejamentoEstrategicoIntegrado->num_ano_fim_pei !!} )

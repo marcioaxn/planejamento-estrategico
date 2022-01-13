@@ -133,7 +133,7 @@ class ObjetivoEstrategicoLivewire extends Component
             $acao = Acoes::create(array(
                 'table' => 'tab_objetivo_estrategico',
                 'id_table' => $save->cod_objetivo_estrategico,
-                'id_user' => Auth::user()->id,
+                'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));
 
@@ -184,7 +184,7 @@ class ObjetivoEstrategicoLivewire extends Component
                 $acao = Acoes::create(array(
                     'table' => 'tab_objetivoEstragico',
                     'id_table' => $this->cod_objetivo_estrategico,
-                    'id_user' => Auth::user()->id,
+                    'user_id' => Auth::user()->id,
                     'acao' => $modificacoes
                 ));
 
@@ -248,7 +248,7 @@ class ObjetivoEstrategicoLivewire extends Component
 
         $texto = '';
 
-        $texto .= '<p class="my-2 text-gray-500 text-lg leading-relaxed">Objetivo Estrategico: <strong>'.$singleData->num_nivel_hierarquico_apresentacao.'. '.$singleData->dsc_objetivo_estrategico.'</strong></p><p class="my-2 text-gray-500 text-lg leading-relaxed">Perspectiva: <strong>'.$consultarPerspectiva->num_nivel_hierarquico_apresentacao.'. '.$consultarPerspectiva->dsc_perspectiva.'</strong></p><p class="my-2 text-gray-500 text-lg font-semibold leading-relaxed text-red-600">Quer, realmente, excluir?</p>';
+        $texto .= '<p class="my-2 text-gray-500 text-lg leading-relaxed">Objetivo Estrategico: <strong>'.$singleData->num_nivel_hierarquico_apresentacao.'. '.$singleData->dsc_objetivo_estrategico.'</strong></p><p class="my-2 text-gray-500 text-lg leading-relaxed">Perspectiva: <strong>'.$consultarPerspectiva->num_nivel_hierarquico_apresentacao.'. '.$consultarPerspectiva->dsc_perspectiva.'</strong></p><p class="my-2 text-gray-500 text-lg font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
 
         $this->mensagemDelete = $texto;
 
@@ -279,7 +279,7 @@ class ObjetivoEstrategicoLivewire extends Component
         $acao = Acoes::create(array(
             'table' => 'tab_objetivo_estrategico',
             'id_table' => $singleData->cod_objetivo_estrategico,
-            'id_user' => Auth::user()->id,
+            'user_id' => Auth::user()->id,
             'acao' => $modificacoes
         ));
 
@@ -323,8 +323,17 @@ class ObjetivoEstrategicoLivewire extends Component
 
         if($this->editarForm == false) {
 
-            $perspectiva = Perspectiva::select(db::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_perspectiva as dsc_perspectiva, cod_perspectiva"))
-            ->where('cod_pei',$this->cod_pei);
+            $perspectiva = Perspectiva::select(db::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_perspectiva as dsc_perspectiva, cod_perspectiva"));
+
+            if(isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '') {
+
+                $perspectiva = $perspectiva->where('cod_pei',$this->cod_pei);
+
+            } else {
+
+                $perspectiva = $perspectiva->whereNull('cod_pei');
+
+            }
 
             $perspectiva = $perspectiva->orderBy('num_nivel_hierarquico_apresentacao','desc')
             ->pluck('dsc_perspectiva','cod_perspectiva');

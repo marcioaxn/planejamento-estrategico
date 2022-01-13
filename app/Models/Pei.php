@@ -19,11 +19,5 @@ class Pei extends Model
     public $timestamps = true;
 
     protected $guarded = array();
-
-    public function missaoVisaoValores() {
-
-        $this->belongsTo(MissaoVisaoValores::class,'cod_pei');
-
-    }
     
 }

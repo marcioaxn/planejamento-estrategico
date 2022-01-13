@@ -19,5 +19,45 @@ class PlanoAcao extends Model
     public $timestamps = true;
 
     protected $guarded = array();
+
+    public function objetivoEstrategico() {
+
+        return $this->belongsTo(ObjetivoEstrategico::class, 'cod_objetivo_estrategico');
+
+    }
+
+    public function tipoExecucao() {
+        return $this->belongsTo(TipoExecucao::class,'cod_tipo_execucao');
+    }
+
+    public function unidade() {
+
+        return $this->belongsTo(Organization::class, 'cod_organizacao');
+
+    }
+
+    public function servidorResponsavel()
+    {
+        return $this->belongsToMany(User::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'cod_plano_de_acao', 'user_id')
+        ->select('name','users.id')
+        ->where('cod_perfil','c00b9ebc-7014-4d37-97dc-7875e55fff4c')
+        ->whereNull('rel_users_tab_organizacoes_tab_perfil_acesso.deleted_at');
+    }
+
+    public function servidorSubstituto()
+    {
+        return $this->belongsToMany(User::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'cod_plano_de_acao', 'user_id')
+        ->select('name','users.id')
+        ->where('cod_perfil','c00b9ebc-7014-4d37-97dc-7875e55fff5d')
+        ->whereNull('rel_users_tab_organizacoes_tab_perfil_acesso.deleted_at');
+    }
+
+    public function acoesRealizadas() {
+
+        return $this->hasMany(Acoes::class, 'id_table')
+        ->whereIn('table',['tab_plano_de_acao'])
+        ->orderBy('created_at','desc');
+
+    }
     
 }

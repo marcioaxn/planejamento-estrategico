@@ -1,5 +1,5 @@
 <x-slot name="header">
-    <h2 class="font-semibold text-xl text-blue-800 leading-tight">
+    <h2 class="font-semibold text-xl text-blue-800 leading-tight pl-3">
         Administração do Planejamento Estratégico Integrado - PEI
     </h2>
 </x-slot>

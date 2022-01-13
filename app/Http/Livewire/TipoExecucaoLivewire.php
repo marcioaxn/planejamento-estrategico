@@ -71,7 +71,7 @@ class TipoExecucaoLivewire extends Component
             $acao = Acoes::create(array(
                 'table' => 'tab_tipo_execucao',
                 'id_table' => $save->cod_tipo_execucao,
-                'id_user' => Auth::user()->id,
+                'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));
 
@@ -106,7 +106,7 @@ class TipoExecucaoLivewire extends Component
                 $acao = Acoes::create(array(
                     'table' => 'tab_tipo_execucao',
                     'id_table' => $this->cod_tipo_execucao,
-                    'id_user' => Auth::user()->id,
+                    'user_id' => Auth::user()->id,
                     'acao' => $modificacoes
                 ));
 
@@ -151,7 +151,7 @@ class TipoExecucaoLivewire extends Component
 
         $texto = '';
 
-        $texto .= '<p class="my-2 text-gray-500 text-lg leading-relaxed">Descrição: <strong>'.$singleData->dsc_tipo_execucao.'</strong></p><p class="my-2 text-gray-500 text-lg font-semibold leading-relaxed text-red-600">Quer, realmente, excluir?</p>';
+        $texto .= '<p class="my-2 text-gray-500 text-lg leading-relaxed">Descrição: <strong>'.$singleData->dsc_tipo_execucao.'</strong></p><p class="my-2 text-gray-500 text-lg font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
 
         $this->mensagemDelete = $texto;
 
@@ -176,7 +176,7 @@ class TipoExecucaoLivewire extends Component
         $acao = Acoes::create(array(
             'table' => 'tab_tipo_execucao',
             'id_table' => $singleData->cod_tipo_execucao,
-            'id_user' => Auth::user()->id,
+            'user_id' => Auth::user()->id,
             'acao' => $modificacoes
         ));
 

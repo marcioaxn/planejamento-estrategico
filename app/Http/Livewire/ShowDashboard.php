@@ -24,6 +24,7 @@ class ShowDashboard extends Component
 
     use WithPagination;
 
+    public $existePei = false;
     public $pei = null;
     public $cod_pei = null;
     public $organization = null;
@@ -104,37 +105,37 @@ class ShowDashboard extends Component
 
         foreach ($organization as $result) {
 
-            $organizacoes[$result->cod_organizacao] = $result->nom_organizacao.$this->hierarquiaUnidade($result->cod_organizacao);
+            $organizacoes[$result->cod_organizacao] = $result->sgl_organizacao.' - '.$result->nom_organizacao.$this->hierarquiaUnidade($result->cod_organizacao);
 
             foreach($organizationChild as $resultChild1) {
 
                 if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
 
-                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao.$this->hierarquiaUnidade($resultChild1->cod_organizacao);
+                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->sgl_organizacao.' - '.$resultChild1->nom_organizacao.$this->hierarquiaUnidade($resultChild1->cod_organizacao);
 
                     foreach ($resultChild1->deshierarquia as $resultChild2) {
 
                         if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
 
-                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao.$this->hierarquiaUnidade($resultChild2->cod_organizacao);
+                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->sgl_organizacao.' - '.$resultChild2->nom_organizacao.$this->hierarquiaUnidade($resultChild2->cod_organizacao);
 
                             foreach ($resultChild2->deshierarquia as $resultChild3) {
 
                                 if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
 
-                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao.$this->hierarquiaUnidade($resultChild3->cod_organizacao);
+                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->sgl_organizacao.' - '.$resultChild3->nom_organizacao.$this->hierarquiaUnidade($resultChild3->cod_organizacao);
 
                                     foreach ($resultChild3->deshierarquia as $resultChild4) {
 
                                         if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
 
-                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao.$this->hierarquiaUnidade($resultChild4->cod_organizacao);
+                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->sgl_organizacao.' - '.$resultChild4->nom_organizacao.$this->hierarquiaUnidade($resultChild4->cod_organizacao);
 
                                             foreach ($resultChild4->deshierarquia as $resultChild5) {
 
                                                 if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
-                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao.$this->hierarquiaUnidade($resultChild5->cod_organizacao);
+                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->sgl_organizacao.' - '.$resultChild5->nom_organizacao.$this->hierarquiaUnidade($resultChild5->cod_organizacao);
 
                                                 }
 
@@ -158,25 +159,36 @@ class ShowDashboard extends Component
 
         }
 
-        $this->objetivoEstragico = $organizacoes;
+        $this->organization = $organizacoes;
 
-        $missaoVisaoValores = MissaoVisaoValores::where('cod_pei',$this->pei->cod_pei);
+        if($this->pei) {
 
-        if(isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
+            $this->existePei = true;
 
-            $missaoVisaoValores = $missaoVisaoValores->where('cod_organizacao',$this->cod_organizacao);
+            $missaoVisaoValores = MissaoVisaoValores::where('cod_pei',$this->pei->cod_pei);
+
+            if(isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
+
+                $missaoVisaoValores = $missaoVisaoValores->where('cod_organizacao',$this->cod_organizacao);
+
+            }
+
+            $this->missaoVisaoValores = $missaoVisaoValores->first();
+
+            $this->perspectiva = Perspectiva::where('cod_pei',$this->pei->cod_pei)
+            ->with('objetivosEstrategicos')
+            ->orderBy('num_nivel_hierarquico_apresentacao','desc')
+            ->get();
+
+            return view('livewire.show-dashboard',['ano' => $ano,'cod_organizacao' => $this->cod_organizacao]);
+
+        } else {
+
+            $this->existePei = false;
+
+            return view('livewire.show-dashboard',['ano' => $ano,'cod_organizacao' => $this->cod_organizacao]);
 
         }
-
-        $this->missaoVisaoValores = $missaoVisaoValores->first();
-
-        $this->perspectiva = Perspectiva::where('cod_pei',$this->pei->cod_pei)
-        ->with('objetivosEstrategicos')
-        ->orderBy('num_nivel_hierarquico_apresentacao','desc')
-        ->get();
-
-        return view('livewire.show-dashboard',['ano' => $ano,'cod_organizacao' => $this->cod_organizacao])
-        ->layout('layouts.app',['ano' => $ano]);
     }
 
     protected function hierarquiaUnidade($cod_organizacao) {

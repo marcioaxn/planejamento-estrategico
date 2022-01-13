@@ -70,7 +70,7 @@
                             <?php
 
                             $anos = [];
-                            for ($index = date('Y'); $index >= 2020; $index -= 1) {
+                            for ($index = date('Y')+1; $index >= 2020; $index -= 1) {
                                 $anos[$index * 1] = $index * 1;
                             }
 
@@ -116,6 +116,8 @@
 
                 <!-- Início do menu da Administração do Sistema -->
 
+                @auth
+
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
                     <div class="ml-3 relative">
                         <x-jet-dropdown align="right" width="48" :active="request()->routeIs('organization')">
@@ -137,25 +139,25 @@
                                     Selecione o tema de administração
                                 </div>
 
-                                <x-jet-dropdown-link href="{{ url($ano.'/organization/show') }}" :active="request()->routeIs('organization')">
+                                <x-jet-dropdown-link href="{{ url($ano.'/adm/organization') }}" :active="request()->routeIs('organization')">
                                     {{ __('Unidades da Organização') }}
                                 </x-jet-dropdown-link>
 
                                 <div class="border-t blue-gray-100"></div>
 
-                                <x-jet-dropdown-link href="{{ url($ano.'/pei/show') }}" :active="request()->routeIs('PlanejamentoEstrategicoIntegrado')">
+                                <x-jet-dropdown-link href="{{ url($ano.'/adm/pei') }}" :active="request()->routeIs('PlanejamentoEstrategicoIntegrado')">
                                     Planejamento Estratégico Integrado
                                 </x-jet-dropdown-link>
 
                                 <div class="border-t blue-gray-100"></div>
 
-                                <x-jet-dropdown-link href="{{ url($ano.'/missao-visao-valores/show') }}" :active="request()->routeIs('missao')">
+                                <x-jet-dropdown-link href="{{ url($ano.'/adm/missao-visao-valores') }}" :active="request()->routeIs('missao')">
                                     Missão, Visão e Valores
                                 </x-jet-dropdown-link>
 
                                 <div class="border-t blue-gray-100"></div>
 
-                                <x-jet-dropdown-link href="{{ url($ano.'/perspectiva') }}" :active="request()->routeIs('perspectiva')">
+                                <x-jet-dropdown-link href="{{ url($ano.'/adm/perspectiva') }}" :active="request()->routeIs('perspectiva')">
                                     {{ __('Perspective') }}
                                 </x-jet-dropdown-link>
 
@@ -171,12 +173,20 @@
                                     {{ __('Plano de Ação') }}
                                 </x-jet-dropdown-link>
 
+                                <div class="border-t blue-gray-100"></div>
+
+                                <x-jet-dropdown-link href="{{ url($ano.'/adm/indicador') }}" :active="request()->routeIs('indicadores')">
+                                    {{ __('Indicadores') }}
+                                </x-jet-dropdown-link>
+
                                 
                             </x-slot>
                         </x-jet-dropdown>
 
                     </div>
                 </div>
+
+                @endauth
 
                 <!-- Fim do menu da Administração do Sistema -->
 

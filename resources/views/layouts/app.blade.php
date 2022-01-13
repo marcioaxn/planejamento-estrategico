@@ -28,6 +28,16 @@
 
     @livewireStyles
 
+    <style type="text/css">
+        .arrow-up {
+            width: 0;
+            height: 0;
+            border-left: 75px solid transparent;
+            border-right: 275px solid transparent;
+            border-bottom: 17px solid rgba(229, 231, 235, var(--tw-bg-opacity));;
+        }
+    </style>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
