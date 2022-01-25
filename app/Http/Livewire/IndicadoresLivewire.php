@@ -42,14 +42,17 @@ class IndicadoresLivewire extends Component
     public $planoAcao = [];
     public $dsc_indicador = null;
     public $dsc_formula = null;
-    public $tiposIndicadores = ['+' => 'Quanto maior for o resultado melhor','-' => 'Quanto menor for o resultado melhor','=' => 'Quanto igual for o resultado melhor'];
-    public $dsc_unidade_medida = null;
-    public $unidadesMedida = ['Quantidade' => 'Quantidade','Porcentagem' => 'Porcentagem','Dinheiro' => 'Dinheiro R$ 0,00 (real)'];
 
+    public $unidadesMedida = ['Quantidade' => 'Quantidade','Porcentagem' => 'Porcentagem','Dinheiro' => 'Dinheiro R$ 0,00 (real)'];
+    public $dsc_unidade_medida = null;
+
+    public $bln_acumulado = null;
+
+    public $tiposIndicadores = ['+' => 'Quanto maior for o resultado melhor','-' => 'Quanto menor for o resultado melhor','=' => 'Quanto igual for o resultado melhor'];
     public $dsc_tipo = null;
+
     public $dsc_fonte = null;
     public $dsc_periodo_medicao = null;
-    public $bln_acumulado = null;
 
     public $vlr_meta = null;
 
@@ -1142,7 +1145,13 @@ class IndicadoresLivewire extends Component
                 // Início do trecho para gravação
 
                 $modificacoes = '';
+                $modificacoesLinhaBase = '';
+                $modificacoesMetaAno = '';
+                $modificacoesMetaMes = '';
                 $alteracao = array();
+                $alteracaoLinhaBase = array();
+                $alteracaoMetaAno = array();
+                $alteracaoMetaMes = array();
 
                 if(!$this->editarForm) {
 
@@ -1350,7 +1359,7 @@ class IndicadoresLivewire extends Component
 
                                 // Fim do trecho para Salvar a Meta Prevista Anual
 
-                                $modificacoes = $modificacoes . "<span class='mt-4 pt-4'>Meta Prevista Anual: <span class='text-green-800'><strong>".$anos." - ".$this->$column_name."</strong></span></span><br>";
+                                $modificacoes = $modificacoes . "<span class='mt-4 pt-4'>Inseriu o valor de <span class='text-green-800'><strong>".$this->$column_name."</strong></span> para a <strong>Meta Prevista Anual de ".$anos."</strong></span><br>";
 
                                 $contMetaAnualPreenchida = $contMetaAnualPreenchida + 1;
 
@@ -1429,6 +1438,410 @@ class IndicadoresLivewire extends Component
 
                     // Início do trecho para editar um indicador
 
+                    $editar = Indicador::with('linhaBase','metaAno','evolucaoIndicador')
+                    ->find($this->cod_indicador);
+
+                    $consultarPlanoDeAcao = PlanoAcao::find($editar->cod_plano_de_acao);
+
+                    $cabecalhoModificacoes = '';
+
+                    $cabecalhoModificacoes = 'Plano de Ação: <strong>'.$consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao.'. '.$consultarPlanoDeAcao->dsc_plano_de_acao.'</strong><br>Indicador: <strong>'.$editar->dsc_indicador.'</strong><br><br>';
+
+                    $estruturaTable = $this->estruturaTableParaEditar();
+
+                    foreach($estruturaTable as $result) {
+
+                        $column_name = $result->column_name;
+                        $data_type = $result->data_type;
+
+                        // Início da parte para igualar a formatação do campo de valor
+
+                        if($data_type === 'numeric') {
+
+                            $this->$column_name = converteValor('PTBR','MYSQL',$this->$column_name);
+
+                        }
+
+                        // Fim da parte para igualar a formatação do campo de valor
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados básicos do indicador
+
+                        if($editar->$column_name != $this->$column_name) {
+
+                            $alteracao[$column_name] = $this->$column_name;
+
+                            if($data_type === 'date') {
+
+                                $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.converterData('EN','PTBR',$editar->$column_name).' )</span> para <span style="color:#28a745;">( '.converterData('EN','PTBR',$this->$column_name).' )</span>;<br>';
+
+                                $audit = Audit::create(array(
+                                    'table' => 'tab_indicador',
+                                    'table_id' => $this->cod_plano_de_acao,
+                                    'column_name' => $column_name,
+                                    'data_type' => $data_type,
+                                    'ip' => $_SERVER['REMOTE_ADDR'],
+                                    'user_id' => Auth::user()->id,
+                                    'acao' => 'Editou',
+                                    'antes' => $editar->$column_name,
+                                    'depois' => $this->$column_name
+                                ));
+
+                            } elseif($data_type === 'numeric') {
+
+                                $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.converteValor('MYSQL','PTBR',$editar->$column_name).' )</span> para <span style="color:#28a745;">( '.converteValor('MYSQL','PTBR',$this->$column_name).' )</span>;<br>';
+
+                                $audit = Audit::create(array(
+                                    'table' => 'tab_indicador',
+                                    'table_id' => $this->cod_plano_de_acao,
+                                    'column_name' => $column_name,
+                                    'data_type' => $data_type,
+                                    'ip' => $_SERVER['REMOTE_ADDR'],
+                                    'user_id' => Auth::user()->id,
+                                    'acao' => 'Editou',
+                                    'antes' => $editar->$column_name,
+                                    'depois' => $this->$column_name
+                                ));
+
+                            } elseif($data_type === 'uuid') {
+
+                                if($column_name === 'cod_plano_de_acao') {
+
+                                    $consultarValorAntigo = PlanoAcao::find($editar->$column_name);
+
+                                    $consultarValorAtualizado = PlanoAcao::find($this->$column_name);
+
+                                    $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.$consultarValorAntigo->num_nivel_hierarquico_apresentacao.'. '.$consultarValorAntigo->dsc_plano_de_acao.' )</span> para <span style="color:#28a745;">( '.$consultarValorAtualizado->num_nivel_hierarquico_apresentacao.'. '.$consultarValorAtualizado->dsc_plano_de_acao.' )</span>;<br>';
+
+                                    $audit = Audit::create(array(
+                                        'table' => 'tab_indicador',
+                                        'table_id' => $this->cod_plano_de_acao,
+                                        'column_name' => $column_name,
+                                        'data_type' => $data_type,
+                                        'ip' => $_SERVER['REMOTE_ADDR'],
+                                        'user_id' => Auth::user()->id,
+                                        'acao' => 'Editou',
+                                        'antes' => $consultarValorAntigo->num_nivel_hierarquico_apresentacao.'. '.$consultarValorAntigo->dsc_plano_de_acao,
+                                        'depois' => $consultarValorAtualizado->num_nivel_hierarquico_apresentacao.'. '.$consultarValorAtualizado->dsc_plano_de_acao
+                                    ));
+
+                                }
+
+                            } else {
+
+                                $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.$editar->$column_name.' )</span> para <span style="color:#28a745;">( '.$this->$column_name.' )</span>;<br>';
+
+                            }
+
+                        }
+
+                        // Fim da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados básicos do indicador
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                    }
+
+                    // Início da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Linha de Base do indicador
+
+                    $this->num_linha_base_1 = converteValor('PTBR','MYSQL',$this->num_linha_base_1);
+
+                    $contLinhaBase = 1;
+
+                    foreach($editar->linhaBase as $linhaBase) {
+
+                        if($contLinhaBase == 1) {
+
+                            $editarLinhaBase = LinhaBase::find($linhaBase->cod_linha_base);
+
+                            if($linhaBase->num_ano != $this->num_ano_base_1) {
+
+                                $alteracaoLinhaBase['num_ano'] = $this->num_ano_base_1;
+
+                                $audit = Audit::create(array(
+                                    'table' => 'tab_linha_base_indicador',
+                                    'table_id' => $linhaBase->cod_linha_base,
+                                    'column_name' => 'num_ano',
+                                    'data_type' => 'smallint',
+                                    'ip' => $_SERVER['REMOTE_ADDR'],
+                                    'user_id' => Auth::user()->id,
+                                    'acao' => 'Editou',
+                                    'antes' => $linhaBase->num_ano,
+                                    'depois' => $this->num_ano_base_1
+                                ));
+
+                                $modificacoesLinhaBase = $modificacoesLinhaBase.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado('num_ano_base_1').'</b> de <span style="color:#CD3333;">( '.$linhaBase->num_ano.' )</span> para <span style="color:#28a745;">( '.$this->num_ano_base_1.' )</span>;<br>';
+
+                            }
+
+                            if($linhaBase->num_linha_base != $this->num_linha_base_1) {
+
+                                $alteracaoLinhaBase['num_linha_base'] = $this->num_linha_base_1;
+
+                                $audit = Audit::create(array(
+                                    'table' => 'tab_linha_base_indicador',
+                                    'table_id' => $linhaBase->cod_linha_base,
+                                    'column_name' => 'num_linha_base',
+                                    'data_type' => 'numeric',
+                                    'ip' => $_SERVER['REMOTE_ADDR'],
+                                    'user_id' => Auth::user()->id,
+                                    'acao' => 'Editou',
+                                    'antes' => $linhaBase->num_linha_base,
+                                    'depois' => $this->num_linha_base_1
+                                ));
+
+                                $modificacoesLinhaBase = $modificacoesLinhaBase.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado('num_ano_base_1').'</b> de <span style="color:#CD3333;">( '.$linhaBase->num_linha_base.' )</span> para <span style="color:#28a745;">( '.formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$this->num_linha_base_1).' )</span>;<br>';
+
+                            }
+
+                            if(isset($modificacoesLinhaBase) && !is_null($modificacoesLinhaBase) && $modificacoesLinhaBase != '') {
+
+                                $editarLinhaBase->update($alteracaoLinhaBase);
+
+                            }
+
+                        }
+
+                        $contLinhaBase = $contLinhaBase + 1;
+
+                    }
+
+                    // Fim da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Linha de Base do indicador
+
+                    // --- x --- x --- x --- x --- x --- x ---
+
+                    // Início da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Meta Prevista Anual do indicador
+
+                    for($anoLoop=($this->anoInicioDoPeiSelecionado)*1;$anoLoop<=($this->anoConclusaoDoPeiSelecionado)*1;$anoLoop++) {
+
+                        $column_name = '';
+
+                        $column_name = 'metaAno_'.$anoLoop;
+
+                        $consultar = MetaAno::where('cod_indicador',$this->cod_indicador)
+                        ->where('num_ano',$anoLoop)
+                        ->first();
+
+                        if($consultar) {
+
+                            // Início para verificar se houve modificação da Meta Prevista Anual
+
+                            $consultar->meta = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$consultar->meta);
+
+                            $consultar->meta = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$consultar->meta);
+
+                            if(isset($this->$column_name) && !is_null($this->$column_name) && $this->$column_name != '') {
+
+                                $this->$column_name = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->$column_name);
+
+                            }
+
+                            if($consultar->meta != $this->$column_name) {
+
+                                $editarMetaAno = MetaAno::find($consultar->cod_meta_por_ano);
+
+                                if(isset($this->$column_name) && !is_null($this->$column_name) && $this->$column_name != '') {
+
+                                    $this->$column_name = $this->$column_name;
+
+                                } else {
+
+                                    $this->$column_name = NULL;
+
+                                }
+
+                                $alteracaoMetaAno['meta'] = $this->$column_name;
+
+                                $audit = Audit::create(array(
+                                    'table' => 'tab_meta_por_ano',
+                                    'table_id' => $consultar->cod_meta_por_ano,
+                                    'column_name' => 'meta',
+                                    'data_type' => 'numeric',
+                                    'ip' => $_SERVER['REMOTE_ADDR'],
+                                    'user_id' => Auth::user()->id,
+                                    'acao' => 'Editou',
+                                    'antes' => formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$consultar->meta),
+                                    'depois' => $this->$column_name
+                                ));
+
+                                $modificacoesMetaAno = $modificacoesMetaAno.'Alterou o(a) <b>Meta prevista do ano de '.$anoLoop.'</b> de <span style="color:#CD3333;">( '.formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$consultar->meta).' )</span> para <span style="color:#28a745;">( '.formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$this->$column_name).' )</span>;<br>';
+
+                                if(isset($modificacoesMetaAno) && !is_null($modificacoesMetaAno) && $modificacoesMetaAno != '') {
+
+                                    $editarMetaAno->update($alteracaoMetaAno);
+
+                                }
+
+                            }
+
+                            // Fim para verificar se houve modificação da Meta Prevista Anual
+
+                        } else {
+
+                            if(isset($this->$column_name) && !is_null($this->$column_name) && $this->$column_name != '') {
+
+                                $saveMetaAno = new MetaAno;
+
+                                $saveMetaAno->cod_indicador = $this->cod_indicador;
+                                $saveMetaAno->num_ano = $anoLoop;
+                                $saveMetaAno->meta = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->$column_name);
+
+                                // Início do trecho para Salvar a nova Meta Prevista Anual
+
+                                $saveMetaAno->save();
+
+                                $audit = Audit::create(array(
+                                    'table' => 'tab_meta_por_ano',
+                                    'table_id' => $saveMetaAno->cod_meta_por_ano,
+                                    'column_name' => 'meta',
+                                    'data_type' => 'numeric',
+                                    'ip' => $_SERVER['REMOTE_ADDR'],
+                                    'user_id' => Auth::user()->id,
+                                    'acao' => 'Editou',
+                                    'antes' => '',
+                                    'depois' => $this->$column_name
+                                ));
+
+                                // Fim do trecho para Salvar a nova Meta Prevista Anual
+
+                                $modificacoesMetaAno = $modificacoesMetaAno . "<span class='mt-4 pt-4'>Inseriu o valor de <span class='text-green-800'><strong>".$this->$column_name."</strong></span> para a <strong>Meta Prevista Anual de ".$anoLoop."</strong></span><br>";
+
+                            }
+
+                        }
+
+                    }
+
+                    // Fim da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Meta Prevista Anual do indicador
+
+                    // --- x --- x --- x --- x --- x --- x ---
+
+                    // Início da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Meta Prevista Mensal (evolucao_indicador) do indicador
+
+                    for($anoLoop=($this->anoInicioDoPeiSelecionado)*1;$anoLoop<=($this->anoConclusaoDoPeiSelecionado)*1;$anoLoop++) {
+
+                        for ($contMes=1;$contMes<=12;$contMes++) {
+
+                            $column_name_mes = '';
+
+                            $column_name_mes = 'metaMes_'.$contMes.'_'.$anoLoop;
+
+                            $consultar = EvolucaoIndicador::where('cod_indicador',$this->cod_indicador)
+                            ->where('num_mes',$contMes)
+                            ->where('num_ano',$anoLoop)
+                            ->first();
+
+                            if($consultar) {
+
+                                // Início para verificar se houve modificação da Meta Prevista Mensal
+
+                                $consultar->vlr_previsto = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$consultar->vlr_previsto);
+
+                                $consultar->vlr_previsto = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$consultar->vlr_previsto);
+
+                                if(isset($this->$column_name_mes) && !is_null($this->$column_name_mes) && $this->$column_name_mes != '') {
+
+                                    $this->$column_name_mes = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->$column_name_mes);
+
+                                }
+
+                                if($consultar->vlr_previsto != $this->$column_name_mes) {
+
+                                    $editarMetaMes = EvolucaoIndicador::find($consultar->cod_evolucao_indicador);
+
+                                    $alteracaoMetaMes['vlr_previsto'] = $this->$column_name_mes;
+
+                                    $audit = Audit::create(array(
+                                        'table' => 'tab_evolucao_indicador',
+                                        'table_id' => $consultar->cod_evolucao_indicador,
+                                        'column_name' => 'vlr_previsto',
+                                        'data_type' => 'numeric',
+                                        'ip' => $_SERVER['REMOTE_ADDR'],
+                                        'user_id' => Auth::user()->id,
+                                        'acao' => 'Editou',
+                                        'antes' => formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$consultar->vlr_previsto),
+                                        'depois' => $this->$column_name_mes
+                                    ));
+
+                                    $modificacoesMetaMes = $modificacoesMetaMes.'Alterou o(a) <b>Meta prevista de '.mesNumeralParaExtenso($contMes).'/'.$anoLoop.'</b> de <span style="color:#CD3333;">( '.formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$consultar->vlr_previsto).' )</span> para <span style="color:#28a745;">( '.formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$this->$column_name_mes).' )</span>;<br>';
+
+                                    if(isset($modificacoesMetaMes) && !is_null($modificacoesMetaMes) && $modificacoesMetaMes != '') {
+
+                                        $editarMetaMes->update($alteracaoMetaMes);
+
+                                    }
+
+                                }
+
+                                // Fim para verificar se houve modificação da Meta Prevista Mensal
+
+                            } else {
+
+                                if(isset($this->$column_name_mes) && !is_null($this->$column_name_mes) && $this->$column_name_mes != '') {
+
+                                    $saveMetaMensal = new EvolucaoIndicador;
+
+                                    $saveMetaMensal->cod_indicador = $this->cod_indicador;
+                                    $saveMetaMensal->num_ano = $anoLoop;
+                                    $saveMetaMensal->num_mes = $contMes;
+
+                                    $saveMetaMensal->vlr_previsto = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->$column_name_mes);
+
+                                    $modificacoesMetaMes = $modificacoesMetaMes.'Inseriu o valor de <span style="color:#28a745;">( '.formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$this->$column_name_mes).' )</span> para o(a) <b>Meta prevista de '.mesNumeralParaExtenso($contMes).'/'.$anoLoop.'</b>;<br>';
+
+                                    // Início do trecho para Salvar a nova Meta Prevista Mensal
+
+                                    $saveMetaMensal->save();
+
+                                    $audit = Audit::create(array(
+                                        'table' => 'tab_evolucao_indicador',
+                                        'table_id' => $saveMetaMensal->cod_evolucao_indicador,
+                                        'column_name' => 'vlr_previsto',
+                                        'data_type' => 'numeric',
+                                        'ip' => $_SERVER['REMOTE_ADDR'],
+                                        'user_id' => Auth::user()->id,
+                                        'acao' => 'Editou',
+                                        'antes' => '',
+                                        'depois' => $this->$column_name_mes
+                                    ));
+
+                                    // Fim do trecho para Salvar a nova Meta Prevista Mensal
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    // Fim da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Meta Prevista Mensal (evolucao_indicador) do indicador
+
+                    // --- x --- x --- x --- x --- x --- x ---
+
+                    if(isset($modificacoes) && !is_null($modificacoes) && $modificacoes != '' || isset($modificacoesLinhaBase) && !is_null($modificacoesLinhaBase) && $modificacoesLinhaBase != '' || isset($modificacoesMetaAno) && !is_null($modificacoesMetaAno) && $modificacoesMetaAno != '' || isset($modificacoesMetaMes) && !is_null($modificacoesMetaMes) && $modificacoesMetaMes != '') {
+
+                        $editar->update($alteracao);
+
+                        $acao = Acoes::create(array(
+                            'table' => 'tab_indicador',
+                            'table_id' => $this->cod_plano_de_acao,
+                            'user_id' => Auth::user()->id,
+                            'acao' => $modificacoes.$modificacoesLinhaBase.$modificacoesMetaAno.$modificacoesMetaMes
+                        ));
+
+                        $this->showModalResultadoEdicao = true;
+
+                        $this->mensagemResultadoEdicao = $cabecalhoModificacoes.$modificacoes.$modificacoesLinhaBase.$modificacoesMetaAno.$modificacoesMetaMes;
+
+                    } else {
+
+                        $this->showModalResultadoEdicao = true;
+
+                        $this->mensagemResultadoEdicao = $cabecalhoModificacoes.'Nada foi feito, por não ter nenhuma modificação nesse indicador desse Plano de Ação.';
+
+                    }
+
                     // Fim do trecho para editar um indicador
 
                 }
@@ -1445,6 +1858,100 @@ class IndicadoresLivewire extends Component
             }
 
         }
+
+    }
+
+    public function editForm($cod_indicador = '') {
+
+        $singleData = Indicador::with('linhaBase','metaAno','evolucaoIndicador')
+        ->find($cod_indicador);
+
+        $this->cod_indicador = $singleData->cod_indicador;
+
+        $consultarPlanoDeAcao = PlanoAcao::find($singleData->cod_plano_de_acao);
+
+        $consultarObjetivoEstrategico = ObjetivoEstrategico::find($consultarPlanoDeAcao->cod_objetivo_estrategico);
+
+        $consultarPerspectiva = Perspectiva::find($consultarObjetivoEstrategico->cod_perspectiva);
+
+        $this->cod_pei = $consultarPerspectiva->cod_pei;
+
+        $consultarPei = Pei::select('num_ano_inicio_pei','num_ano_fim_pei')
+        ->find($this->cod_pei);
+
+        $this->anoInicioDoPeiSelecionado = $consultarPei->num_ano_inicio_pei;
+
+        $this->anoConclusaoDoPeiSelecionado = $consultarPei->num_ano_fim_pei;
+
+        
+        $this->cod_perspectiva = $consultarObjetivoEstrategico->cod_perspectiva;
+        $this->cod_objetivo_estrategico = $consultarObjetivoEstrategico->cod_objetivo_estrategico;
+        $this->cod_plano_de_acao = $singleData->cod_plano_de_acao;
+
+        $this->dsc_indicador = $singleData->dsc_indicador;
+        $this->dsc_formula = $singleData->dsc_formula;
+        $this->dsc_unidade_medida = $singleData->dsc_unidade_medida;
+        $this->dsc_tipo = $singleData->dsc_tipo;
+        $this->bln_acumulado = $singleData->bln_acumulado;
+
+        $this->dsc_fonte = $singleData->dsc_fonte;
+        $this->dsc_periodo_medicao = $singleData->dsc_periodo_medicao;
+
+        foreach($singleData->linhaBase as $linhaBase) {
+
+            $this->num_ano_base_1 = $linhaBase->num_ano;
+            $this->num_linha_base_1 = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$linhaBase->num_linha_base);
+
+        }
+
+        foreach($singleData->metaAno as $metaAno) {
+
+            for($anoLoop=($this->anoInicioDoPeiSelecionado)*1;$anoLoop<=($this->anoConclusaoDoPeiSelecionado)*1;$anoLoop++) {
+
+                $column_name = '';
+
+                $column_name = 'metaAno_'.$anoLoop;
+
+                // public $metaAno_2020 = null;
+
+                if($metaAno->num_ano == $anoLoop) {
+
+                    $this->$column_name = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$metaAno->meta);
+
+                }
+
+            }
+
+        }
+
+        foreach($singleData->evolucaoIndicador as $metaMes) {
+
+            for($anoLoop=($this->anoInicioDoPeiSelecionado)*1;$anoLoop<=($this->anoConclusaoDoPeiSelecionado)*1;$anoLoop++) {
+
+                for ($contMes=1;$contMes<=12;$contMes++) {
+
+                    $column_name_mes = '';
+
+                    $column_name_mes = 'metaMes_'.$contMes.'_'.$anoLoop;
+
+                    // public $metaMes_1_2020 = null;
+
+                    if($metaMes->num_ano == $anoLoop && $metaMes->num_mes == $contMes) {
+
+                        $this->$column_name_mes = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$metaMes->vlr_previsto);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        $this->abrirFecharForm = 'block';
+        $this->iconAbrirFechar = 'fas fa-minus text-xs';
+
+        $this->editarForm = true;
 
     }
 
@@ -1504,7 +2011,7 @@ class IndicadoresLivewire extends Component
 
     public function cancelar() {
 
-        $this->cod_indicador = null;
+        $this->zerarVariaveis();
         
         $this->editarForm = false;
 
@@ -2452,7 +2959,7 @@ class IndicadoresLivewire extends Component
             WHERE
             table_schema = 'pei'
             AND table_name = 'tab_indicador' 
-            AND column_name NOT IN ('cod_indicador','created_at','updated_at','deleted_at');");
+            AND column_name NOT IN ('cod_indicador','num_peso','created_at','updated_at','deleted_at');");
 
         return $estrutura;
 

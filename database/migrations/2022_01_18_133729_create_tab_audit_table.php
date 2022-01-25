@@ -12,8 +12,8 @@ class CreateTabAuditTable extends Migration
         Schema::create('tab_audit', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('acao')->nullable(false);
-            $table->text('antes')->nullable(false);
-            $table->text('depois')->nullable(false);
+            $table->text('antes')->nullable(true);
+            $table->text('depois')->nullable(true);
             $table->string('table')->nullable(false);
             $table->string('column_name')->nullable(false);
             $table->string('data_type')->nullable(false);

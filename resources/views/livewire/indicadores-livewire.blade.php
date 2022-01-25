@@ -493,30 +493,6 @@
 
                     </script>
 
-                    <div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3">
-
-
-
-                    </div>
-
-                    <div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3">
-
-
-
-                    </div>
-
-                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-4">
-
-
-
-                    </div>
-
-                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-4">
-
-
-
-                    </div>
-
                     <div class="w-full md:w-1/1 px-3 mt-6 mb-3 md:mb-0 pt-1 text-right">
 
                         @if($this->editarForm == true)
@@ -684,5 +660,77 @@
             setInterval(function(){ window.livewire.emit('alive'); }, 1800000);
         });
     </script>
+
+    <?php
+
+    if($this->editarForm && isset($this->dsc_periodo_medicao) && !is_null($this->dsc_periodo_medicao) && $this->dsc_periodo_medicao != '') {
+
+        for($ano = $this->anoInicioDoPeiSelecionado;$ano<=$this->anoConclusaoDoPeiSelecionado;$ano++) {
+
+            $column_name = '';
+
+            $column_name = 'metaAno_'.$ano;
+
+            if(isset($this->$column_name) && !is_null($this->$column_name) && $this->$column_name != '') {
+
+                ?>
+                <script type="text/javascript">
+
+                    var unidadeMedida = '<?php print($this->dsc_unidade_medida) ?>';
+
+                    if(unidadeMedida == 'Quantidade') {
+
+                        $('#<?php print($column_name) ?>').mask('000.000.000.000.000',{reverse: true, selectOnFocus: true});
+
+                    } else if(unidadeMedida == 'Porcentagem') {
+
+                        $('#<?php print($column_name) ?>').mask('000,00',{reverse: true, selectOnFocus: true});
+
+                    } else if(unidadeMedida == 'Dinheiro') {
+
+                        $('#<?php print($column_name) ?>').mask('000.000.000.000.000,00',{reverse: true, selectOnFocus: true});
+
+                    }
+
+                </script>
+                <?php
+
+            }
+
+            for($contMes=1;$contMes<=12;$contMes++) {
+
+                $column_name_mes = '';
+
+                $column_name_mes = 'metaMes_'.$contMes.'_'.$ano;
+
+                ?>
+                <script type="text/javascript">
+
+                    var unidadeMedida = '<?php print($this->dsc_unidade_medida) ?>';
+
+                    if(unidadeMedida == 'Quantidade') {
+
+                        $('#<?php print($column_name_mes) ?>').mask('000.000.000.000.000',{reverse: true, selectOnFocus: true});
+
+                    } else if(unidadeMedida == 'Porcentagem') {
+
+                        $('#<?php print($column_name_mes) ?>').mask('000,00',{reverse: true, selectOnFocus: true});
+
+                    } else if(unidadeMedida == 'Dinheiro') {
+
+                        $('#<?php print($column_name_mes) ?>').mask('000.000.000.000.000,00',{reverse: true, selectOnFocus: true});
+
+                    }
+
+                </script>
+                <?php
+
+            }
+
+        }
+
+    }
+
+    ?>
 
 </div>
