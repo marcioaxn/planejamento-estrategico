@@ -10,7 +10,7 @@ class CreateAcoesTable extends Migration
     {
         Schema::create('acoes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('id_table')->nullable(false);
+            $table->string('table_id')->nullable(false);
             $table->foreignUuid('user_id')->references('id')->on('users');
             $table->string('table')->nullable(false);
             $table->text('acao')->nullable(false);

@@ -13,6 +13,7 @@ use App\Models\Organization;
 use App\Models\User;
 use App\Models\RelUsersTabOrganizacoesTabPerfilAcesso;
 use App\Models\Acoes;
+use App\Models\Audit;
 use DB;
 Use Auth;
 use Illuminate\Support\Str;
@@ -236,7 +237,7 @@ class PlanoAcaoLivewire extends Component
 
             $acao = Acoes::create(array(
                 'table' => 'tab_plano_de_acao',
-                'id_table' => $save->cod_plano_de_acao,
+                'table_id' => $save->cod_plano_de_acao,
                 'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));
@@ -303,6 +304,18 @@ class PlanoAcaoLivewire extends Component
 
                     $alteracao[$column_name] = $this->$column_name;
 
+                    $audit = Audit::create(array(
+                        'table' => 'tab_plano_de_acao',
+                        'table_id' => $this->cod_plano_de_acao,
+                        'column_name' => $column_name,
+                        'data_type' => $data_type,
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou',
+                        'antes' => $editar->$column_name,
+                        'depois' => $this->$column_name
+                    ));
+
                     if($data_type === 'date') {
 
                         $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.converterData('EN','PTBR',$editar->$column_name).' )</span> para <span style="color:#28a745;">( '.converterData('EN','PTBR',$this->$column_name).' )</span>;<br>';
@@ -367,6 +380,18 @@ class PlanoAcaoLivewire extends Component
 
                     $consultarNovoServidorResponsavel = User::find($this->user_id_responsavel);
 
+                    $audit = Audit::create(array(
+                        'table' => 'tab_plano_de_acao',
+                        'table_id' => $this->cod_plano_de_acao,
+                        'column_name' => 'user_id_responsavel',
+                        'data_type' => 'uuid',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou o(a) servidor(a) responsável',
+                        'antes' => $servidorResponsavelAntigo,
+                        'depois' => $consultarNovoServidorResponsavel->name
+                    ));
+
                     // Início excluir o(a) atual servidor(a) responsável
 
                     $consultarRelUsersTabOrganizacoesTabPerfilAcesso = RelUsersTabOrganizacoesTabPerfilAcesso::where('cod_plano_de_acao',$this->cod_plano_de_acao)
@@ -425,6 +450,18 @@ class PlanoAcaoLivewire extends Component
 
                     $consultarNovoServidorSubstituto = User::find($this->user_id_substituto);
 
+                    $audit = Audit::create(array(
+                        'table' => 'tab_plano_de_acao',
+                        'table_id' => $this->cod_plano_de_acao,
+                        'column_name' => 'user_id_substituto',
+                        'data_type' => 'uuid',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou o(a) servidor(a) substituo',
+                        'antes' => $servidorSubstitutoAntigo,
+                        'depois' => $consultarNovoServidorSubstituto->name
+                    ));
+
                     // Início excluir o(a) atual servidor(a) substituto(a)
 
                     $consultarRelUsersTabOrganizacoesTabPerfilAcesso = RelUsersTabOrganizacoesTabPerfilAcesso::where('cod_plano_de_acao',$this->cod_plano_de_acao)
@@ -471,7 +508,7 @@ class PlanoAcaoLivewire extends Component
 
                 $acao = Acoes::create(array(
                     'table' => 'tab_plano_de_acao',
-                    'id_table' => $this->cod_plano_de_acao,
+                    'table_id' => $this->cod_plano_de_acao,
                     'user_id' => Auth::user()->id,
                     'acao' => $modificacoes
                 ));
@@ -713,7 +750,7 @@ class PlanoAcaoLivewire extends Component
 
         $acao = Acoes::create(array(
             'table' => 'tab_plano_de_acao',
-            'id_table' => $this->cod_plano_de_acao,
+            'table_id' => $this->cod_plano_de_acao,
             'user_id' => Auth::user()->id,
             'acao' => $texto
         ));

@@ -52,9 +52,15 @@ class PlanoAcao extends Model
         ->whereNull('rel_users_tab_organizacoes_tab_perfil_acesso.deleted_at');
     }
 
+    public function indicadores() {
+
+        return $this->hasMany(Indicador::class, 'cod_plano_de_acao');
+
+    }
+
     public function acoesRealizadas() {
 
-        return $this->hasMany(Acoes::class, 'id_table')
+        return $this->hasMany(Acoes::class, 'table_id')
         ->whereIn('table',['tab_plano_de_acao'])
         ->orderBy('created_at','desc');
 

@@ -22,7 +22,7 @@ class LinhaBase extends Model
 
     public function acoesRealizadas() {
 
-        return $this->hasMany(Acoes::class, 'id_table')
+        return $this->hasMany(Acoes::class, 'table_id')
         ->whereIn('table',['tab_linha_base_indicador'])
         ->orderBy('created_at','desc');
 

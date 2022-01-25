@@ -6,12 +6,16 @@ use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Session;
 
 class Perspectiva extends Model
 {
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'pei.tab_perspectiva';
 
     protected $primaryKey = 'cod_perspectiva';
@@ -20,15 +24,23 @@ class Perspectiva extends Model
 
     protected $guarded = array();
 
-    public function planejamentoEstrategicoIntegrado() {
-
-        return $this->belongsTo(Pei::class, 'cod_pei');
-
-    }
-
     public function objetivosEstrategicos() {
-        return $this->hasMany(ObjetivoEstrategico::class,'cod_perspectiva')
-        ->orderBy('num_nivel_hierarquico_apresentacao');
+
+        if(Session::has('cod_objetivo_estrategico')) {
+
+            $cod_objetivo_estrategico = Session::get('cod_objetivo_estrategico');
+
+            return $this->hasMany(ObjetivoEstrategico::class,'cod_perspectiva')
+            ->where('cod_objetivo_estrategico','=',$cod_objetivo_estrategico)
+            ->orderBy('num_nivel_hierarquico_apresentacao');
+
+        } else {
+
+            return $this->hasMany(ObjetivoEstrategico::class,'cod_perspectiva')
+            ->orderBy('num_nivel_hierarquico_apresentacao');
+
+        }
+
     }
     
 }

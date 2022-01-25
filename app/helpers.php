@@ -2708,3 +2708,65 @@ function ip_details($ip) {
 
   return $icon;
 }
+
+function tipoPolaridade($polaridaade = '') {
+
+    switch ($polaridaade) {
+        case '+':
+        $polaridaadePorExtenso = 'Quanto maior for o resultado melhor';
+        break;
+
+        case '-':
+        $polaridaadePorExtenso = 'Quanto menor for o resultado melhor';
+        break;
+
+        case '=':
+        $polaridaadePorExtenso = 'Quanto igual for o resultado melhor';
+        break;
+        
+        default:
+        $polaridaadePorExtenso = $polaridaade;
+        break;
+    }
+
+    return $polaridaadePorExtenso;
+
+}
+
+function formatarValorConformeUnidadeMedida($unidadeMedida = '',$de = '', $para = '',$valor = '') {
+
+    if(isset($unidadeMedida) && !is_null($unidadeMedida) && $unidadeMedida != '' && isset($de) && !is_null($de) && $de != '' && isset($para) && !is_null($para) && $para != '' && isset($valor) && !is_null($valor) && $valor != '' && $valor >= 0) {
+
+        if($unidadeMedida === 'Quantidade') {
+
+            if($de === 'PTBR' && $para === 'MYSQL') {
+
+                $valor = converteValorSemCasasDecimais('PTBR','MYSQL',$valor);
+
+            } elseif($de === 'MYSQL' && $para === 'PTBR') {
+
+                $valor = converteValorSemCasasDecimais('MYSQL','PTBR',$valor);
+
+            }
+
+        }
+
+        if($unidadeMedida === 'Porcentagem' || $unidadeMedida === 'Dinheiro') {
+
+            if($de === 'PTBR' && $para === 'MYSQL') {
+
+                $valor = converteValor('PTBR','MYSQL',$valor);
+
+            } elseif($de === 'MYSQL' && $para === 'PTBR') {
+
+                $valor = converteValor('MYSQL','PTBR',$valor);
+
+            }
+
+        }
+
+    }
+
+    return $valor;
+
+}

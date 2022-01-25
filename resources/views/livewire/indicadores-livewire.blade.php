@@ -122,7 +122,7 @@
 
                     </div>
 
-                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-6" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="dsc_unidade_medida" value="Unidade de Medida do Indicador" />
@@ -186,45 +186,6 @@
 
                     </script>
 
-                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
-
-                        <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_tipo" value="Tipo de Análise do Indicador (Polaridade)" />
-                            {!! Form::select('dsc_tipo', $tiposIndicadores, null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'dsc_tipo']) !!}
-                            <x-jet-input-error for="dsc_tipo" class="mt-2" />
-                        </div>
-
-                    </div>
-
-                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-5" style="display: {!! $this->habilitarCampoInserirMetas !!};">
-
-                        <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_fonte" value="Fonte" />
-                            {!! Form::textarea('dsc_fonte',null,['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2','id' => 'dsc_fonte', 'placeholder' => 'Escreva a fonte desse indicador', 'rows' => 2, 'style' => 'width: 100%', 'wire:model' => 'dsc_fonte']) !!}
-
-                            <x-jet-input-error for="dsc_fonte" class="mt-2" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-6" style="display: {!! $this->habilitarCampoInserirMetas !!};">
-
-                        <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_periodo_medicao" value="Período de medição" />
-                            {!! Form::select('dsc_periodo_medicao', ['Mensal' => 'Mensal','Bimestral' => 'Bimestral','Trimestral' => 'Trimestral','Semestral' => 'Semestral','Anual' => 'Anual'], null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 'id' => 'dsc_periodo_medicao', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'dsc_periodo_medicao']) !!}
-                            <div class="p-2 text-gray-500 text-xs md:list-disc">
-
-                                
-
-                            </div>
-
-                            <x-jet-input-error for="dsc_periodo_medicao" class="mt-2" />
-
-                        </div>
-
-                    </div>
-
                     <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-6" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
@@ -242,17 +203,56 @@
 
                     </div>
 
+                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-6" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_tipo" value="Tipo de Análise do Indicador (Polaridade)" />
+                            {!! Form::select('dsc_tipo', $tiposIndicadores, null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'dsc_tipo']) !!}
+                            <x-jet-input-error for="dsc_tipo" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_fonte" value="Fonte" />
+                            {!! Form::textarea('dsc_fonte',null,['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2','id' => 'dsc_fonte', 'placeholder' => 'Escreva a fonte desse indicador', 'rows' => 2, 'style' => 'width: 100%', 'wire:model' => 'dsc_fonte','required' => 'required']) !!}
+
+                            <x-jet-input-error for="dsc_fonte" class="mt-2" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_periodo_medicao" value="Período de medição" />
+                            {!! Form::select('dsc_periodo_medicao', ['Mensal' => 'Mensal','Bimestral' => 'Bimestral','Trimestral' => 'Trimestral','Semestral' => 'Semestral','Anual' => 'Anual'], null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 'id' => 'dsc_periodo_medicao', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'dsc_periodo_medicao']) !!}
+                            <div class="p-2 text-gray-500 text-xs md:list-disc">
+
+
+
+                            </div>
+
+                            <x-jet-input-error for="dsc_periodo_medicao" class="mt-2" />
+
+                        </div>
+
+                    </div>
+
                     <div class="w-full md:w-1/1 px-3 mb-1 md:mb-0 pt-5" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <p class="break-words text-sm subpixel-antialiased tracking-wide">
-                            Na sequência estão os campos para o preenchimento da Linha de Base e da Meta prevista desse Indicador. Os campos só serão liberados para preenchimento após selecionar um dos itens do campo (Unidade de Medida do Indicador). No caso da Meta anual não é necessário preencher todos os anos correspondente ao PEI, mas é necessário preencher ao menos um dos campos da Meta Anual e em seguida o(s) valor(es) da Meta Mensal.<br><br>Esse modo de preecnhimento facilita para os casos onde a Meta tenha início em um determinado ano e a conclusão em um outro. Por exemplo, uma meta de percentual de 100% dividida em quatro partes iguais da seguinte forma: 25% para novembro/2021, 25% para dezembro/2021, 25% para janeiro/2022 e 25% para fevereiro/2022. Teremos então 50% da meta apurada em 2021 e os outros 50% em 2022, totalizando 100%.
+                            Na sequência estão os campos para o preenchimento da Linha de Base e da Meta prevista desse Indicador. Os campos só serão liberados para preenchimento após selecionar um dos itens do campo (Unidade de Medida do Indicador) e do campo (Esse indicador terá o resultado acumulado?). No caso da Meta anual não é necessário preencher todos os anos correspondente ao PEI, mas é necessário preencher ao menos um dos campos da Meta Anual e em seguida o(s) valor(es) da Meta Mensal.<br><br>Esse modo de preecnhimento facilita para os casos onde a Meta tenha início em um determinado ano e a conclusão em um outro. Por exemplo, uma meta de percentual de 100% dividida em quatro partes iguais da seguinte forma: 25% para novembro/2021, 25% para dezembro/2021, 25% para janeiro/2022 e 25% para fevereiro/2022. Teremos então 50% da meta apurada em 2021 e os outros 50% em 2022, totalizando 100%.
                         </p>
 
                     </div>
 
                     <div class="w-full md:w-1/1 px-3 mb-0 md:mb-0 pt-6" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
-                        <x-jet-labelopcional for="dsc_tipo" value="Linha de Base" />
+                        <x-jet-labelpreenchimentoobrigatoriio for="dsc_tipo" value="Linha de Base" />
 
                     </div>
 
@@ -264,73 +264,19 @@
                         }
                     </style>
 
-                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-0" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-0" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="flex w-full rounded-md shadow-sm">
 
-                            <?php
-
-                            $require1 = '';
-
-                            if($this->require_linha_base_1) {
-
-                                $require1 = 'required';
-
-                            }
-
-                            ?>
-
-                            {!! Form::select('num_ano_base_1', $this->anosLinhaBase, null, ['class' => $this->inputAnoLinhaBaseClass, 'placeholder' => 'Ano da linha base', 'autocomplete' => 'off', 'wire:model' => 'num_ano_base_1']) !!}
-                            {!! Form::text('num_linha_base_1',null,['class' => $this->inputValorLinhaBaseClass,'id' => 'num_linha_base_1', 'placeholder' => 'Linha de base', 'wire:model' => 'num_linha_base_1', 'autocomplete' => 'off',$require1 => $require1]) !!}
+                            {!! Form::select('num_ano_base_1', $this->anosLinhaBase, null, ['class' => $this->inputAnoLinhaBaseClass, 'placeholder' => 'Ano da linha base', 'autocomplete' => 'off', 'wire:model' => 'num_ano_base_1','required' => 'required']) !!}
+                            {!! Form::text('num_linha_base_1',null,['class' => $this->inputValorLinhaBaseClass,'id' => 'num_linha_base_1', 'placeholder' => 'Linha de base', 'wire:model' => 'num_linha_base_1', 'autocomplete' => 'off','required' => 'required']) !!}
 
                         </div>
 
                     </div>
 
-                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-0" style="display: {!! $this->habilitarCampoInserirMetas !!};">
-
-                        <div class="flex w-full rounded-md shadow-sm">
-
-                            <?php
-
-                            $require2 = '';
-
-                            if($this->require_linha_base_2) {
-
-                                $require2 = 'required';
-
-                            }
-
-                            ?>
-
-                            {!! Form::select('num_ano_base_2', $this->anosLinhaBase, null, ['class' => $this->inputAnoLinhaBaseClass, 'placeholder' => 'Ano da linha base', 'autocomplete' => 'off', 'wire:model' => 'num_ano_base_2']) !!}
-                            {!! Form::text('num_linha_base_2',null,['class' => $this->inputValorLinhaBaseClass,'id' => 'num_linha_base_2', 'placeholder' => 'Linha de base', 'wire:model' => 'num_linha_base_2', 'autocomplete' => 'off',$require2 => $require2]) !!}
-
-                        </div>
-
-                    </div>
-
-                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-0" style="display: {!! $this->habilitarCampoInserirMetas !!};">
-
-                        <div class="flex w-full rounded-md shadow-sm">
-
-                            <?php
-
-                            $require3 = '';
-
-                            if($this->require_linha_base_3) {
-
-                                $require3 = 'required';
-
-                            }
-
-                            ?>
-
-                            {!! Form::select('num_ano_base_3', $this->anosLinhaBase, null, ['class' => $this->inputAnoLinhaBaseClass, 'placeholder' => 'Ano da linha base', 'autocomplete' => 'off', 'wire:model' => 'num_ano_base_3']) !!}
-                            {!! Form::text('num_linha_base_3',null,['class' => $this->inputValorLinhaBaseClass,'id' => 'num_linha_base_3', 'placeholder' => 'Linha de base', 'wire:model' => 'num_linha_base_3', 'autocomplete' => 'off',$require3 => $require3]) !!}
-
-                        </div>
-
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-0" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                        &nbsp;
                     </div>
 
                     <?php
@@ -595,66 +541,148 @@
 
         <div class=" flex flex-wrap -mx-3 mb-6">
 
-            <div class="w-full md:w-3/3 px-3 mb-6 md:mb-0 pt-3">
+            <div class="w-full md:w-1/1 px-3 mb-6 md:mb-0 pt-3">
 
-                <!-- Aqui ficará os indicadores agrupados por PEI, Perspectiva, Objetivo Estratégico e Plano de Ação. Serão visualizados em card com os botões de editar e excluir. O editar levará o usuário para uma nova página, numa nova aba do browser. -->
+                @foreach($this->indicadores as $result)
+
+                <div class="bg-white rounded-lg overflow-hidden border-2 border-gray-200 border-opacity-50 mb-2">
+
+                    <div class="bg-gray-900 bg-opacity-50 text-white text-lg px-1 pb-1 pl-3 pr-3"><span class="text-sm">PEI: <strong>{{ $result->dsc_pei }} ( {!! $result->num_ano_inicio_pei !!} a {!! $result->num_ano_fim_pei !!})</strong></span></div>
+
+                </div>
+
+                @foreach($result->perspectivas as $resultPerspectiva)
+
+                <div class="bg-white rounded-lg overflow-hidden border-2 border-gray-200 border-opacity-50 mb-2">
+
+                    <div class="bg-gray-500 bg-opacity-50 text-white text-lg px-1 pb-1 pl-3 pr-3"><span class="text-sm">Perspectiva: <span class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}. </span><strong>{!! $resultPerspectiva->dsc_perspectiva !!}</strong></span></div>
+
+                </div>
+
+                @foreach($resultPerspectiva->objetivosEstrategicos as $resultObjetivosEstrategicos)
+
+                <div class="bg-white rounded-lg overflow-hidden border-2 border-gray-200 border-opacity-50 mb-2">
+
+                    <div class="bg-gray-200 bg-opacity-50 text-gray-600 text-lg px-1 pb-1 pl-3 pr-3"><span class="text-sm">OE: <span class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $resultObjetivosEstrategicos->num_nivel_hierarquico_apresentacao !!}. </span><strong>{!! $resultObjetivosEstrategicos->dsc_objetivo_estrategico !!}</strong></span></div>
+
+                </div>
+
+                @foreach($resultObjetivosEstrategicos->planosDeAcao as $resultPlanoDeAcao)
+
+                <div class="bg-white rounded-lg overflow-hidden border-2 border-gray-200 border-opacity-50 mb-2">
+
+                    <div class="bg-gray-100 bg-opacity-50 text-gray-900 text-lg px-1 pb-1 pl-3 pr-3"><span class="text-sm">{{ $resultPlanoDeAcao->tipoExecucao->dsc_tipo_execucao }} {!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $resultObjetivosEstrategicos->num_nivel_hierarquico_apresentacao !!}.{!! $resultPlanoDeAcao->num_nivel_hierarquico_apresentacao !!}. </span><strong>{!! $resultPlanoDeAcao->dsc_plano_de_acao !!}</strong></div>
+
+                    <p class="px-3 px-2 pt-3">Indicadores</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-1 mb-1 px-1 pt-2 pb-2 pl-2 pr-2">
+
+                        @foreach($resultPlanoDeAcao->indicadores as $resultIndicadores)
+
+                        <div class="pt-2 pb-2 pl-3 pr-3 bg-white rounded-md border-2 border-gray-300 border-opacity-50 shadow ">
+
+                            <p class="w-full text-sm text-left text-gray-600 h-20 " style="width: 100%!Important;"><strong>{!! $resultIndicadores->dsc_indicador !!}.</strong></p>
+
+                            <div class="w-full pt-1" style="width: 100%!Important;">
+
+                                <div class="flex mb-2 items-center justify-between" style="width: 100%!Important;">
+
+                                    <div class="text-xs text-gray-500">&nbsp;</div>
+
+                                    <div class="text-right">
+
+                                        <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $resultIndicadores->cod_indicador !!}')" onclick="javascript: document.documentElement.scrollTop = 0;"><i class="fas fa-edit text-green-600"></i></a>
+
+                                        &nbsp;
+                                        &nbsp;
+                                        <button type="button" wire:click.prevent="deleteForm('{!! $resultIndicadores->cod_indicador !!}')"><i class="fas fa-trash-alt text-red-600"></i></button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        @endforeach
+
+                    </div>
+
+                </div>
+
+                @endforeach
+
+                @endforeach
+
+                @endforeach
+
+                @endforeach
 
             </div>
 
         </div>
 
-        <!-- Modal -->
-        <x-jet-dialog-modal wire:model="showModalResultadoEdicao">
-            <x-slot name="title">
-                <strong>Importante</strong>
-            </x-slot>
-
-            <x-slot name="content">
-                {!! $this->mensagemResultadoEdicao !!}
-            </x-slot>
-
-            <x-slot name="footer">
-                <x-jet-button wire:click.prevent="$toggle('showModalResultadoEdicao')" wire:loading.attr="disabled">
-                    {{ __('Closer') }}
-                </x-jet-button>
-            </x-slot>
-        </x-jet-dialog-modal>
-
-        <!-- Modal -->
-        <x-jet-important-modal wire:model="showModalImportant">
-            <x-slot name="title">
-                <strong>Importante</strong>
-            </x-slot>
-
-            <x-slot name="content">
-                {!! $this->mensagemImportant !!}
-            </x-slot>
-
-            <x-slot name="footer">
-                <x-jet-button-danger wire:click.prevent="$toggle('showModalImportant')" wire:loading.attr="disabled">
-                    {{ __('Closer') }}
-                </x-jet-button-danger>
-            </x-slot>
-        </x-jet-important-modal>
-
-        <!-- Modal -->
-        <x-jet-dialog-modal wire:model="showModalDelete">
-            <x-slot name="title">
-                <strong>Excluir</strong>
-            </x-slot>
-
-            <x-slot name="content">
-                {!! $this->mensagemDelete !!}
-            </x-slot>
-
-            <x-slot name="footer">
-                <x-jet-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled">
-                    {{ __('Closer') }}
-                </x-jet-button>
-                <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled" wire:click.prevent="delete('{!! $this->cod_indicador !!}')">
-                    Sim, quero excluir
-                </x-jet-danger-button>
-            </x-slot>
-        </x-jet-dialog-modal>
-
     </div>
+
+    <!-- Modal -->
+    <x-jet-dialog-modal wire:model="showModalResultadoEdicao">
+        <x-slot name="title">
+            <strong>Importante</strong>
+        </x-slot>
+
+        <x-slot name="content">
+            {!! $this->mensagemResultadoEdicao !!}
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-button wire:click.prevent="$toggle('showModalResultadoEdicao')" wire:loading.attr="disabled">
+                {{ __('Closer') }}
+            </x-jet-button>
+        </x-slot>
+    </x-jet-dialog-modal>
+
+    <!-- Modal -->
+    <x-jet-important-modal wire:model="showModalImportant">
+        <x-slot name="title">
+            <strong>Importante</strong>
+        </x-slot>
+
+        <x-slot name="content">
+            {!! $this->mensagemImportant !!}
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-button-danger wire:click.prevent="$toggle('showModalImportant')" wire:loading.attr="disabled">
+                {{ __('Closer') }}
+            </x-jet-button-danger>
+        </x-slot>
+    </x-jet-important-modal>
+
+    <!-- Modal -->
+    <x-jet-dialog-modal wire:model="showModalDelete">
+        <x-slot name="title">
+            <strong>Excluir</strong>
+        </x-slot>
+
+        <x-slot name="content">
+            {!! $this->mensagemDelete !!}
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled">
+                {{ __('Closer') }}
+            </x-jet-button>
+            <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled" wire:click.prevent="delete('{!! $this->cod_indicador !!}')">
+                Sim, quero excluir
+            </x-jet-danger-button>
+        </x-slot>
+    </x-jet-dialog-modal>
+
+    <script>
+        document.addEventListener('livewire:load', () => {
+            setInterval(function(){ window.livewire.emit('alive'); }, 1800000);
+        });
+    </script>
+
+</div>

@@ -8,6 +8,7 @@ use App\Models\Pei;
 use App\Models\MissaoVisaoValores;
 use Livewire\WithPagination;
 use App\Models\Acoes;
+use App\Models\Audit;
 use DB;
 Use Auth;
 
@@ -89,7 +90,7 @@ class MissaoVisaoValoresLivewire extends Component
 
             $acao = Acoes::create(array(
                 'table' => 'tab_pei',
-                'id_table' => $save->cod_missao_visao_valores,
+                'table_id' => $save->cod_missao_visao_valores,
                 'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));
@@ -107,10 +108,23 @@ class MissaoVisaoValoresLivewire extends Component
             foreach($estruturaTable as $result) {
 
                 $column_name = $result->column_name;
+                $data_type = $result->data_type;
 
                 if($editar->$column_name != $this->$column_name) {
 
                     $alteracao[$column_name] = $this->$column_name;
+
+                    $audit = Audit::create(array(
+                        'table' => 'tab_missao_visao_valores',
+                        'table_id' => $this->cod_missao_visao_valores,
+                        'column_name' => $column_name,
+                        'data_type' => $data_type,
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou',
+                        'antes' => $editar->$column_name,
+                        'depois' => $this->$column_name
+                    ));
 
                     if($column_name != 'cod_pei' && $column_name != 'cod_organizacao') {
 
@@ -150,7 +164,7 @@ class MissaoVisaoValoresLivewire extends Component
 
                 $acao = Acoes::create(array(
                     'table' => 'tab_missao_visao_valores',
-                    'id_table' => $this->cod_missao_visao_valores,
+                    'table_id' => $this->cod_missao_visao_valores,
                     'user_id' => Auth::user()->id,
                     'acao' => $modificacoes
                 ));
@@ -340,7 +354,7 @@ class MissaoVisaoValoresLivewire extends Component
 
         $acao = Acoes::create(array(
             'table' => 'tab_pei',
-            'id_table' => $singleData->cod_missao_visao_valores,
+            'table_id' => $singleData->cod_missao_visao_valores,
             'user_id' => Auth::user()->id,
             'acao' => $modificacoes
         ));

@@ -135,7 +135,7 @@
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-label for="bln_status" value="Status" />
-                            {!! Form::select('bln_status', ['Não iniciada' => 'Não iniciada','Em andamento' => 'Em andamento','Concluída' => 'Concluída'], $this->bln_status, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'bln_status']) !!}
+                            {!! Form::select('bln_status', ['Cancelado' => 'Cancelado','Concluído' => 'Concluído','Em andamento' => 'Em andamento','Não iniciado' => 'Não iniciado','Suspenso' => 'Suspenso'], null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'bln_status']) !!}
                             <x-jet-input-error for="bln_status" class="mt-2" />
                         </div>
 

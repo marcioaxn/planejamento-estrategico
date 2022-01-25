@@ -82,13 +82,13 @@
         @if($this->perspectiva->count() > 0)
         @foreach($this->perspectiva as $resultPerspectiva)
 
-        <div class="bg-white rounded-lg overflow-hidden border-2 border-gray-100 border-opacity-50">
+        <div class="bg-white rounded-lg overflow-hidden border-2 border-gray-200 border-opacity-50 mb-2">
 
-            <div class="bg-gray-200 bg-opacity-50 text-gray-600 text-lg pt-1 pb-1 pl-3 pr-3"><span class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}. </span><strong>{!! $resultPerspectiva->dsc_perspectiva !!}</strong></div>
+            <div class="bg-gray-200 bg-opacity-50 text-gray-600 text-lg px-1 pt-1 pb-1 pl-3 pr-3"><span class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}. </span><strong>{!! $resultPerspectiva->dsc_perspectiva !!}</strong></div>
 
             @if($resultPerspectiva->objetivosEstrategicos->count() > 0)
 
-            <div class="grid lg:grid-flow-row xl:grid-flow-col-dense sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-6.9 sm:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/$resultPerspectiva->objetivosEstrategicos->count()) !!} md:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/2) !!} lg:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/2) !!} xl:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/5) !!} 2xl:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/6) !!} gap-3 pt-2 pb-2 pl-2 pr-2">
+            <div class="grid lg:grid-flow-row xl:grid-flow-col-dense sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-6.9 sm:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/$resultPerspectiva->objetivosEstrategicos->count()) !!} md:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/2) !!} lg:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/2) !!} xl:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/5) !!} 2xl:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/6) !!} gap-4 mt-1 mb-1 px-1 pt-2 pb-2 pl-2 pr-2">
 
                 @foreach($resultPerspectiva->objetivosEstrategicos as $resultObjetivoEstragico)
 
@@ -150,7 +150,7 @@
 
                                 <div class="flex mb-2 items-center justify-between" style="width: 100%!Important;">
 
-                                    <div class="text-xs text-gray-500">{{ $acoes }} ações/projetos</div>
+                                    <div class="text-xs text-gray-500">{{ $acoes }} ações/iniciativas   /projetos</div>
 
                                     <div class="text-right">
 
@@ -199,11 +199,11 @@
 
         </div>
 
-        <div class="w-full flex flex-col bg-white" style="margin: 0px!Important; padding: 0px!Important; height: 3px!Important;">
+        <div class="w-full flex flex-col mt-1 bg-white" style="margin: 0px!Important; padding: 0px!Important; height: 3px!Important;">
             &nbsp;
         </div>
 
-        @if($resultPerspectiva->num_nivel_hierarquico_apresentacao == 2 || $resultPerspectiva->num_nivel_hierarquico_apresentacao == 3)
+        @if($resultPerspectiva->num_nivel_hierarquico_apresentacao >= 2 && $resultPerspectiva->num_nivel_hierarquico_apresentacao <= $this->perspectiva->count())
 
         <div class="grid place-items-left" style="margin: 0px!Important; padding: 0px!Important;">
             <div class="arrow-up"></div>
@@ -228,12 +228,12 @@
 @else
 <div class="">
 
-    <div class="flex flex-wrap w-full pt-1">
+    <div class="flex flex-wrap w-full mt-3 pt-1">
 
         <div class="w-full md:w-1/1 px-3 pt-1">
 
-            <div class="pt-1 pb-1 pl-3 pr-3 bg-white rounded-md border-2 border-gray-300 border-opacity-25 text-gray-600 text-lg font-semibold text-lg " style="text-align: center!Important;">
-                Ainda não existe Planejamento Estratégico Integrado cadastrado que tenha abrangência a este ano ({{ $ano }})
+            <div class="pt-1 pb-1 pl-3 pr-3 rounded-md border-2 border-red-400 border-opacity-50 text-gray-600 text-lg font-semibold text-red-500 " style="text-align: center!Important;">
+                <i class="fas fa-exclamation-triangle text-red-600"></i> Não existe Planejamento Estratégico Integrado<br>cadastrado que tenha abrangência ao ano de<br>({{ $ano }})
             </div>
             
         </div>

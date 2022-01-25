@@ -7,6 +7,7 @@ use App\Models\Perspectiva;
 use App\Models\Pei;
 use Livewire\WithPagination;
 use App\Models\Acoes;
+use App\Models\Audit;
 use DB;
 Use Auth;
 
@@ -98,7 +99,7 @@ class PerspectivaLivewire extends Component
 
             $acao = Acoes::create(array(
                 'table' => 'tab_pei',
-                'id_table' => $save->cod_perspectiva,
+                'table_id' => $save->cod_perspectiva,
                 'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));
@@ -149,7 +150,7 @@ class PerspectivaLivewire extends Component
 
                 $acao = Acoes::create(array(
                     'table' => 'tab_perspectiva',
-                    'id_table' => $this->cod_perspectiva,
+                    'table_id' => $this->cod_perspectiva,
                     'user_id' => Auth::user()->id,
                     'acao' => $modificacoes
                 ));
@@ -234,7 +235,7 @@ class PerspectivaLivewire extends Component
 
         $acao = Acoes::create(array(
             'table' => 'tab_pei',
-            'id_table' => $singleData->cod_perspectiva,
+            'table_id' => $singleData->cod_perspectiva,
             'user_id' => Auth::user()->id,
             'acao' => $modificacoes
         ));

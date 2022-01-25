@@ -9,6 +9,7 @@ use App\Models\ObjetivoEstrategico;
 use App\Models\NumNivelHierarquico;
 use Livewire\WithPagination;
 use App\Models\Acoes;
+use App\Models\Audit;
 use DB;
 Use Auth;
 
@@ -132,7 +133,7 @@ class ObjetivoEstrategicoLivewire extends Component
 
             $acao = Acoes::create(array(
                 'table' => 'tab_objetivo_estrategico',
-                'id_table' => $save->cod_objetivo_estrategico,
+                'table_id' => $save->cod_objetivo_estrategico,
                 'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));
@@ -150,10 +151,23 @@ class ObjetivoEstrategicoLivewire extends Component
             foreach($estruturaTable as $result) {
 
                 $column_name = $result->column_name;
+                $data_type = $result->data_type;
 
                 if($editar->$column_name != $this->$column_name) {
 
                     $alteracao[$column_name] = $this->$column_name;
+
+                    $audit = Audit::create(array(
+                        'table' => 'tab_objetivo_estrategico',
+                        'table_id' => $this->cod_objetivo_estrategico,
+                        'column_name' => $column_name,
+                        'data_type' => $data_type,
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou',
+                        'antes' => $editar->$column_name,
+                        'depois' => $this->$column_name
+                    ));
 
                     if($column_name != 'cod_perspectiva') {
 
@@ -182,8 +196,8 @@ class ObjetivoEstrategicoLivewire extends Component
                 $editar->update($alteracao);
 
                 $acao = Acoes::create(array(
-                    'table' => 'tab_objetivoEstragico',
-                    'id_table' => $this->cod_objetivo_estrategico,
+                    'table' => 'tab_objetivo_estrategico',
+                    'table_id' => $this->cod_objetivo_estrategico,
                     'user_id' => Auth::user()->id,
                     'acao' => $modificacoes
                 ));
@@ -278,7 +292,7 @@ class ObjetivoEstrategicoLivewire extends Component
 
         $acao = Acoes::create(array(
             'table' => 'tab_objetivo_estrategico',
-            'id_table' => $singleData->cod_objetivo_estrategico,
+            'table_id' => $singleData->cod_objetivo_estrategico,
             'user_id' => Auth::user()->id,
             'acao' => $modificacoes
         ));

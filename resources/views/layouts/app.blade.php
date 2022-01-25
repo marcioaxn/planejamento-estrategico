@@ -34,7 +34,7 @@
             height: 0;
             border-left: 75px solid transparent;
             border-right: 275px solid transparent;
-            border-bottom: 17px solid rgba(229, 231, 235, var(--tw-bg-opacity));;
+            border-bottom: 17px solid rgba(238,238,238, var(--tw-bg-opacity));;
         }
     </style>
 

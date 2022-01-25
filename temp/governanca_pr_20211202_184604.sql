@@ -222,7 +222,7 @@ ALTER TABLE pei.tab_tipo_execucao OWNER TO marcio;
 
 CREATE TABLE public.acoes (
     id uuid NOT NULL,
-    id_table character varying(255) NOT NULL,
+    table_id character varying(255) NOT NULL,
     id_user uuid NOT NULL,
     "table" character varying(255) NOT NULL,
     acao text NOT NULL,
@@ -673,7 +673,7 @@ INSERT INTO pei.tab_tipo_execucao (cod_tipo_execucao, dsc_tipo_execucao, deleted
 -- Data for Name: acoes; Type: TABLE DATA; Schema: public; Owner: marcio
 --
 
-INSERT INTO public.acoes (id, id_table, id_user, "table", acao, deleted_at, created_at, updated_at) VALUES ('b479095f-7dad-4d3d-a48a-641931cc33bb', '24a325c4-2389-43d8-bdf1-e1c2cfecb244', '736a9a54-2a54-4132-a63f-7f994fc1c1fd', 'tab_pei', 'Inseriu os seguintes dados em relação ao novo Plano de Ação:<br><br>Objetivo Estratégico: <span class=''text-green-800''>25. Aprimorar a gestão de pessoas com foco nas competências necessárias à Presidência da República</span><br>Tipo: <span class=''text-green-800''>Ação</span><br>Unidade Responsável: <span class=''text-green-800''>DIGEC - Diretoria de Gestão Estratégica e Coordenação Estrutural</span><br>Descrição: <span class=''text-green-800''>1. Texto da Descrição</span><br>Principais entregas: <span class=''text-green-800''>Text da Principais entregas</span><br>Data de Início: <span class=''text-green-800''>01/07/2021</span><br>Data de Conclusão: <span class=''text-green-800''>31/07/2023</span><br>Status: <span class=''text-green-800''>Não iniciada</span><br>Orçamento Previsto: <span class=''text-green-800''>1.321.333,00</span><br>Servidor(a) Responsável: <span class=''text-green-800''>Kyler Fritsch</span><br>Servidor(a) Substituto: <span class=''text-green-800''>Prof. Vivien Macejkovic Jr.</span><br>', NULL, '2021-12-02 18:39:26', '2021-12-02 18:39:26');
+INSERT INTO public.acoes (id, table_id, id_user, "table", acao, deleted_at, created_at, updated_at) VALUES ('b479095f-7dad-4d3d-a48a-641931cc33bb', '24a325c4-2389-43d8-bdf1-e1c2cfecb244', '736a9a54-2a54-4132-a63f-7f994fc1c1fd', 'tab_pei', 'Inseriu os seguintes dados em relação ao novo Plano de Ação:<br><br>Objetivo Estratégico: <span class=''text-green-800''>25. Aprimorar a gestão de pessoas com foco nas competências necessárias à Presidência da República</span><br>Tipo: <span class=''text-green-800''>Ação</span><br>Unidade Responsável: <span class=''text-green-800''>DIGEC - Diretoria de Gestão Estratégica e Coordenação Estrutural</span><br>Descrição: <span class=''text-green-800''>1. Texto da Descrição</span><br>Principais entregas: <span class=''text-green-800''>Text da Principais entregas</span><br>Data de Início: <span class=''text-green-800''>01/07/2021</span><br>Data de Conclusão: <span class=''text-green-800''>31/07/2023</span><br>Status: <span class=''text-green-800''>Não iniciada</span><br>Orçamento Previsto: <span class=''text-green-800''>1.321.333,00</span><br>Servidor(a) Responsável: <span class=''text-green-800''>Kyler Fritsch</span><br>Servidor(a) Substituto: <span class=''text-green-800''>Prof. Vivien Macejkovic Jr.</span><br>', NULL, '2021-12-02 18:39:26', '2021-12-02 18:39:26');
 
 
 --

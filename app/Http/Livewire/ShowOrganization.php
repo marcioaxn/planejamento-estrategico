@@ -109,7 +109,7 @@ class ShowOrganization extends Component
 
             $acao = Acoes::create(array(
                 'table' => 'tab_organizacoes',
-                'id_table' => $saveOrganization->cod_organizacao,
+                'table_id' => $saveOrganization->cod_organizacao,
                 'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));

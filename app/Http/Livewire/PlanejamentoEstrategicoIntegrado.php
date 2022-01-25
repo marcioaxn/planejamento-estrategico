@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Pei;
 use Livewire\WithPagination;
 use App\Models\Acoes;
+use App\Models\Audit;
 use DB;
 Use Auth;
 
@@ -86,7 +87,7 @@ class PlanejamentoEstrategicoIntegrado extends Component
 
             $acao = Acoes::create(array(
                 'table' => 'tab_pei',
-                'id_table' => $save->cod_pei,
+                'table_id' => $save->cod_pei,
                 'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));
@@ -104,10 +105,23 @@ class PlanejamentoEstrategicoIntegrado extends Component
             foreach($estruturaTable as $result) {
 
                 $column_name = $result->column_name;
+                $data_type = $result->data_type;
 
                 if($editar->$column_name != $this->$column_name) {
 
                     $alteracao[$column_name] = $this->$column_name;
+
+                    $audit = Audit::create(array(
+                        'table' => 'tab_pei',
+                        'table_id' => $this->cod_pei,
+                        'column_name' => $column_name,
+                        'data_type' => $data_type,
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou',
+                        'antes' => $editar->$column_name,
+                        'depois' => $this->$column_name
+                    ));
 
                     if($modificacoes == '' && $column_name === 'num_ano_inicio_pei' || $column_name === 'num_ano_fim_pei') {
 
@@ -129,7 +143,7 @@ class PlanejamentoEstrategicoIntegrado extends Component
 
                 $acao = Acoes::create(array(
                     'table' => 'tab_pei',
-                    'id_table' => $this->cod_pei,
+                    'table_id' => $this->cod_pei,
                     'user_id' => Auth::user()->id,
                     'acao' => $modificacoes
                 ));
@@ -207,7 +221,7 @@ class PlanejamentoEstrategicoIntegrado extends Component
 
         $acao = Acoes::create(array(
             'table' => 'tab_pei',
-            'id_table' => $singleData->cod_pei,
+            'table_id' => $singleData->cod_pei,
             'user_id' => Auth::user()->id,
             'acao' => $modificacoes
         ));

@@ -11,14 +11,18 @@ use App\Models\TipoExecucao;
 use App\Models\Organization;
 use App\Models\PlanoAcao;
 use App\Models\Indicador;
-use App\Models\EvolucaoIndicador;
 use App\Models\LinhaBase;
+use App\Models\MetaAno;
+use App\Models\EvolucaoIndicador;
 use App\Models\User;
 use App\Models\RelUsersTabOrganizacoesTabPerfilAcesso;
 use App\Models\Acoes;
+use App\Models\Audit;
 use DB;
-Use Auth;
+use Auth;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Session;
 
 class IndicadoresLivewire extends Component
 {
@@ -31,6 +35,9 @@ class IndicadoresLivewire extends Component
     public $objetivoEstragico = [];
 
     public $cod_indicador = null;
+
+    public $indicadores = [];
+
     public $cod_plano_de_acao = null;
     public $planoAcao = [];
     public $dsc_indicador = null;
@@ -69,10 +76,6 @@ class IndicadoresLivewire extends Component
     public $num_linha_base_1 = null;
     public $num_linha_base_2 = null;
     public $num_linha_base_3 = null;
-
-    public $require_linha_base_1 = false;
-    public $require_linha_base_2 = false;
-    public $require_linha_base_3 = false;
 
     public $metaAno_2020 = null;
     public $metaAno_2021 = null;
@@ -454,6 +457,16 @@ class IndicadoresLivewire extends Component
     public $erroInsercaoMetaMensal = false;
     public $textoErroInsercaoMetaMensal = null;
 
+    public $inputAnoLinhaBaseClass = null;
+    public $inputValorLinhaBaseClass = null;
+
+    public $inputValorClass = null;
+
+    public $inputValorMesAno1Class = null;
+    public $inputValorMesAno2Class = null;
+    public $inputValorMesAno3Class = null;
+    public $inputValorMesAno4Class = null;
+
     public $estruturaTable = null;
     
     public $editarForm = false;
@@ -470,16 +483,6 @@ class IndicadoresLivewire extends Component
     public $abrirFecharForm = 'none';
     public $iconAbrirFechar = 'fas fa-plus text-xs';
     public $iconFechar = 'fas fa-minus text-xs';
-
-    public $inputAnoLinhaBaseClass = null;
-    public $inputValorLinhaBaseClass = null;
-
-    public $inputValorClass = null;
-
-    public $inputValorMesAno1Class = null;
-    public $inputValorMesAno2Class = null;
-    public $inputValorMesAno3Class = null;
-    public $inputValorMesAno4Class = null;
 
     public function create() {
 
@@ -530,6 +533,11 @@ class IndicadoresLivewire extends Component
             $textoErro2 = '';
             $textoErro3 = '';
             $textoErro4 = '';
+
+            $contNaoVazio1 = 0;
+            $contNaoVazio2 = 0;
+            $contNaoVazio3 = 0;
+            $contNaoVazio4 = 0;
 
             for($anoLoop=($this->anoInicioDoPeiSelecionado)*1;$anoLoop<=($this->anoConclusaoDoPeiSelecionado)*1;$anoLoop++) {
 
@@ -585,6 +593,8 @@ class IndicadoresLivewire extends Component
 
                                 if($valor > 0) {
 
+                                    $contNaoVazio1 = $contNaoVazio1 + 1;
+
                                     $somaMetaAno1 = (($somaMetaAno1)*1) + (($valor)*1);
 
                                 }
@@ -594,6 +604,8 @@ class IndicadoresLivewire extends Component
                             if($contAnos == 2) {
 
                                 if($valor > 0) {
+
+                                    $contNaoVazio2 = $contNaoVazio2 + 1;
 
                                     $somaMetaAno2 = (($somaMetaAno2)*1) + (($valor)*1);
 
@@ -605,6 +617,8 @@ class IndicadoresLivewire extends Component
 
                                 if($valor > 0) {
 
+                                    $contNaoVazio3 = $contNaoVazio3 + 1;
+
                                     $somaMetaAno3 = (($somaMetaAno3)*1) + (($valor)*1);
 
                                 }
@@ -615,11 +629,41 @@ class IndicadoresLivewire extends Component
 
                                 if($valor > 0) {
 
+                                    $contNaoVazio4 = $contNaoVazio4 + 1;
+
                                     $somaMetaAno4 = (($somaMetaAno4)*1) + (($valor)*1);
 
                                 }
 
                             }
+
+                        }
+
+                    }
+
+                    if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                        if(isset($contNaoVazio1) && !is_null($contNaoVazio1) && $contNaoVazio1 != '' && $contNaoVazio1 > 0) {
+
+                            $somaMetaAno1 = ($somaMetaAno1)/$contNaoVazio1;
+
+                        }
+
+                        if(isset($contNaoVazio2) && !is_null($contNaoVazio2) && $contNaoVazio2 != '' && $contNaoVazio2 > 0) {
+
+                            $somaMetaAno2 = ($somaMetaAno2)/$contNaoVazio2;
+
+                        }
+
+                        if(isset($contNaoVazio3) && !is_null($contNaoVazio3) && $contNaoVazio3 != '' && $contNaoVazio3 > 0) {
+
+                            $somaMetaAno3 = ($somaMetaAno3)/$contNaoVazio3;
+
+                        }
+
+                        if(isset($contNaoVazio4) && !is_null($contNaoVazio4) && $contNaoVazio4 != '' && $contNaoVazio4 > 0) {
+
+                            $somaMetaAno4 = ($somaMetaAno4)/$contNaoVazio4;
 
                         }
 
@@ -638,11 +682,27 @@ class IndicadoresLivewire extends Component
 
                             } elseif($somaMetaAno1 < $valorMeta1) {
 
-                                $textoErro1 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal1." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno1);
+                                if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Sim') {
+
+                                    $textoErro1 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal1." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno1);
+
+                                } elseif(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                                    $textoErro1 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal1." e a média da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno1);
+
+                                }
 
                             } elseif($somaMetaAno1 > $valorMeta1) {
 
-                                $textoErro1 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal1." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno1)."";
+                                if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Sim') {
+
+                                    $textoErro1 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal1." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno1)."";
+
+                                } elseif(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                                    $textoErro1 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal1." e a média da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno1)."";
+
+                                }
 
                             }
 
@@ -663,11 +723,27 @@ class IndicadoresLivewire extends Component
 
                             } elseif($somaMetaAno2 < $valorMeta2) {
 
-                                $textoErro2 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal2." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno2);
+                                if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Sim') {
+
+                                    $textoErro2 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal2." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno2);
+
+                                } elseif(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                                    $textoErro2 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal2." e a média da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno2);
+
+                                }
 
                             } elseif($somaMetaAno2 > $valorMeta2) {
 
-                                $textoErro2 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal2." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno2)."";
+                                if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Sim') {
+
+                                    $textoErro2 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal2." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno2)."";
+
+                                } elseif(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                                    $textoErro2 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal2." e a média da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno2)."";
+
+                                }
 
                             }
 
@@ -688,11 +764,27 @@ class IndicadoresLivewire extends Component
 
                             } elseif($somaMetaAno3 < $valorMeta3) {
 
-                                $textoErro3 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal3." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno3);
+                                if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Sim') {
+
+                                    $textoErro3 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal3." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno3);
+
+                                } elseif(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                                    $textoErro3 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal3." e a média da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno3);
+
+                                }
 
                             } elseif($somaMetaAno3 > $valorMeta3) {
 
-                                $textoErro3 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal3." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno3)."";
+                                if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Sim') {
+
+                                    $textoErro3 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal3." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno3)."";
+
+                                } elseif(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                                    $textoErro3 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal3." e a média da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno3)."";
+
+                                }
 
                             }
 
@@ -713,11 +805,27 @@ class IndicadoresLivewire extends Component
 
                             } elseif($somaMetaAno4 < $valorMeta4) {
 
-                                $textoErro4 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal4." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno4);
+                                if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Sim') {
+
+                                    $textoErro4 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal4." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno4);
+
+                                } elseif(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                                    $textoErro4 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal4." e a média da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno4);
+
+                                }
 
                             } elseif($somaMetaAno4 > $valorMeta4) {
 
-                                $textoErro4 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal4." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno4)."";
+                                if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Sim') {
+
+                                    $textoErro4 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal4." e a soma da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno4)."";
+
+                                } elseif(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                                    $textoErro4 = "Meta prevista anual de ".$anoLoop." é ".$valorMetaOriginal4." e a média da Meta prevista mensal é ".converteValorSemCasasDecimais('MYSQL','PTBR',$somaMetaAno4)."";
+
+                                }
 
                             }
 
@@ -1038,109 +1146,284 @@ class IndicadoresLivewire extends Component
 
                 if(!$this->editarForm) {
 
-                    // Início do trecho para inserir um novo indicador
+                    // Início do trecho para verificar se esse indicador já existe, pois se existir não poderá ser gravado novamente
 
-                    $modificacoes = "Inseriu os seguintes dados em relação ao novo Indicador:<br><br>";
+                    $consultarIndicador = Indicador::where('cod_plano_de_acao',$this->cod_plano_de_acao)
+                    ->where('dsc_indicador',$this->dsc_indicador)
+                    ->where('dsc_formula',$this->dsc_formula)
+                    ->where('dsc_unidade_medida',$this->dsc_unidade_medida)
+                    ->where('bln_acumulado',$this->bln_acumulado)
+                    ->where('dsc_tipo',$this->dsc_tipo)
+                    ->where('dsc_fonte',$this->dsc_fonte)
+                    ->where('dsc_periodo_medicao',$this->dsc_periodo_medicao)
+                    ->get();
 
-                    $save = new Indicador;
+                    // Fim do trecho para verificar se esse indicador já existe, pois se existir não poderá ser gravado novamente
 
-                    // Início do trecho para o código do Plano de Ação
+                    if($consultarIndicador->count() <= 0) {
 
-                    if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
+                        // Início do trecho para inserir um novo indicador
 
-                        $save->cod_plano_de_acao = $this->cod_plano_de_acao;
+                        $modificacoes = "Inseriu os seguintes dados em relação ao novo Indicador:<br><br>";
 
-                        $consultarPlanoDeAcao = PlanoAcao::find($this->cod_plano_de_acao);
+                        $save = new Indicador;
 
-                        $modificacoes = $modificacoes . "Plano de Ação relacionado: <span class='text-green-800'>".$consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao.'. '.$consultarPlanoDeAcao->dsc_plano_de_acao."</span><br>";
+                        // Início do trecho para o código do Plano de Ação
 
-                    }
+                        if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
 
-                    // Fim do trecho para o código do Plano de Ação
+                            $save->cod_plano_de_acao = $this->cod_plano_de_acao;
 
-                    // --- x --- x --- x --- x --- x --- x ---
+                            $consultarPlanoDeAcao = PlanoAcao::find($this->cod_plano_de_acao);
 
-                    // Início do trecho para a descrição do indicador
-
-                    if(isset($this->dsc_indicador) && !is_null($this->dsc_indicador) && $this->dsc_indicador != '') {
-
-                        $save->dsc_indicador = $this->dsc_indicador;
-
-                        $modificacoes = $modificacoes . "Descrição: <strong><span class='text-green-800'>".$this->dsc_indicador."</span></strong><br>";
-
-                    }
-
-                    // Fim do trecho para a descrição do indicador
-
-                    // --- x --- x --- x --- x --- x --- x ---
-
-                    // Início do trecho para a fórmula do indicador
-
-                    if(isset($this->dsc_formula) && !is_null($this->dsc_formula) && $this->dsc_formula != '') {
-
-                        $save->dsc_formula = $this->dsc_formula;
-
-                        $modificacoes = $modificacoes . "Fórmula do Indicador:<br> <span class='text-green-800'>".nl2br($this->dsc_formula)."</span><br>";
-
-                    }
-
-                    // Fim do trecho para a fórmula do indicador
-
-                    // --- x --- x --- x --- x --- x --- x ---
-
-                    // Início do trecho para a unidade de medida do indicador
-
-                    if(isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '') {
-
-                        $save->dsc_unidade_medida = $this->dsc_unidade_medida;
-
-                        $dsc_unidade_medida = '';
-
-                        if($this->dsc_unidade_medida === 'Dinheiro') {
-
-                            $dsc_unidade_medida = 'Dinheiro R$ 0,00 (real)';
-
-                        } else {
-
-                            $dsc_unidade_medida = $this->dsc_unidade_medida;
+                            $modificacoes = $modificacoes . "Plano de Ação relacionado: <span class='text-green-800'>".$consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao.'. '.$consultarPlanoDeAcao->dsc_plano_de_acao."</span><br>";
 
                         }
 
-                        $modificacoes = $modificacoes . "Unidade de Medida do Indicador: <span class='text-green-800'>".$dsc_unidade_medida."</span><br>";
+                        // Fim do trecho para o código do Plano de Ação
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para a descrição do indicador
+
+                        if(isset($this->dsc_indicador) && !is_null($this->dsc_indicador) && $this->dsc_indicador != '') {
+
+                            $save->dsc_indicador = $this->dsc_indicador;
+
+                            $modificacoes = $modificacoes . "Descrição: <strong><span class='text-green-800'>".$this->dsc_indicador."</span></strong><br>";
+
+                        }
+
+                        // Fim do trecho para a descrição do indicador
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para a fórmula do indicador
+
+                        if(isset($this->dsc_formula) && !is_null($this->dsc_formula) && $this->dsc_formula != '') {
+
+                            $save->dsc_formula = $this->dsc_formula;
+
+                            $modificacoes = $modificacoes . "Fórmula do Indicador: <span class='text-green-800'>".nl2br($this->dsc_formula)."</span><br>";
+
+                        }
+
+                        // Fim do trecho para a fórmula do indicador
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para a unidade de medida do indicador
+
+                        if(isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '') {
+
+                            $save->dsc_unidade_medida = $this->dsc_unidade_medida;
+
+                            $dsc_unidade_medida = '';
+
+                            if($this->dsc_unidade_medida === 'Dinheiro') {
+
+                                $dsc_unidade_medida = 'Dinheiro R$ 0,00 (real)';
+
+                            } else {
+
+                                $dsc_unidade_medida = $this->dsc_unidade_medida;
+
+                            }
+
+                            $modificacoes = $modificacoes . "Unidade de Medida do Indicador: <span class='text-green-800'>".$dsc_unidade_medida."</span><br>";
+
+                        }
+
+                        // Fim do trecho para a unidade de medida do indicador
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para o campo Esse indicador terá o resultado acumulado?
+
+                        if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '') {
+
+                            $save->bln_acumulado = $this->bln_acumulado;
+
+                            $modificacoes = $modificacoes . "Esse indicador terá o resultado acumulado? <span class='text-green-800'>".$this->bln_acumulado."</span><br>";
+
+                        }
+
+                        // Fim do trecho para o campo Esse indicador terá o resultado acumulado?
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para o campo Tipo de Análise do Indicador (Polaridade)
+
+                        if(isset($this->dsc_tipo) && !is_null($this->dsc_tipo) && $this->dsc_tipo != '') {
+
+                            $save->dsc_tipo = $this->dsc_tipo;
+
+                            $modificacoes = $modificacoes . "Tipo de Análise do Indicador (Polaridade): <span class='text-green-800'>".tipoPolaridade($this->dsc_tipo)."</span><br>";
+
+                        }
+
+                        // Fim do trecho para o campo Tipo de Análise do Indicador (Polaridade)
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para a Fonte
+
+                        if(isset($this->dsc_fonte) && !is_null($this->dsc_fonte) && $this->dsc_fonte != '') {
+
+                            $save->dsc_fonte = $this->dsc_fonte;
+
+                            $modificacoes = $modificacoes . "Fonte: <span class='text-green-800'>".nl2br($this->dsc_fonte)."</span><br>";
+
+                        }
+
+                        // Fim do trecho para a Fonte
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para o Período de medição
+
+                        if(isset($this->dsc_periodo_medicao) && !is_null($this->dsc_periodo_medicao) && $this->dsc_periodo_medicao != '') {
+
+                            $save->dsc_periodo_medicao = $this->dsc_periodo_medicao;
+
+                            $modificacoes = $modificacoes . "Período de medição: <span class='text-green-800'>".$this->dsc_periodo_medicao."</span><br>";
+
+                        }
+
+                        // Fim do trecho para o Período de medição
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para Salvar a primeira parte dos dados do indicador
+
+                        $save->save();
+
+                        // Fim do trecho para Salvar a primeira parte dos dados do indicador
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para a Linha de Base
+
+                        $saveLinhaBase = new LinhaBase;
+
+                        if(isset($this->num_ano_base_1) && !is_null($this->num_ano_base_1) && $this->num_ano_base_1 != '' && isset($this->num_linha_base_1) && !is_null($this->num_linha_base_1) && $this->num_linha_base_1 != '') {
+
+                            $saveLinhaBase->cod_indicador = $save->cod_indicador;
+                            $saveLinhaBase->num_ano = $this->num_ano_base_1;
+                            $saveLinhaBase->num_linha_base = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->num_linha_base_1);
+
+                            $modificacoes = $modificacoes . "Linha de Base: <span class='text-green-800'>".$this->num_ano_base_1." - ".$this->num_linha_base_1."</span><br>";
+
+                        }
+
+                        // Fim do trecho para a Linha de Base
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para Salvar a Linha de base
+
+                        $saveLinhaBase->save();
+
+                        // Fim do trecho para Salvar a Linha de base
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para a Meta Prevista Anual
+
+                        $contMetaAnualPreenchida = 0;
+
+                        for($anos=2020;$anos<=2045;$anos++) {
+
+                            $saveMetaAno = new MetaAno;
+
+                            $column_name = 'metaAno_'.$anos;
+
+                            if(isset($this->$column_name) && !is_null($this->$column_name) && $this->$column_name != '' && $this->$column_name > 0) {
+
+                                $saveMetaAno->cod_indicador = $save->cod_indicador;
+                                $saveMetaAno->num_ano = $anos;
+                                $saveMetaAno->meta = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->$column_name);
+
+                                // Início do trecho para Salvar a Meta Prevista Anual
+
+                                $saveMetaAno->save();
+
+                                // Fim do trecho para Salvar a Meta Prevista Anual
+
+                                $modificacoes = $modificacoes . "<span class='mt-4 pt-4'>Meta Prevista Anual: <span class='text-green-800'><strong>".$anos." - ".$this->$column_name."</strong></span></span><br>";
+
+                                $contMetaAnualPreenchida = $contMetaAnualPreenchida + 1;
+
+                            }
+
+                            // --- x --- x --- x --- x --- x --- x ---
+
+                            // Início do trecho para gravar a Meta Prevista Mensal
+
+                            if(isset($this->$column_name) && !is_null($this->$column_name) && $this->$column_name != '' && $this->$column_name > 0) {
+
+                                for ($contMes=1;$contMes<=12;$contMes++) {
+
+                                    $column_name_mes = '';
+
+                                    $column_name_mes = 'metaMes_'.$contMes.'_'.$anos;
+
+                                    $saveMetaMensal = new EvolucaoIndicador;
+
+                                    $saveMetaMensal->cod_indicador = $save->cod_indicador;
+                                    $saveMetaMensal->num_ano = $anos;
+                                    $saveMetaMensal->num_mes = $contMes;
+
+                                    if(isset($this->$column_name_mes) && !is_null($this->$column_name_mes) && $this->$column_name_mes != '') {
+
+                                        $saveMetaMensal->vlr_previsto = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->$column_name_mes);
+
+                                        $modificacoes = $modificacoes . "<span class='ml-3'>Meta Prevista Mensal: <span class='text-green-800'>".mesNumeralParaExtensoCurto($contMes)."/".$anos." - ".$this->$column_name_mes."</span></span><br>";
+
+                                    }
+
+                                    // Início do trecho para Salvar a Meta Prevista Mensal
+
+                                    $saveMetaMensal->save();
+
+                                    // Fim do trecho para Salvar a Meta Prevista Mensal
+
+                                }
+
+                            }
+
+                            // Fim do trecho para gravar a Meta Prevista Mensal
+
+                        }
+
+                        $acao = Acoes::create(array(
+                            'table' => 'tab_indicador',
+                            'table_id' => $save->cod_indicador,
+                            'user_id' => Auth::user()->id,
+                            'acao' => $modificacoes
+                        ));
+
+                        // Fim do trecho para a Meta Prevista Anual
+
+                        $this->showModalResultadoEdicao = true;
+
+                        $this->mensagemResultadoEdicao = $modificacoes;
+
+                        // Fim do trecho para inserir um novo indicador
+
+                    } else {
+
+                        // Já existir o indicador
+
+                        $consultarPlanoDeAcao = PlanoAcao::find($this->cod_plano_de_acao);
+
+                        $this->showModalImportant = true;
+
+                        $this->mensagemImportant = "Já existi esse indicador com essas mesmas características para este Plano de Ação (".$consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao.'. '.$consultarPlanoDeAcao->dsc_plano_de_acao.")";
 
                     }
 
-                    // Fim do trecho para a unidade de medida do indicador
-
                     // --- x --- x --- x --- x --- x --- x ---
-
-                    $this->showModalResultadoEdicao = true;
-
-                    $this->mensagemResultadoEdicao = $modificacoes;
-
-
-
-
-
-
-
-
-
-                    // Início do trecho para o tipo de análise do indicador
-
-                    if(isset($this->dsc_tipo) && !is_null($this->dsc_tipo) && $this->dsc_tipo != '') {
-
-                        $save->dsc_tipo = $this->dsc_tipo;
-
-                        $modificacoes = $modificacoes . "Tipo de Análise do Indicador (Polaridade): <span class='text-green-800'>".$this->dsc_tipo."</span><br>";
-
-                    }
-
-                    // Fim do trecho para o tipo de análise do indicador
-
-                    // --- x --- x --- x --- x --- x --- x ---
-
-                    // Fim do trecho para inserir um novo indicador
 
                 } else {
 
@@ -1151,6 +1434,13 @@ class IndicadoresLivewire extends Component
                 }
 
                 // Fim do trecho para gravação
+
+                $this->zerarVariaveis();
+
+                $this->abrirFecharForm = 'none';
+                $this->iconAbrirFechar = 'fas fa-plus text-xs';
+
+                $this->editarForm = false;
 
             }
 
@@ -1223,56 +1513,18 @@ class IndicadoresLivewire extends Component
     public function render()
     {
 
+        $indicadores = Pei::with('perspectivas','perspectivas.objetivosEstrategicos','perspectivas.objetivosEstrategicos.planosDeAcao','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores.linhaBase','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores.metaAno','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores.evolucaoIndicador','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores.acoesRealizadas');
+
         // Início para montagem dos anos da linha de base
 
         $anos = [];
-        for ($index=date('Y')-1;$index>=2000;$index-=1) {
+        for ($index=date('Y')-1;$index>=2012;$index-=1) {
             $anos[$index * 1] = $index * 1;
         }
 
         $this->anosLinhaBase = $anos;
 
         // Fim para montagem dos anos da linha de base
-
-        // Início para verificar se existe preenchimento de algum item da linha de base e solicitar o preenchimento completo, do ano e o valor.
-
-        if(isset($this->num_ano_base_1) && !is_null($this->num_ano_base_1) && $this->num_ano_base_1 != '') {
-
-            $this->require_linha_base_1 = true;
-
-        }
-
-        if(isset($this->num_ano_base_2) && !is_null($this->num_ano_base_2) && $this->num_ano_base_2 != '') {
-
-            $this->require_linha_base_2 = true;
-
-        }
-
-        if(isset($this->num_ano_base_3) && !is_null($this->num_ano_base_3) && $this->num_ano_base_3 != '') {
-
-            $this->require_linha_base_3 = true;
-
-        }
-
-        if(isset($this->num_linha_base_1) && !is_null($this->num_linha_base_1) && $this->num_linha_base_1 != '') {
-
-            $this->require_linha_base_1 = true;
-
-        }
-
-        if(isset($this->num_linha_base_2) && !is_null($this->num_linha_base_2) && $this->num_linha_base_2 != '') {
-
-            $this->require_linha_base_2 = true;
-
-        }
-
-        if(isset($this->num_linha_base_3) && !is_null($this->num_linha_base_3) && $this->num_linha_base_3 != '') {
-
-            $this->require_linha_base_3 = true;
-
-        }
-
-        // Fim para verificar se existe preenchimento de algum item da linha de base e solicitar o preenchimento completo, do ano e o valor.
 
         $this->pei = Pei::select(db::raw("dsc_pei||' ( '||num_ano_inicio_pei||' a '||num_ano_fim_pei||' )' as dsc_pei, cod_pei"))
         ->where('dsc_pei','!=','')
@@ -1286,6 +1538,8 @@ class IndicadoresLivewire extends Component
 
             $perspectiva = $perspectiva->where('cod_pei',$this->cod_pei);
 
+            $indicadores = $indicadores->where('cod_pei',$this->cod_pei);
+
         } else {
 
             $perspectiva = $perspectiva->whereNull('cod_pei');
@@ -1298,6 +1552,16 @@ class IndicadoresLivewire extends Component
         $this->perspectiva = $perspectiva;
 
         $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_objetivo_estrategico AS dsc_objetivo_estrategico, cod_objetivo_estrategico"));
+
+        if(isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '') {
+
+            Session()->put('cod_perspectiva', $this->cod_perspectiva);
+
+        } else {
+
+            Session()->forget('cod_perspectiva');
+
+        }
 
         if(isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '' && isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '' && $perspectiva->count() > 0) {
 
@@ -1384,7 +1648,7 @@ class IndicadoresLivewire extends Component
 
         $contAnos = 1;
 
-        if(isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '') {
+        if(isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '') {
 
             // Início da abertura dos campos de preenchimento da linha de base e das metas previstas anuais
 
@@ -1500,6 +1764,11 @@ class IndicadoresLivewire extends Component
         $textoErro3 = '';
         $textoErro4 = '';
 
+        $contNaoVazio1 = 0;
+        $contNaoVazio2 = 0;
+        $contNaoVazio3 = 0;
+        $contNaoVazio4 = 0;
+
         for($anoLoop=($this->anoInicioDoPeiSelecionado)*1;$anoLoop<=($this->anoConclusaoDoPeiSelecionado)*1;$anoLoop++) {
 
             $column_name = '';
@@ -1564,6 +1833,8 @@ class IndicadoresLivewire extends Component
 
                             if($valor > 0) {
 
+                                $contNaoVazio1 = $contNaoVazio1 + 1;
+
                                 $somaMetaAno1 = (($somaMetaAno1)*1) + (($valor)*1);
 
                             }
@@ -1573,6 +1844,8 @@ class IndicadoresLivewire extends Component
                         if($contAnos == 2) {
 
                             if($valor > 0) {
+
+                                $contNaoVazio2 = $contNaoVazio2 + 1;
 
                                 $somaMetaAno2 = (($somaMetaAno2)*1) + (($valor)*1);
 
@@ -1584,6 +1857,8 @@ class IndicadoresLivewire extends Component
 
                             if($valor > 0) {
 
+                                $contNaoVazio3 = $contNaoVazio3 + 1;
+
                                 $somaMetaAno3 = (($somaMetaAno3)*1) + (($valor)*1);
 
                             }
@@ -1594,11 +1869,41 @@ class IndicadoresLivewire extends Component
 
                             if($valor > 0) {
 
+                                $contNaoVazio4 = $contNaoVazio4 + 1;
+
                                 $somaMetaAno4 = (($somaMetaAno4)*1) + (($valor)*1);
 
                             }
 
                         }
+
+                    }
+
+                }
+
+                if(isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+
+                    if(isset($contNaoVazio1) && !is_null($contNaoVazio1) && $contNaoVazio1 != '' && $contNaoVazio1 > 0) {
+
+                        $somaMetaAno1 = ($somaMetaAno1)/$contNaoVazio1;
+
+                    }
+
+                    if(isset($contNaoVazio2) && !is_null($contNaoVazio2) && $contNaoVazio2 != '' && $contNaoVazio2 > 0) {
+
+                        $somaMetaAno2 = ($somaMetaAno2)/$contNaoVazio2;
+
+                    }
+
+                    if(isset($contNaoVazio3) && !is_null($contNaoVazio3) && $contNaoVazio3 != '' && $contNaoVazio3 > 0) {
+
+                        $somaMetaAno3 = ($somaMetaAno3)/$contNaoVazio3;
+
+                    }
+
+                    if(isset($contNaoVazio4) && !is_null($contNaoVazio4) && $contNaoVazio4 != '' && $contNaoVazio4 > 0) {
+
+                        $somaMetaAno4 = ($somaMetaAno4)/$contNaoVazio4;
 
                     }
 
@@ -2096,6 +2401,30 @@ class IndicadoresLivewire extends Component
 
         $this->planoAcao = $planoAcao;
 
+        if(isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
+
+            Session()->put('cod_objetivo_estrategico', $this->cod_objetivo_estrategico);
+
+        } else {
+
+            Session()->forget('cod_objetivo_estrategico');
+
+        }
+
+        if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
+
+            Session()->put('cod_plano_de_acao', $this->cod_plano_de_acao);
+
+        } else {
+
+            Session()->forget('cod_plano_de_acao');
+
+        }
+
+        $indicadores = $indicadores->get();
+
+        $this->indicadores = $indicadores;
+
         return view('livewire.indicadores-livewire',['anoInicioDoPeiSelecionado' => $this->anoInicioDoPeiSelecionado, 'anoConclusaoDoPeiSelecionado' => $this->anoConclusaoDoPeiSelecionado]);
     }
 
@@ -2206,6 +2535,448 @@ class IndicadoresLivewire extends Component
         }
 
         return $hierarquiaSuperior;
+
+    }
+
+    protected function zerarVariaveis() {
+
+        $this->cod_pei = null;
+        $this->pei = [];
+        $this->cod_perspectiva = null;
+        $this->perspectiva = [];
+        $this->cod_objetivo_estrategico = null;
+        $this->objetivoEstragico = [];
+
+        $this->cod_indicador = null;
+
+        $this->cod_plano_de_acao = null;
+        $this->planoAcao = [];
+        $this->dsc_indicador = null;
+        $this->dsc_formula = null;
+        $this->tiposIndicadores = ['+' => 'Quanto maior for o resultado melhor','-' => 'Quanto menor for o resultado melhor','=' => 'Quanto igual for o resultado melhor'];
+        $this->dsc_unidade_medida = null;
+        $this->unidadesMedida = ['Quantidade' => 'Quantidade','Porcentagem' => 'Porcentagem','Dinheiro' => 'Dinheiro R$ 0,00 (real)'];
+
+        $this->dsc_tipo = null;
+        $this->dsc_fonte = null;
+        $this->dsc_periodo_medicao = null;
+        $this->bln_acumulado = null;
+
+        $this->vlr_meta = null;
+
+        $this->tirarReadonly = false;
+
+        $this->adequarMascara = null;
+
+        $this->hierarquiaUnidade = null;
+
+        $this->anoInicioDoPeiSelecionado = null;
+        $this->anoConclusaoDoPeiSelecionado = null;
+
+        $this->habilitarCampoInserirMetas = 'none';
+
+        $this->primeiroAnoDoPeiSelecionado = null;
+        $this->ultimoAnoDoPeiSelecionado = null;
+
+        $this->anosLinhaBase = null;
+
+        $this->num_ano_base_1 = null;
+        $this->num_ano_base_2 = null;
+        $this->num_ano_base_3 = null;
+
+        $this->num_linha_base_1 = null;
+        $this->num_linha_base_2 = null;
+        $this->num_linha_base_3 = null;
+
+        $this->metaAno_2020 = null;
+        $this->metaAno_2021 = null;
+        $this->metaAno_2022 = null;
+        $this->metaAno_2023 = null;
+        $this->metaAno_2024 = null;
+        $this->metaAno_2025 = null;
+        $this->metaAno_2026 = null;
+        $this->metaAno_2027 = null;
+        $this->metaAno_2028 = null;
+        $this->metaAno_2029 = null;
+        $this->metaAno_2030 = null;
+        $this->metaAno_2031 = null;
+        $this->metaAno_2032 = null;
+        $this->metaAno_2033 = null;
+        $this->metaAno_2034 = null;
+        $this->metaAno_2035 = null;
+        $this->metaAno_2036 = null;
+        $this->metaAno_2037 = null;
+        $this->metaAno_2038 = null;
+        $this->metaAno_2039 = null;
+        $this->metaAno_2040 = null;
+        $this->metaAno_2041 = null;
+        $this->metaAno_2042 = null;
+        $this->metaAno_2043 = null;
+        $this->metaAno_2044 = null;
+        $this->metaAno_2045 = null;
+
+        $this->metaMes_1_2020 = null;
+        $this->metaMes_2_2020 = null;
+        $this->metaMes_3_2020 = null;
+        $this->metaMes_4_2020 = null;
+        $this->metaMes_5_2020 = null;
+        $this->metaMes_6_2020 = null;
+        $this->metaMes_7_2020 = null;
+        $this->metaMes_8_2020 = null;
+        $this->metaMes_9_2020 = null;
+        $this->metaMes_10_2020 = null;
+        $this->metaMes_11_2020 = null;
+        $this->metaMes_12_2020 = null;
+        $this->metaMes_1_2021 = null;
+        $this->metaMes_2_2021 = null;
+        $this->metaMes_3_2021 = null;
+        $this->metaMes_4_2021 = null;
+        $this->metaMes_5_2021 = null;
+        $this->metaMes_6_2021 = null;
+        $this->metaMes_7_2021 = null;
+        $this->metaMes_8_2021 = null;
+        $this->metaMes_9_2021 = null;
+        $this->metaMes_10_2021 = null;
+        $this->metaMes_11_2021 = null;
+        $this->metaMes_12_2021 = null;
+        $this->metaMes_1_2022 = null;
+        $this->metaMes_2_2022 = null;
+        $this->metaMes_3_2022 = null;
+        $this->metaMes_4_2022 = null;
+        $this->metaMes_5_2022 = null;
+        $this->metaMes_6_2022 = null;
+        $this->metaMes_7_2022 = null;
+        $this->metaMes_8_2022 = null;
+        $this->metaMes_9_2022 = null;
+        $this->metaMes_10_2022 = null;
+        $this->metaMes_11_2022 = null;
+        $this->metaMes_12_2022 = null;
+        $this->metaMes_1_2023 = null;
+        $this->metaMes_2_2023 = null;
+        $this->metaMes_3_2023 = null;
+        $this->metaMes_4_2023 = null;
+        $this->metaMes_5_2023 = null;
+        $this->metaMes_6_2023 = null;
+        $this->metaMes_7_2023 = null;
+        $this->metaMes_8_2023 = null;
+        $this->metaMes_9_2023 = null;
+        $this->metaMes_10_2023 = null;
+        $this->metaMes_11_2023 = null;
+        $this->metaMes_12_2023 = null;
+        $this->metaMes_1_2024 = null;
+        $this->metaMes_2_2024 = null;
+        $this->metaMes_3_2024 = null;
+        $this->metaMes_4_2024 = null;
+        $this->metaMes_5_2024 = null;
+        $this->metaMes_6_2024 = null;
+        $this->metaMes_7_2024 = null;
+        $this->metaMes_8_2024 = null;
+        $this->metaMes_9_2024 = null;
+        $this->metaMes_10_2024 = null;
+        $this->metaMes_11_2024 = null;
+        $this->metaMes_12_2024 = null;
+        $this->metaMes_1_2025 = null;
+        $this->metaMes_2_2025 = null;
+        $this->metaMes_3_2025 = null;
+        $this->metaMes_4_2025 = null;
+        $this->metaMes_5_2025 = null;
+        $this->metaMes_6_2025 = null;
+        $this->metaMes_7_2025 = null;
+        $this->metaMes_8_2025 = null;
+        $this->metaMes_9_2025 = null;
+        $this->metaMes_10_2025 = null;
+        $this->metaMes_11_2025 = null;
+        $this->metaMes_12_2025 = null;
+        $this->metaMes_1_2026 = null;
+        $this->metaMes_2_2026 = null;
+        $this->metaMes_3_2026 = null;
+        $this->metaMes_4_2026 = null;
+        $this->metaMes_5_2026 = null;
+        $this->metaMes_6_2026 = null;
+        $this->metaMes_7_2026 = null;
+        $this->metaMes_8_2026 = null;
+        $this->metaMes_9_2026 = null;
+        $this->metaMes_10_2026 = null;
+        $this->metaMes_11_2026 = null;
+        $this->metaMes_12_2026 = null;
+        $this->metaMes_1_2027 = null;
+        $this->metaMes_2_2027 = null;
+        $this->metaMes_3_2027 = null;
+        $this->metaMes_4_2027 = null;
+        $this->metaMes_5_2027 = null;
+        $this->metaMes_6_2027 = null;
+        $this->metaMes_7_2027 = null;
+        $this->metaMes_8_2027 = null;
+        $this->metaMes_9_2027 = null;
+        $this->metaMes_10_2027 = null;
+        $this->metaMes_11_2027 = null;
+        $this->metaMes_12_2027 = null;
+        $this->metaMes_1_2028 = null;
+        $this->metaMes_2_2028 = null;
+        $this->metaMes_3_2028 = null;
+        $this->metaMes_4_2028 = null;
+        $this->metaMes_5_2028 = null;
+        $this->metaMes_6_2028 = null;
+        $this->metaMes_7_2028 = null;
+        $this->metaMes_8_2028 = null;
+        $this->metaMes_9_2028 = null;
+        $this->metaMes_10_2028 = null;
+        $this->metaMes_11_2028 = null;
+        $this->metaMes_12_2028 = null;
+        $this->metaMes_1_2029 = null;
+        $this->metaMes_2_2029 = null;
+        $this->metaMes_3_2029 = null;
+        $this->metaMes_4_2029 = null;
+        $this->metaMes_5_2029 = null;
+        $this->metaMes_6_2029 = null;
+        $this->metaMes_7_2029 = null;
+        $this->metaMes_8_2029 = null;
+        $this->metaMes_9_2029 = null;
+        $this->metaMes_10_2029 = null;
+        $this->metaMes_11_2029 = null;
+        $this->metaMes_12_2029 = null;
+        $this->metaMes_1_2030 = null;
+        $this->metaMes_2_2030 = null;
+        $this->metaMes_3_2030 = null;
+        $this->metaMes_4_2030 = null;
+        $this->metaMes_5_2030 = null;
+        $this->metaMes_6_2030 = null;
+        $this->metaMes_7_2030 = null;
+        $this->metaMes_8_2030 = null;
+        $this->metaMes_9_2030 = null;
+        $this->metaMes_10_2030 = null;
+        $this->metaMes_11_2030 = null;
+        $this->metaMes_12_2030 = null;
+        $this->metaMes_1_2031 = null;
+        $this->metaMes_2_2031 = null;
+        $this->metaMes_3_2031 = null;
+        $this->metaMes_4_2031 = null;
+        $this->metaMes_5_2031 = null;
+        $this->metaMes_6_2031 = null;
+        $this->metaMes_7_2031 = null;
+        $this->metaMes_8_2031 = null;
+        $this->metaMes_9_2031 = null;
+        $this->metaMes_10_2031 = null;
+        $this->metaMes_11_2031 = null;
+        $this->metaMes_12_2031 = null;
+        $this->metaMes_1_2032 = null;
+        $this->metaMes_2_2032 = null;
+        $this->metaMes_3_2032 = null;
+        $this->metaMes_4_2032 = null;
+        $this->metaMes_5_2032 = null;
+        $this->metaMes_6_2032 = null;
+        $this->metaMes_7_2032 = null;
+        $this->metaMes_8_2032 = null;
+        $this->metaMes_9_2032 = null;
+        $this->metaMes_10_2032 = null;
+        $this->metaMes_11_2032 = null;
+        $this->metaMes_12_2032 = null;
+        $this->metaMes_1_2033 = null;
+        $this->metaMes_2_2033 = null;
+        $this->metaMes_3_2033 = null;
+        $this->metaMes_4_2033 = null;
+        $this->metaMes_5_2033 = null;
+        $this->metaMes_6_2033 = null;
+        $this->metaMes_7_2033 = null;
+        $this->metaMes_8_2033 = null;
+        $this->metaMes_9_2033 = null;
+        $this->metaMes_10_2033 = null;
+        $this->metaMes_11_2033 = null;
+        $this->metaMes_12_2033 = null;
+        $this->metaMes_1_2034 = null;
+        $this->metaMes_2_2034 = null;
+        $this->metaMes_3_2034 = null;
+        $this->metaMes_4_2034 = null;
+        $this->metaMes_5_2034 = null;
+        $this->metaMes_6_2034 = null;
+        $this->metaMes_7_2034 = null;
+        $this->metaMes_8_2034 = null;
+        $this->metaMes_9_2034 = null;
+        $this->metaMes_10_2034 = null;
+        $this->metaMes_11_2034 = null;
+        $this->metaMes_12_2034 = null;
+        $this->metaMes_1_2035 = null;
+        $this->metaMes_2_2035 = null;
+        $this->metaMes_3_2035 = null;
+        $this->metaMes_4_2035 = null;
+        $this->metaMes_5_2035 = null;
+        $this->metaMes_6_2035 = null;
+        $this->metaMes_7_2035 = null;
+        $this->metaMes_8_2035 = null;
+        $this->metaMes_9_2035 = null;
+        $this->metaMes_10_2035 = null;
+        $this->metaMes_11_2035 = null;
+        $this->metaMes_12_2035 = null;
+        $this->metaMes_1_2036 = null;
+        $this->metaMes_2_2036 = null;
+        $this->metaMes_3_2036 = null;
+        $this->metaMes_4_2036 = null;
+        $this->metaMes_5_2036 = null;
+        $this->metaMes_6_2036 = null;
+        $this->metaMes_7_2036 = null;
+        $this->metaMes_8_2036 = null;
+        $this->metaMes_9_2036 = null;
+        $this->metaMes_10_2036 = null;
+        $this->metaMes_11_2036 = null;
+        $this->metaMes_12_2036 = null;
+        $this->metaMes_1_2037 = null;
+        $this->metaMes_2_2037 = null;
+        $this->metaMes_3_2037 = null;
+        $this->metaMes_4_2037 = null;
+        $this->metaMes_5_2037 = null;
+        $this->metaMes_6_2037 = null;
+        $this->metaMes_7_2037 = null;
+        $this->metaMes_8_2037 = null;
+        $this->metaMes_9_2037 = null;
+        $this->metaMes_10_2037 = null;
+        $this->metaMes_11_2037 = null;
+        $this->metaMes_12_2037 = null;
+        $this->metaMes_1_2038 = null;
+        $this->metaMes_2_2038 = null;
+        $this->metaMes_3_2038 = null;
+        $this->metaMes_4_2038 = null;
+        $this->metaMes_5_2038 = null;
+        $this->metaMes_6_2038 = null;
+        $this->metaMes_7_2038 = null;
+        $this->metaMes_8_2038 = null;
+        $this->metaMes_9_2038 = null;
+        $this->metaMes_10_2038 = null;
+        $this->metaMes_11_2038 = null;
+        $this->metaMes_12_2038 = null;
+        $this->metaMes_1_2039 = null;
+        $this->metaMes_2_2039 = null;
+        $this->metaMes_3_2039 = null;
+        $this->metaMes_4_2039 = null;
+        $this->metaMes_5_2039 = null;
+        $this->metaMes_6_2039 = null;
+        $this->metaMes_7_2039 = null;
+        $this->metaMes_8_2039 = null;
+        $this->metaMes_9_2039 = null;
+        $this->metaMes_10_2039 = null;
+        $this->metaMes_11_2039 = null;
+        $this->metaMes_12_2039 = null;
+        $this->metaMes_1_2040 = null;
+        $this->metaMes_2_2040 = null;
+        $this->metaMes_3_2040 = null;
+        $this->metaMes_4_2040 = null;
+        $this->metaMes_5_2040 = null;
+        $this->metaMes_6_2040 = null;
+        $this->metaMes_7_2040 = null;
+        $this->metaMes_8_2040 = null;
+        $this->metaMes_9_2040 = null;
+        $this->metaMes_10_2040 = null;
+        $this->metaMes_11_2040 = null;
+        $this->metaMes_12_2040 = null;
+        $this->metaMes_1_2041 = null;
+        $this->metaMes_2_2041 = null;
+        $this->metaMes_3_2041 = null;
+        $this->metaMes_4_2041 = null;
+        $this->metaMes_5_2041 = null;
+        $this->metaMes_6_2041 = null;
+        $this->metaMes_7_2041 = null;
+        $this->metaMes_8_2041 = null;
+        $this->metaMes_9_2041 = null;
+        $this->metaMes_10_2041 = null;
+        $this->metaMes_11_2041 = null;
+        $this->metaMes_12_2041 = null;
+        $this->metaMes_1_2042 = null;
+        $this->metaMes_2_2042 = null;
+        $this->metaMes_3_2042 = null;
+        $this->metaMes_4_2042 = null;
+        $this->metaMes_5_2042 = null;
+        $this->metaMes_6_2042 = null;
+        $this->metaMes_7_2042 = null;
+        $this->metaMes_8_2042 = null;
+        $this->metaMes_9_2042 = null;
+        $this->metaMes_10_2042 = null;
+        $this->metaMes_11_2042 = null;
+        $this->metaMes_12_2042 = null;
+        $this->metaMes_1_2043 = null;
+        $this->metaMes_2_2043 = null;
+        $this->metaMes_3_2043 = null;
+        $this->metaMes_4_2043 = null;
+        $this->metaMes_5_2043 = null;
+        $this->metaMes_6_2043 = null;
+        $this->metaMes_7_2043 = null;
+        $this->metaMes_8_2043 = null;
+        $this->metaMes_9_2043 = null;
+        $this->metaMes_10_2043 = null;
+        $this->metaMes_11_2043 = null;
+        $this->metaMes_12_2043 = null;
+        $this->metaMes_1_2044 = null;
+        $this->metaMes_2_2044 = null;
+        $this->metaMes_3_2044 = null;
+        $this->metaMes_4_2044 = null;
+        $this->metaMes_5_2044 = null;
+        $this->metaMes_6_2044 = null;
+        $this->metaMes_7_2044 = null;
+        $this->metaMes_8_2044 = null;
+        $this->metaMes_9_2044 = null;
+        $this->metaMes_10_2044 = null;
+        $this->metaMes_11_2044 = null;
+        $this->metaMes_12_2044 = null;
+        $this->metaMes_1_2045 = null;
+        $this->metaMes_2_2045 = null;
+        $this->metaMes_3_2045 = null;
+        $this->metaMes_4_2045 = null;
+        $this->metaMes_5_2045 = null;
+        $this->metaMes_6_2045 = null;
+        $this->metaMes_7_2045 = null;
+        $this->metaMes_8_2045 = null;
+        $this->metaMes_9_2045 = null;
+        $this->metaMes_10_2045 = null;
+        $this->metaMes_11_2045 = null;
+        $this->metaMes_12_2045 = null;
+
+        $this->requiredMetaAno_2020 = null;
+        $this->requiredMetaAno_2021 = null;
+        $this->requiredMetaAno_2022 = null;
+        $this->requiredMetaAno_2023 = null;
+        $this->requiredMetaAno_2024 = null;
+        $this->requiredMetaAno_2025 = null;
+        $this->requiredMetaAno_2026 = null;
+        $this->requiredMetaAno_2027 = null;
+        $this->requiredMetaAno_2028 = null;
+        $this->requiredMetaAno_2029 = null;
+        $this->requiredMetaAno_2030 = null;
+        $this->requiredMetaAno_2031 = null;
+        $this->requiredMetaAno_2032 = null;
+        $this->requiredMetaAno_2033 = null;
+        $this->requiredMetaAno_2034 = null;
+        $this->requiredMetaAno_2035 = null;
+        $this->requiredMetaAno_2036 = null;
+        $this->requiredMetaAno_2037 = null;
+        $this->requiredMetaAno_2038 = null;
+        $this->requiredMetaAno_2039 = null;
+        $this->requiredMetaAno_2040 = null;
+        $this->requiredMetaAno_2041 = null;
+        $this->requiredMetaAno_2042 = null;
+        $this->requiredMetaAno_2043 = null;
+        $this->requiredMetaAno_2044 = null;
+        $this->requiredMetaAno_2045 = null;
+
+        $this->ano1 = null;
+        $this->ano2 = null;
+        $this->ano3 = null;
+        $this->ano4 = null;
+
+        $this->somaMetaAno1 = null;
+        $this->somaMetaAno2 = null;
+        $this->somaMetaAno3 = null;
+        $this->somaMetaAno4 = null;
+
+        $this->erroInsercaoMetaMensal = false;
+        $this->textoErroInsercaoMetaMensal = null;
+
+        $this->inputAnoLinhaBaseClass = null;
+        $this->inputValorLinhaBaseClass = null;
+
+        $this->inputValorClass = null;
+
+        $this->inputValorMesAno1Class = null;
+        $this->inputValorMesAno2Class = null;
+        $this->inputValorMesAno3Class = null;
+        $this->inputValorMesAno4Class = null;
 
     }
 }

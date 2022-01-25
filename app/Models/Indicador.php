@@ -20,9 +20,27 @@ class Indicador extends Model
 
     protected $guarded = array();
 
+    public function linhaBase() {
+
+        return $this->hasMany(LinhaBase::class, 'cod_indicador');
+
+    }
+
+    public function metaAno() {
+
+        return $this->hasMany(MetaAno::class, 'cod_indicador');
+
+    }
+
+    public function evolucaoIndicador() {
+
+        return $this->hasMany(EvolucaoIndicador::class, 'cod_indicador');
+
+    }
+
     public function acoesRealizadas() {
 
-        return $this->hasMany(Acoes::class, 'id_table')
+        return $this->hasMany(Acoes::class, 'table_id')
         ->whereIn('table',['tab_indicador'])
         ->orderBy('created_at','desc');
 

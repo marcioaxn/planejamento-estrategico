@@ -19,7 +19,7 @@ class CreateTabPlanoDeAcaoTable extends Migration
             $table->text('txt_principais_entregas')->nullable(true);
             $table->date('dte_inicio')->nullable(false);
             $table->date('dte_fim')->nullable(false);
-            $table->decimal('vlr_orcamento_previsto', $precision = 1000, $scale = 2);
+            $table->decimal('vlr_orcamento_previsto', $precision = 1000, $scale = 2)->nullable(true);
             $table->string('bln_status')->nullable(false);
             $table->string('cod_ppa')->nullable(true);
             $table->string('cod_loa')->nullable(true);

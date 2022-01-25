@@ -70,7 +70,7 @@ class TipoExecucaoLivewire extends Component
 
             $acao = Acoes::create(array(
                 'table' => 'tab_tipo_execucao',
-                'id_table' => $save->cod_tipo_execucao,
+                'table_id' => $save->cod_tipo_execucao,
                 'user_id' => Auth::user()->id,
                 'acao' => $modificacoes
             ));
@@ -105,7 +105,7 @@ class TipoExecucaoLivewire extends Component
 
                 $acao = Acoes::create(array(
                     'table' => 'tab_tipo_execucao',
-                    'id_table' => $this->cod_tipo_execucao,
+                    'table_id' => $this->cod_tipo_execucao,
                     'user_id' => Auth::user()->id,
                     'acao' => $modificacoes
                 ));
@@ -175,7 +175,7 @@ class TipoExecucaoLivewire extends Component
 
         $acao = Acoes::create(array(
             'table' => 'tab_tipo_execucao',
-            'id_table' => $singleData->cod_tipo_execucao,
+            'table_id' => $singleData->cod_tipo_execucao,
             'user_id' => Auth::user()->id,
             'acao' => $modificacoes
         ));

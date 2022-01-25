@@ -22,7 +22,7 @@ class EvolucaoIndicador extends Model
 
     public function acoesRealizadas() {
 
-        return $this->hasMany(Acoes::class, 'id_table')
+        return $this->hasMany(Acoes::class, 'table_id')
         ->whereIn('table',['tab_evolucao_indicador'])
         ->orderBy('created_at','desc');
 
