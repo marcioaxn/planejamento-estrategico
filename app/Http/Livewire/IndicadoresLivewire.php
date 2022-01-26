@@ -1955,6 +1955,97 @@ class IndicadoresLivewire extends Component
 
     }
 
+    public function deleteForm($cod_indicador = '') {
+
+        $singleData = Indicador::with('linhaBase','metaAno','evolucaoIndicador')
+        ->find($cod_indicador);
+
+        $this->cod_indicador = $singleData->cod_indicador;
+
+        $consultarPlanoDeAcao = PlanoAcao::find($singleData->cod_plano_de_acao);
+
+        $consultarObjetivoEstrategico = ObjetivoEstrategico::find($consultarPlanoDeAcao->cod_objetivo_estrategico);
+
+        $consultarPerspectiva = Perspectiva::find($consultarObjetivoEstrategico->cod_perspectiva);
+
+        $this->cod_pei = $consultarPerspectiva->cod_pei;
+
+        $consultarPei = Pei::select('num_ano_inicio_pei','num_ano_fim_pei')
+        ->find($this->cod_pei);
+
+        $texto = '';
+
+        $texto .= '<p class="my-2 text-gray-900 text-xs leading-relaxed"><strong>Dados do Indicador para confirmar a exclusão</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>'.$consultarPei->dsc_pei.' ('.$consultarPei->num_ano_inicio_pei.' a '.$consultarPei->num_ano_fim_pei.')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Perspectiva: <strong>'.$consultarPerspectiva->num_nivel_hierarquico_apresentacao.'. '.$consultarPerspectiva->dsc_perspectiva.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Objetivo Estratégico: <strong>'.$consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao.'. '.$consultarObjetivoEstrategico->dsc_objetivo_estrategico.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Plano de Ação: <strong>'.$consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao.'. '.$consultarPlanoDeAcao->dsc_plano_de_acao.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">_________________________________</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Descrição do Indicador: <strong>'.$singleData->dsc_indicador.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade de Medida do Indicador: <strong>'.$singleData->dsc_unidade_medida.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Esse indicador terá o resultado acumulado? <strong>'.$singleData->bln_acumulado.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Tipo de Análise do Indicador (Polaridade): <strong>'.tipoPolaridade($singleData->dsc_tipo).'</strong></p><p class="my-2 text-gray-500 text-xs font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
+
+        $this->mensagemDelete = $texto;
+
+        $this->showModalDelete = true;
+
+        $this->dsc_missao = null;
+        $this->cod_pei = null;
+        $this->cod_organizacao = null;
+        $this->editarForm = false;
+
+    }
+
+    public function delete($cod_indicador = '') {
+
+        $this->showModalDelete = false;
+
+        $singleData = Indicador::with('linhaBase','metaAno','evolucaoIndicador')
+        ->find($cod_indicador);
+
+        $this->cod_indicador = $singleData->cod_indicador;
+
+        $consultarPlanoDeAcao = PlanoAcao::find($singleData->cod_plano_de_acao);
+
+        $consultarObjetivoEstrategico = ObjetivoEstrategico::find($consultarPlanoDeAcao->cod_objetivo_estrategico);
+
+        $consultarPerspectiva = Perspectiva::find($consultarObjetivoEstrategico->cod_perspectiva);
+
+        $this->cod_pei = $consultarPerspectiva->cod_pei;
+
+        $consultarPei = Pei::select('num_ano_inicio_pei','num_ano_fim_pei')
+        ->find($this->cod_pei);
+
+        $texto = '';
+
+        $texto .= '<p class="my-2 text-gray-900 text-xs leading-relaxed"><strong>Excluiu com sucesso este Indicador</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>'.$consultarPei->dsc_pei.' ('.$consultarPei->num_ano_inicio_pei.' a '.$consultarPei->num_ano_fim_pei.')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Perspectiva: <strong>'.$consultarPerspectiva->num_nivel_hierarquico_apresentacao.'. '.$consultarPerspectiva->dsc_perspectiva.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Objetivo Estratégico: <strong>'.$consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao.'. '.$consultarObjetivoEstrategico->dsc_objetivo_estrategico.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Plano de Ação: <strong>'.$consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao.'. '.$consultarPlanoDeAcao->dsc_plano_de_acao.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">_________________________________</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Descrição do Indicador: <strong>'.$singleData->dsc_indicador.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade de Medida do Indicador: <strong>'.$singleData->dsc_unidade_medida.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Esse indicador terá o resultado acumulado? <strong>'.$singleData->bln_acumulado.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Tipo de Análise do Indicador (Polaridade): <strong>'.tipoPolaridade($singleData->dsc_tipo).'</strong></p>';
+
+        $acao = Acoes::create(array(
+            'table' => 'tab_indicador',
+            'table_id' => $this->cod_indicador,
+            'user_id' => Auth::user()->id,
+            'acao' => $texto
+        ));
+
+        $consultarLinhaBaseParaExcluir = LinhaBase::where('cod_indicador',$this->cod_indicador)
+        ->get(['cod_linha_base']);
+
+        LinhaBase::destroy($consultarLinhaBaseParaExcluir->toArray());
+
+        $consultarMetaAnoParaExcluir = MetaAno::where('cod_indicador',$this->cod_indicador)
+        ->get(['cod_meta_por_ano']);
+
+        MetaAno::destroy($consultarMetaAnoParaExcluir->toArray());
+
+        $consultarEvolucaoIndicadorParaExcluir = EvolucaoIndicador::where('cod_indicador',$this->cod_indicador)
+        ->get(['cod_evolucao_indicador']);
+
+        EvolucaoIndicador::destroy($consultarEvolucaoIndicadorParaExcluir->toArray());
+
+        $singleData->delete();
+
+        $this->zerarVariaveis();
+
+        $this->editarForm = false;
+
+        $this->showModalResultadoEdicao = true;
+
+        $this->mensagemResultadoEdicao = $texto;
+
+    }
+
     public function adequarMascara() {
 
         if(isset($this->vlr_meta) && !is_null($this->vlr_meta) && $this->vlr_meta != '') {

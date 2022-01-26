@@ -15,7 +15,7 @@ class CreateTabIndicadorTable extends Migration
             $table->text('dsc_tipo')->nullable(false);
             $table->text('dsc_indicador')->nullable(false);
             $table->text('dsc_unidade_medida')->nullable(false);
-            $table->smallInteger('num_peso')->nullable(false);
+            $table->smallInteger('num_peso')->nullable(true);
             $table->string('bln_acumulado')->nullable(false);
             $table->text('dsc_formula')->nullable(true);
             $table->string('dsc_fonte')->nullable(false);

@@ -11,7 +11,7 @@ class CreateTabLinhaBaseIndicadorTable extends Migration
     {
         Schema::create('pei.tab_linha_base_indicador', function (Blueprint $table) {
             $table->uuid('cod_linha_base')->primary();
-            $table->foreignUuid('cod_indicador')->references('cod_indicador')->on('pei.tab_indicador');
+            $table->foreignUuid('cod_indicador')->references('cod_indicador')->on('pei.tab_indicador')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->decimal('num_linha_base', $precision = 1000, $scale = 2);
             $table->smallInteger('num_ano')->nullable(false);
             $table->softDeletes();
