@@ -12,6 +12,9 @@ class PlanoAcao extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'pei.tab_plano_de_acao';
 
     protected $primaryKey = 'cod_plano_de_acao';

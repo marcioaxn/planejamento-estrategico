@@ -12,6 +12,9 @@ class MetaAno extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'pei.tab_meta_por_ano';
 
     protected $primaryKey = 'cod_meta_por_ano';

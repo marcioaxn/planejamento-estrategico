@@ -11,8 +11,8 @@ class CreateTabNivelHierarquicoTable extends Migration
     {
         Schema::create('pei.tab_nivel_hierarquico', function (Blueprint $table) {
             $table->smallInteger('num_nivel_hierarquico_apresentacao')->primary();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         for($cont=1;$cont<=100;$cont++) {

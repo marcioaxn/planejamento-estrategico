@@ -20,8 +20,8 @@ class CreateTabAuditTable extends Migration
             $table->string('table_id')->nullable(false);
             $table->string('ip')->nullable(false);
             $table->foreignUuid('user_id')->references('id')->on('users');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

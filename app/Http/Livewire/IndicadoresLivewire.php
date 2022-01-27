@@ -1501,7 +1501,7 @@ class IndicadoresLivewire extends Component
                                     'user_id' => Auth::user()->id,
                                     'acao' => 'Editou',
                                     'antes' => $editar->$column_name,
-                                    'depois' => $this->$column_name
+                                    'depois' => converteValor('MYSQL','PTBR',$this->$column_name)
                                 ));
 
                             } elseif($data_type === 'uuid') {
@@ -1531,6 +1531,18 @@ class IndicadoresLivewire extends Component
                             } else {
 
                                 $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.$editar->$column_name.' )</span> para <span style="color:#28a745;">( '.$this->$column_name.' )</span>;<br>';
+
+                                $audit = Audit::create(array(
+                                    'table' => 'tab_indicador',
+                                    'table_id' => $this->cod_plano_de_acao,
+                                    'column_name' => $column_name,
+                                    'data_type' => $data_type,
+                                    'ip' => $_SERVER['REMOTE_ADDR'],
+                                    'user_id' => Auth::user()->id,
+                                    'acao' => 'Editou',
+                                    'antes' => $editar->$column_name,
+                                    'depois' => $this->$column_name
+                                ));
 
                             }
 

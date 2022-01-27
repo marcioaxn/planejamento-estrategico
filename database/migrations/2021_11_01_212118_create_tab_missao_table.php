@@ -15,8 +15,8 @@ class CreateTabMissaoTable extends Migration
             $table->text('dsc_valores')->nullable(false);
             $table->foreignUuid('cod_pei')->references('cod_pei')->on('pei.tab_pei');
             $table->foreignUuid('cod_organizacao')->references('cod_organizacao')->on('tab_organizacoes');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

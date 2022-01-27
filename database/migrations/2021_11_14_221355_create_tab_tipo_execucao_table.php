@@ -13,8 +13,8 @@ class CreateTabTipoExecucaoTable extends Migration
         Schema::create('pei.tab_tipo_execucao', function (Blueprint $table) {
             $table->uuid('cod_tipo_execucao')->primary();
             $table->string('dsc_tipo_execucao')->nullable(false);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         DB::select("INSERT INTO pei.tab_tipo_execucao (cod_tipo_execucao, dsc_tipo_execucao, deleted_at, created_at, updated_at) VALUES ('c00b9ebc-7014-4d37-97dc-7875e55fff1b', 'Ação', NULL, '2021-11-14 23:21:21', '2021-11-14 23:21:21');");

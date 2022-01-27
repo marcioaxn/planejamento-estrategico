@@ -13,6 +13,9 @@ class ObjetivoEstrategico extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'pei.tab_objetivo_estrategico';
 
     protected $primaryKey = 'cod_objetivo_estrategico';

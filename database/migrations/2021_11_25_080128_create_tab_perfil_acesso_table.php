@@ -14,8 +14,8 @@ class CreateTabPerfilAcessoTable extends Migration
             $table->uuid('cod_perfil')->primary();
             $table->text('dsc_perfil')->nullable(false);
             $table->text('dsc_permissao')->nullable(false);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         DB::select("INSERT INTO public.tab_perfil_acesso (cod_perfil, dsc_perfil, dsc_permissao, deleted_at, created_at, updated_at) VALUES ('c00b9ebc-7014-4d37-97dc-7875e55fff2a', 'Super Administrador', 'Servidor(a) com todos os privilégios de administração do sistema', NULL, '2021-11-14 23:21:21', '2021-11-14 23:21:21');");

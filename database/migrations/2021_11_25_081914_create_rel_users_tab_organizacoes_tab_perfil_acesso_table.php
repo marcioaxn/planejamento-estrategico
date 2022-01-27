@@ -19,8 +19,8 @@ class CreateRelUsersTabOrganizacoesTabPerfilAcessoTable extends Migration
             $table->foreignUuid('cod_organizacao')->references('cod_organizacao')->on('tab_organizacoes');
             $table->foreignUuid('cod_plano_de_acao')->references('cod_plano_de_acao')->on('pei.tab_plano_de_acao');
             $table->foreignUuid('cod_perfil')->references('cod_perfil')->on('tab_perfil_acesso');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

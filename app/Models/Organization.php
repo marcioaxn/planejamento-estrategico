@@ -12,6 +12,9 @@ class Organization extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'tab_organizacoes';
 
     protected $primaryKey = 'cod_organizacao';

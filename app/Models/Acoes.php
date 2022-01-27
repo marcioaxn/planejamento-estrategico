@@ -13,6 +13,9 @@ class Acoes extends Model
     use Uuids;
     use SoftDeletes;
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'public.acoes';
     protected $dates = array('deleted_at');
     protected $guarded = array();

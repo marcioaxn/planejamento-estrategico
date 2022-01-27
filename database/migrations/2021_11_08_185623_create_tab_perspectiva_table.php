@@ -14,8 +14,8 @@ class CreateTabPerspectivaTable extends Migration
             $table->text('dsc_perspectiva')->nullable(false);
             $table->smallInteger('num_nivel_hierarquico_apresentacao')->nullable(false);
             $table->foreignUuid('cod_pei')->references('cod_pei')->on('pei.tab_pei');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -10,6 +10,7 @@ use App\Models\MissaoVisaoValores;
 use App\Models\Perspectiva;
 use App\Models\PlanoAcao;
 use App\Models\ObjetivoEstrategico;
+use App\Models\GrauSatisfacao;
 use Livewire\WithPagination;
 use \Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,8 @@ class ShowDashboard extends Component
 {
 
     use WithPagination;
+
+    public $grau_satisfacao = null;
 
     public $existePei = false;
     public $pei = null;
@@ -180,6 +183,8 @@ class ShowDashboard extends Component
             ->orderBy('num_nivel_hierarquico_apresentacao','desc')
             ->get();
 
+            $this->grau_satisfacao = $this->grauSatisfacao();
+
             return view('livewire.show-dashboard',['ano' => $ano,'cod_organizacao' => $this->cod_organizacao]);
 
         } else {
@@ -268,6 +273,35 @@ class ShowDashboard extends Component
         }
 
         return $hierarquiaSuperior;
+
+    }
+
+    public function grauSatisfacao() {
+
+        $consultarGrauSatisfacao = GrauSatisfacao::orderBy('vlr_minimo')
+        ->get();
+
+        $montagemGrauSatisfacao = '';
+
+        foreach($consultarGrauSatisfacao as $grauSatisfacao) {
+
+            $color = 'white';
+
+            if($grauSatisfacao->cor === 'yellow') {
+
+                $color = 'black';
+
+            }
+
+            $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-'.$color.' bg-'.$grauSatisfacao->cor.'-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">'.$grauSatisfacao->dsc_grau_satisfcao.' de '.converteValor('MYSQL','PTBR',$grauSatisfacao->vlr_minimo).'% a '.converteValor('MYSQL','PTBR',$grauSatisfacao->vlr_maximo).'%</div>';
+
+        }
+
+        $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-gray-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">Sem meta prevista para o período</div>';
+
+        $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-pink-800 text-sm antialiased sm:subpixel-antialiased md:antialiased">Não houve o preenchimento</div>';
+
+        return $montagemGrauSatisfacao;
 
     }
 }

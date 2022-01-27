@@ -12,6 +12,9 @@ class RelOrganization extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'rel_organizacao';
 
     protected $primaryKey = 'id';

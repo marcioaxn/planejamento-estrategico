@@ -20,8 +20,8 @@ class CreateTabIndicadorTable extends Migration
             $table->text('dsc_formula')->nullable(true);
             $table->string('dsc_fonte')->nullable(false);
             $table->string('dsc_periodo_medicao')->nullable(false);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

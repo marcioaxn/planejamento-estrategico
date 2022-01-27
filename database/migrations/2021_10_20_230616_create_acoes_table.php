@@ -14,8 +14,8 @@ class CreateAcoesTable extends Migration
             $table->foreignUuid('user_id')->references('id')->on('users');
             $table->string('table')->nullable(false);
             $table->text('acao')->nullable(false);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

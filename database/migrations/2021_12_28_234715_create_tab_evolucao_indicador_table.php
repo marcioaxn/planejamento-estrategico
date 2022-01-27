@@ -18,8 +18,8 @@ class CreateTabEvolucaoIndicadorTable extends Migration
             $table->decimal('vlr_realizado', $precision = 1000, $scale = 2)->nullable(true);
             $table->text('txt_avaliacao')->nullable(true);
             $table->string('bln_atualizado')->nullable(true);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -13,6 +13,9 @@ class Audit extends Model
     use Uuids;
     use SoftDeletes;
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'public.tab_audit';
     protected $dates = array('deleted_at');
     protected $guarded = array();

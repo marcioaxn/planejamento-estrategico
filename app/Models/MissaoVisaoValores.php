@@ -12,6 +12,9 @@ class MissaoVisaoValores extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'pei.tab_missao_visao_valores';
 
     protected $primaryKey = 'cod_missao_visao_valores';

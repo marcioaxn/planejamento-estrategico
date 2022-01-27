@@ -12,6 +12,9 @@ class LinhaBase extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'pei.tab_linha_base_indicador';
 
     protected $primaryKey = 'cod_linha_base';

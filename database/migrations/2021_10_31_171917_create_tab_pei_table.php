@@ -14,8 +14,8 @@ class CreateTabPeiTable extends Migration
             $table->text('dsc_pei')->nullable(false);
             $table->smallInteger('num_ano_inicio_pei')->nullable(false);
             $table->smallInteger('num_ano_fim_pei')->nullable(false);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

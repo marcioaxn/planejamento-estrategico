@@ -23,8 +23,8 @@ class CreateTabPlanoDeAcaoTable extends Migration
             $table->string('bln_status')->nullable(false);
             $table->string('cod_ppa')->nullable(true);
             $table->string('cod_loa')->nullable(true);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -179,6 +179,12 @@
                                     {{ __('Indicadores') }}
                                 </x-jet-dropdown-link>
 
+                                <div class="border-t blue-gray-100"></div>
+
+                                <x-jet-dropdown-link href="{{ url($ano.'/adm/grau-satisfacao') }}" :active="request()->routeIs('grauSatisfacao')">
+                                    {{ __('Grau de Satisfação') }}
+                                </x-jet-dropdown-link>
+
                                 
                             </x-slot>
                         </x-jet-dropdown>

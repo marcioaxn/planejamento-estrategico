@@ -12,6 +12,9 @@ class PlanejamentoEstrategicoIntegrado extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'tab_pei';
 
     protected $primaryKey = 'cod_pei';

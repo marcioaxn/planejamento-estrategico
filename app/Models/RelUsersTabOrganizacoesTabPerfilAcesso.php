@@ -12,6 +12,9 @@ class RelUsersTabOrganizacoesTabPerfilAcesso extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'rel_users_tab_organizacoes_tab_perfil_acesso';
 
     protected $primaryKey = 'id';

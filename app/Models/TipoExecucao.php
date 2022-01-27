@@ -12,6 +12,9 @@ class TipoExecucao extends Model
     use Uuids;
     use SoftDeletes;
     
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $table = 'pei.tab_tipo_execucao';
 
     protected $primaryKey = 'cod_tipo_execucao';

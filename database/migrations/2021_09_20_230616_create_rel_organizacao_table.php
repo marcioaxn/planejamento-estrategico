@@ -13,8 +13,8 @@ class CreateRelOrganizacaoTable extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('cod_organizacao')->references('cod_organizacao')->on('tab_organizacoes');
             $table->foreignUuid('rel_cod_organizacao')->references('cod_organizacao')->on('tab_organizacoes');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
