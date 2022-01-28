@@ -59,6 +59,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Livewire App URL
+    |--------------------------------------------------------------------------
+    |
+    | This value should be used if livewire assets are served from CDN.
+    | Livewire will communicate with an app through this url.
+    |
+    | Examples: "https://my-app.com", "myurl.com/app".
+    |
+    */
+
+    'app_url' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Livewire Endpoint Middleware Group
     |--------------------------------------------------------------------------
     |
@@ -88,10 +102,10 @@ return [
         'directory' => null,   // Example: 'tmp'                      Default  'livewire-tmp'
         'middleware' => null,  // Example: 'throttle:5,1'             Default: 'throttle:60,1'
         'preview_mimes' => [   // Supported file types for temporary pre-signed file URLs.
-            'png', 'gif', 'bmp', 'svg', 'wav', 'mp4',
-            'mov', 'avi', 'wmv', 'mp3', 'm4a',
-            'jpg', 'jpeg', 'mpga', 'webp', 'wma',
-        ],
+        'png', 'gif', 'bmp', 'svg', 'wav', 'mp4',
+        'mov', 'avi', 'wmv', 'mp3', 'm4a',
+        'jpg', 'jpeg', 'mpga', 'webp', 'wma',
+    ],
         'max_upload_time' => 5, // Max duration (in minutes) before an upload gets invalidated.
     ],
 
@@ -126,5 +140,20 @@ return [
     */
 
     'back_button_cache' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Render On Redirect
+    |--------------------------------------------------------------------------
+    |
+    | This value determines whether Livewire will render before it's redirected
+    | or not. Setting it to "false" (default) will mean the render method is
+    | skipped when redirecting. And "true" will mean the render method is
+    | run before redirecting. Browsers bfcache can store a potentially
+    | stale view if render is skipped on redirect.
+    |
+    */
+
+    'render_on_redirect' => false,
 
 ];
