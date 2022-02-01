@@ -88,7 +88,7 @@
 
             @if($resultPerspectiva->objetivosEstrategicos->count() > 0)
 
-            <div class="grid lg:grid-flow-row xl:grid-flow-col-dense sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-6.9 sm:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/$resultPerspectiva->objetivosEstrategicos->count()) !!} md:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/2) !!} lg:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/2) !!} xl:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/5) !!} 2xl:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/6) !!} gap-4 mt-1 mb-1 px-1 pt-2 pb-2 pl-2 pr-2">
+            <div class="grid lg:grid-flow-row xl:grid-flow-col-dense grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-6.9 sm:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/$resultPerspectiva->objetivosEstrategicos->count()) !!} md:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/2) !!} lg:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/2) !!} xl:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/5) !!} 2xl:grid-rows-{!! ceil($resultPerspectiva->objetivosEstrategicos->count()/6) !!} gap-4 mt-1 mb-1 px-1 pt-2 pb-2 pl-2 pr-2">
 
                 @foreach($resultPerspectiva->objetivosEstrategicos as $resultObjetivoEstragico)
 
@@ -264,7 +264,7 @@
 
             </div>
 
-            <div class="grid grid-cols-5 gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-5 gap-2 mt-0">
 
                 {!! $this->grau_satisfacao !!}
 
