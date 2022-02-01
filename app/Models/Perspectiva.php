@@ -24,6 +24,12 @@ class Perspectiva extends Model
 
     protected $guarded = array();
 
+    public function planejamentoEstrategicoIntegrado() {
+
+        return $this->belongsTo(Pei::class, 'cod_pei');
+        
+    }
+
     public function objetivosEstrategicos() {
 
         if(Session::has('cod_objetivo_estrategico')) {

@@ -13,7 +13,8 @@ use App\Http\Livewire\{
     ObjetivoEstrategicoLivewire,
     PlanoAcaoLivewire,
     IndicadoresLivewire,
-    GrauSatisfacaoLivewire
+    GrauSatisfacaoLivewire,
+    ShowObjetivoEstrategicoLivewire
 };
 
 
@@ -58,6 +59,8 @@ Route::group(['middleware' => ['auth', 'trocarSenha']], function () {
     Route::get('{ano}/adm/grau-satisfacao',GrauSatisfacaoLivewire::class)->name('grauSatisfacao');
 
 });
+
+Route::get('{ano}/perspectiva/{cod_perspectiva}/objetivo-estrategico/{cod_objetivo_estrategico}/plano-de-acao/{cod_plano_de_acao?}',ShowObjetivoEstrategicoLivewire::class)->name('showObjetivoEstrategico');
 
 Route::fallback( function () {
     $ano = date('Y');

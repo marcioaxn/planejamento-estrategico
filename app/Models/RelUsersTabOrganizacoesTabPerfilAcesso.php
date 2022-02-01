@@ -18,8 +18,7 @@ class RelUsersTabOrganizacoesTabPerfilAcesso extends Model
     protected $table = 'rel_users_tab_organizacoes_tab_perfil_acesso';
 
     protected $primaryKey = 'id';
-    public $incrementing = false;
-
+    
     public $timestamps = true;
 
     protected $guarded = array();

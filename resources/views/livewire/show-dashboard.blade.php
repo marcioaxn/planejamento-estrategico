@@ -92,7 +92,7 @@
 
                 @foreach($resultPerspectiva->objetivosEstrategicos as $resultObjetivoEstragico)
 
-                <a href="javascript: void(0);" wire:click.prevent="detalharObjetivoEstrategico('{!! $resultObjetivoEstragico->cod_objetivo_estrategico !!}')" >
+                <a href="{!! url($this->ano.'/perspectiva/'.$resultPerspectiva->cod_perspectiva.'/objetivo-estrategico/'.$resultObjetivoEstragico->cod_objetivo_estrategico.'/plano-de-acao') !!}" >
 
                     <div class="pt-2 pb-2 pl-3 pr-3 bg-white rounded-md border-2 border-gray-50 border-opacity-25 shadow ">
 
@@ -148,21 +148,57 @@
 
                                 @endphp
 
+                                <?php
+
+                                $quantidade_plano_de_acao = null;
+                                $percentual_alcancado = null;
+                                $grau_de_satisfacao = null;
+
+                                if(isset($resultObjetivoEstragico) && isset($resultObjetivoEstragico->cod_objetivo_estrategico) && !is_null($resultObjetivoEstragico->cod_objetivo_estrategico) && $resultObjetivoEstragico->cod_objetivo_estrategico != '') {
+
+                                    $resultCalculo = $this->calculoPorArea($resultObjetivoEstragico->cod_objetivo_estrategico);
+
+                                    foreach($resultCalculo AS $key => $value) {
+
+                                        if($key === 'quantidade_plano_de_acao') {
+
+                                            $quantidade_plano_de_acao = $value;
+
+                                        }
+
+                                        if($key === 'percentual_alcancado') {
+
+                                            $percentual_alcancado = $value;
+
+                                        }
+
+                                        if($key === 'grau_de_satisfacao') {
+
+                                            $grau_de_satisfacao = $value;
+
+                                        }
+
+                                    }
+
+                                }
+
+                                ?>
+
                                 <div class="flex mb-2 items-center justify-between" style="width: 100%!Important;">
 
-                                    <div class="text-xs text-gray-500">{{ $acoes }} ações/iniciativas   /projetos</div>
+                                    <div class="text-xs text-gray-500">{!! $quantidade_plano_de_acao !!} ações/iniciativas   /projetos</div>
 
                                     <div class="text-right">
 
-                                        <span class="text-xs font-semibold inline-block text-gray-500">{!! $resultado !!}%</span>
+                                        <span class="text-xs font-semibold inline-block text-gray-500">{!! converteValor('MYSQL','PTBR',$percentual_alcancado) !!}%</span>
 
                                     </div>
 
                                 </div>
 
-                                <div class="overflow-hidden h-2 text-xs flex rounded bg-{{ $grauSatisfacao }}-50" style="width: 100%!Important;">
+                                <div class="overflow-hidden h-2 text-xs flex rounded bg-{{ $grau_de_satisfacao }}-50" style="width: 100%!Important;">
 
-                                    <div style="width:{!! $resultado  !!}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-{{ $grauSatisfacao }}-500 "></div>
+                                    <div style="width:{!! $percentual_alcancado  !!}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-{{ $grau_de_satisfacao }}-500 "></div>
 
                                 </div>
 
@@ -223,7 +259,7 @@
         <div class="px-3 py-2 pt-2 pl-2 pr-2">
 
             <div>
-                
+
                 <p class="mt-4 mb-1 pl-1">Legenda:</p>
 
             </div>

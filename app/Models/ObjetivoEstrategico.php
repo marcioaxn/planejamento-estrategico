@@ -47,5 +47,23 @@ class ObjetivoEstrategico extends Model
         }
 
     }
+
+    public function planosDeAcaoPorArea() {
+
+        if(Session::has('cod_organizacao')) {
+
+            $cod_organizacao = Session::get('cod_organizacao');
+
+            return $this->hasMany(PlanoAcao::class, 'cod_objetivo_estrategico')
+            ->with('tipoExecucao')
+            ->whereIn('cod_organizacao',$cod_organizacao);
+
+        } else {
+
+            return $this->hasMany(PlanoAcao::class, 'cod_objetivo_estrategico');
+
+        }
+
+    }
     
 }
