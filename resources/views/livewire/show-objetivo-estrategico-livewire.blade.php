@@ -2,16 +2,16 @@
 
     <div class="flex flex-wrap w-full text-base md:text-sm pt-3 pb-3 pl-3 pr-3 rounded-md border-1 border-gray-100">
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-300 pt-1 pb-2 pl-1">
+        <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-1 pb-2 pl-1">
             Perspectiva: <strong>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}. {!! $this->perspectiva->dsc_perspectiva !!}</strong>
         </div>
 
-        <div class="w-full md:w-1/6 text-right border-b-2 border-gray-300 pt-1 pb-1 pl-1">
+        <div class="w-full md:w-1/6 text-right border-b-2 border-gray-100 pt-1 pb-1 pl-1">
             Objetivo Estratégico:
         </div>
 
-        <div class="w-full md:w-4/6 border-b-2 border-gray-300 pl-1">
-            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 rounded-md shadow-sm text-left cursor-pointer', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrl(this.value);"]) !!}
+        <div class="w-full md:w-4/6 border-b-2 border-gray-100 pl-1">
+            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 h-7 rounded-md text-left cursor-pointer', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrl(this.value);"]) !!}
         </div>
 
         <script>
@@ -33,9 +33,9 @@
 
         @if($this->planosAcao->count() > 0)
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-300 pt-3 pb-1 pl-1">Plano de Ação:</div>
+        <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-3 pb-1 pl-1">Plano de Ação:</div>
 
-        <div class="w-full md:w-5/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-5/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
 
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-12 2xl:grid-cols-12 gap-2 mt-0">
 
@@ -163,30 +163,30 @@
 
         </div>
 
-        <div class="w-full md:w-3/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-3/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             {!! $planoAcao->tipoExecucao->dsc_tipo_execucao !!}: <strong>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $this->objetivoEstrategico->num_nivel_hierarquico_apresentacao !!}.{!! $planoAcao->num_nivel_hierarquico_apresentacao !!}. {!! $planoAcao->dsc_plano_de_acao !!}</strong>
         </div>
 
-        <div class="w-full md:w-3/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-3/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Principais entregas: <strong>{{ $planoAcao->txt_principais_entregas }}</strong>
         </div>
 
-        <div class="w-full md:w-3/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">Data de início em <strong>{{ converterData('EN','PTBR',$planoAcao->dte_inicio) }}</strong><span class="text-gray-400">, {{ formatarDataComCarbonForHumans($planoAcao->dte_inicio) }},</span> e a conclusão prevista para <strong>{{ converterData('EN','PTBR',$planoAcao->dte_fim) }}</strong>
+        <div class="w-full md:w-3/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">Data de início em <strong>{{ converterData('EN','PTBR',$planoAcao->dte_inicio) }}</strong><span class="text-gray-400">, {{ formatarDataComCarbonForHumans($planoAcao->dte_inicio) }},</span> e a conclusão prevista para <strong>{{ converterData('EN','PTBR',$planoAcao->dte_fim) }}</strong>
         </div>
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Status: <strong>{{ $planoAcao->bln_status }}</strong>
         </div>
 
-        <div class="w-full md:w-2/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Orçamento previsto: R$ <strong>{{ converteValor('MYSQL','PTBR',$planoAcao->vlr_orcamento_previsto) }}</strong>
         </div>
 
-        <div class="w-full md:w-2/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Unidade responsável: <strong>{{ $planoAcao->unidade->sgl_organizacao }}</strong><span class="text-gray-400">{!! $this->hierarquiaUnidade($planoAcao->unidade->cod_organizacao) !!}</span>
         </div>
 
-        <div class="w-full md:w-2/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Servidor(a) Responsável: 
             <strong>
                 @foreach($planoAcao->servidorResponsavel as $responsavel)
@@ -211,7 +211,7 @@
             </strong>
         </div>
 
-        <div class="w-full md:w-2/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Servidor(a) Substituto(a): 
             <strong>
                 @foreach($planoAcao->servidorSubstituto as $subtituto)
@@ -244,9 +244,9 @@
 
         @if($this->indicador)
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-300 pt-3 pb-1 pl-1"><?php $planoAcao->indicadores->count() > 1 ? print('Indicadores') : print('Indicador'); ?>: </div>
+        <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-3 pb-1 pl-1"><?php $planoAcao->indicadores->count() > 1 ? print('Indicadores') : print('Indicador'); ?>: </div>
 
-        <div class="w-full md:w-5/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-5/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
 
             <div class="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-2 mt-0">
 
@@ -323,31 +323,31 @@
 
         </div>
 
-        <div class="w-full md:w-2/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Unidade de Medida: <strong>{{ $this->indicador->dsc_unidade_medida }}</strong>
         </div>
 
-        <div class="w-full md:w-2/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Indicador terá o resultado acumulado? <strong>{{ $this->indicador->bln_acumulado }}</strong>
         </div>
 
-        <div class="w-full md:w-2/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <!-- <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Tipo de Análise (Polaridade): <strong>{{ tipoPolaridade($this->indicador->dsc_tipo) }}</strong>
-        </div>
+        </div> -->
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Período de medição: <strong>{{ $this->indicador->dsc_periodo_medicao }}</strong>
         </div>
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Fonte: <strong>{{ $this->indicador->dsc_fonte }}</strong>
         </div>
 
-        <div class="w-full md:w-2/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Fórmula do Indicador: <strong>{{ nl2br($this->indicador->dsc_formula) }}</strong>
         </div>
 
-        <div class="w-full md:w-2/6 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
 
             @foreach($this->indicador->linhaBase as $linhaBase)
 
@@ -358,22 +358,71 @@
 
         </div>
 
-        <div class="w-full md:w-1/1 border-b-2 border-gray-300 pt-2 pb-2 pl-1">
+        <div class="w-full md:w-4/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
+
+            @if($this->indicador->dsc_tipo === '+')
+
+            <i class="fas fa-arrow-alt-circle-up text-lg"></i> <strong>{!! tipoPolaridade($this->indicador->dsc_tipo) !!}</strong> será para esse indicador que tem a meta prevista de <strong>{{ formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$this->metaAno) }}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></strong> para o ano de {!! $this->anoSelecionado !!}.
+
+            @endif
+
+            @if($this->indicador->dsc_tipo === '-')
+
+            <i class="fas fa-arrow-alt-circle-down text-lg"></i> <strong>{!! tipoPolaridade($this->indicador->dsc_tipo) !!}</strong> será para esse indicador que tem a meta prevista de <strong>{{ formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$this->metaAno) }}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></strong> para o ano de {!! $this->anoSelecionado !!}.
+
+            @endif
+
+            @if($this->indicador->dsc_tipo === '=')
+
+            <i class="fas fa-equals text-lg"></i> <strong>{!! tipoPolaridade($this->indicador->dsc_tipo) !!}</strong> será para esse indicador que tem a meta prevista de <strong>{{ formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$this->metaAno) }}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></strong> para o ano de {!! $this->anoSelecionado !!}.
+
+            @endif
+            
+        </div>
+
+        <div class="w-full md:w-1/1 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
+
+            <script type="text/javascript">
+
+                function abrirFecharTabs(num_tab = '') {
+
+                    for(i=1;i<=3;i++) {
+
+                        // document.getElementById('divConteudoTab'+i).style.display = 'none';
+
+                        $("#divConteudoTab"+i).fadeOut("fast");
+
+                        $("#btnTab"+i).removeClass("inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-blue-600 active hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300");
+
+                        $("#btnTab"+i).addClass("inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300");
+
+                    }
+
+                    $("#btnTab"+num_tab).addClass("inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-blue-600 active hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300");
+
+                    setTimeout(function () {
+                        $("#divConteudoTab"+num_tab).fadeIn("slow");
+                    }, 66);
+
+                }
+
+            </script>
 
             <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
                 <ul class="flex flex-wrap -mb-px" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
                     <li class="mr-2" role="presentation">
-                        <button class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-blue-600 active hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" id="profile-tab" data-tabs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Evolução mensal</button>
+                        <button id="btnTab1" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-blue-600 active hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('1');">Evolução mensal</button>
                     </li>
                     <li class="mr-2" role="presentation">
-                        <button class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" id="settings-tab" data-tabs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Análise gráfica</button>
+                        <button id="btnTab2" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('2');">Análise gráfica</button>
                     </li>
                     <li role="presentation">
-                        <button class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" id="contacts-tab" data-tabs-target="#contacts" type="button" role="tab" aria-controls="contacts" aria-selected="false">Gestão</button>
+                        <button id="btnTab3" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('3');">Gestão</button>
                     </li>
                 </ul>
             </div>
-            <div id="divConteudoTab">
+
+            <div id="divConteudoTab1" style="display: block;">
 
                 <?php
 
@@ -411,6 +460,8 @@
 
                                             @endforeach
 
+                                            @if($this->indicador->bln_acumulado == 'Sim')
+
                                             @if($this->ano == date('Y'))
 
                                             <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Acumulado até {!! mesNumeralParaExtensoCurto($this->mesAnterior) !!}</th>
@@ -418,6 +469,8 @@
                                             @else
 
                                             <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Total</th>
+
+                                            @endif
 
                                             @endif
 
@@ -431,7 +484,9 @@
 
                                             <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Prevista</strong></td>
 
-                                            <?php $contMes = 1; ?>
+                                            <?php
+                                            $contMes = 1;
+                                            ?>
 
                                             @foreach($this->indicador->evolucaoIndicador as $evolucaoIndicador)
 
@@ -475,9 +530,13 @@
 
                                             @endforeach
 
+                                            @if($this->indicador->bln_acumulado == 'Sim')
+
                                             <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">
                                                 {!! $totalPrevisto !!}
                                             </td>
+
+                                            @endif
 
                                         </tr>
 
@@ -604,6 +663,8 @@
 
                                                 @endforeach
 
+                                                @if($this->indicador->bln_acumulado == 'Sim')
+
                                                 <?php $resultado = $this->calculoMensal($this->indicador->dsc_unidade_medida,$this->indicador->dsc_tipo,$totalPrevisto,$totalRealizado) ?>
 
                                                 <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
@@ -615,6 +676,8 @@
                                                     </div>
 
                                                 </td>
+
+                                                @endif
 
                                             </tr>
 
@@ -656,12 +719,16 @@
 
                                                     @endforeach
 
+                                                    @if($this->indicador->bln_acumulado == 'Sim')
+
                                                     <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">&nbsp;</td>
+
+                                                    @endif
 
                                                 </tr>
 
                                                 @endif
-                                                
+
                                                 @endauth
 
                                             </tbody>
@@ -678,107 +745,210 @@
 
                     </div>
 
-                </div>
+                    <div id="divConteudoTab2" style="display: none;">
 
-                @else
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-                <div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
+                        <canvas id="chart-<?php print($this->cod_indicador) ?>" style="width: 100%!Important; height: 79px!Important;"></canvas>
 
-                    Não há registro de indicadores para esse plano de ação
+                        @if($this->indicador->bln_acumulado === 'Não')
 
-                </div>
+                        <script type="text/javascript">
+
+                            new Chart(document.getElementById("chart-<?php print($this->cod_indicador) ?>"), {
+                                type: 'bar',
+                                data: {
+                                  labels: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
+                                  datasets: [
+                                  {
+                                      label: "Meta prevista",
+                                      backgroundColor: "#3e95cd",
+                                      data: [<?php print($this->dataChartMetaPrevista) ?>]
+                                  }, {
+                                      label: "Meta realizada",
+                                      backgroundColor: "#8e5ea2",
+                                      data: [<?php print($this->dataChartMetaRealizada) ?>]
+                                  }
+                                  ]
+                              },
+                              options: {
+                                  title: {
+                                    display: true,
+                                    text: 'Teste'
+                                },
+                                scales: {
+                                  y: {
+                                    suggestedMin: 0,
+                                    suggestedMax: <?php print($this->metaAno) ?>+5,
+                                }
+                            }
+                        }
+                    });
+
+                </script>
 
                 @endif
 
-                @else
+                @if($this->indicador->bln_acumulado === 'Sim')
 
-                <div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
+                <script type="text/javascript">
 
-                    Não há registro de plano de ação e indicadores para esse objetivo estratégico
+                    new Chart(document.getElementById("chart-<?php print($this->cod_indicador) ?>"), {
+                      type: 'line',
+                      data: {
+                        labels: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
+                        datasets: [{ 
+                            data: [<?php print($this->dataChartMetaPrevista) ?>],
+                            label: "Meta Prevista",
+                            borderColor: "#3e95cd",
+                            fill: false
+                        }, { 
+                            data: [<?php print($this->dataChartMetaRealizada) ?>],
+                            label: "Meta Realizada",
+                            borderColor: "#8e5ea2",
+                            fill: false
+                        }
+                        ]
+                    },
+                    options: {
+                        title: {
+                          display: true,
+                          text: ''
+                      }
+                  }
+              });
 
-                </div>
+          </script>
 
-                @endif
+          @endif
 
-            </div>
+      </div>
 
-            <div class="px-3 py-2 pt-2 pl-2 pr-2">
+      <div id="divConteudoTab3" style="display: none;">
+        Tab 3
+    </div>
 
-                <div>
+</div>
 
-                    <p class="mt-4 mb-1 pl-1">Legenda:</p>
+@else
 
-                </div>
+<div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-5 gap-2 mt-0">
+    Não há registro de indicadores para esse plano de ação
 
-                    {!! $this->grau_satisfacao !!}
+</div>
 
-                </div>
+@endif
 
-            </div>
+@else
 
-            <div class="px-3 py-2 pt-2 pl-2 pr-2">
-                &nbsp;
-            </div>
+<div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
 
-            <!-- Modal -->
-            <x-jet-dialog-modal wire:model="showModalResultadoEdicao">
-                <form wire:submit.prevent="create" method="post">
-                    <x-slot name="title">
-                        <strong>Editar</strong>
-                    </x-slot>
+    Não há registro de plano de ação e indicadores para esse objetivo estratégico
 
-                    <x-slot name="content">
-                        {!! $this->mensagemResultadoEdicao !!}
-                    </x-slot>
+</div>
 
-                    <x-slot name="footer">
-                        <x-jet-button wire:click.prevent="$toggle('showModalResultadoEdicao')" wire:loading.attr="disabled">
-                            {{ __('Closer') }}
-                        </x-jet-button>
-                        <x-jet-danger-button wire:click.prevent="$toggle('showModalResultadoEdicao')" wire:loading.attr="disabled" wire:click.prevent="create()">
-                            Salvar
-                        </x-jet-danger-button>
-                    </x-slot>
-                </form>
-            </x-jet-dialog-modal>
+@endif
 
-            <!-- Modal -->
-            <x-jet-dialog-modal wire:model="showModalDelete">
-                <x-slot name="title">
-                    <strong>Excluir</strong>
-                </x-slot>
+</div>
 
-                <x-slot name="content">
-                    {!! $this->mensagemDelete !!}
-                </x-slot>
+<div class="px-3 py-2 pt-2 pl-2 pr-2">
 
-                <x-slot name="footer">
-                    <x-jet-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled">
-                        {{ __('Closer') }}
-                    </x-jet-button>
-                    <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled" wire:click.prevent="delete('{!! $this->cod_plano_de_acao !!}')">
-                        Sim, quero excluir
-                    </x-jet-danger-button>
-                </x-slot>
-            </x-jet-dialog-modal>
+    <div>
 
-            <!-- Modal -->
-            <x-jet-geral-modal wire:model="showModalAudit">
-                <x-slot name="title">
-                    <strong>Ações Realizadas</strong>
-                </x-slot>
+        <p class="mt-4 mb-1 pl-1">Legenda:</p>
 
-                <x-slot name="content">
-                    {!! $this->mensagemDelete !!}
-                </x-slot>
+    </div>
 
-                <x-slot name="footer">
-                    <x-jet-button wire:click.prevent="$toggle('showModalAudit')" wire:loading.attr="disabled">
-                        {{ __('Closer') }}
-                    </x-jet-button>
-                </x-slot>
-            </x-jet-geral-modal>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-5 gap-2 mt-0">
 
-        </div>
+        {!! $this->grau_satisfacao !!}
+
+    </div>
+
+</div>
+
+<div class="px-3 py-2 pt-2 pl-2 pr-2">
+    &nbsp;
+</div>
+
+<!-- Modal -->
+<x-jet-dialog-modal wire:model="showModalInformacao">
+    <form wire:submit.prevent="create" method="post">
+        <x-slot name="title">
+            <strong>Importante</strong>
+        </x-slot>
+
+        <x-slot name="content">
+            {!! $this->mensagemInformacao !!}
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-button wire:click.prevent="$toggle('showModalInformacao')" wire:loading.attr="disabled">
+                {{ __('Closer') }}
+            </x-jet-button>
+        </x-slot>
+    </form>
+</x-jet-dialog-modal>
+
+<!-- Modal -->
+<x-jet-geral-modal wire:model="showModalResultadoEdicao">
+    <form wire:submit.prevent="create" method="post">
+        <x-slot name="title">
+            <strong>Editar</strong>
+        </x-slot>
+
+        <x-slot name="content">
+            {!! $this->mensagemResultadoEdicao !!}
+            <x-jet-input-error for="vlr_realizado" class="mt-2" />
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-button wire:click.prevent="$toggle('showModalResultadoEdicao')" wire:loading.attr="disabled">
+                {{ __('Closer') }}
+            </x-jet-button>
+            <x-jet-danger-button wire:click.prevent="$toggle('showModalResultadoEdicao')" wire:loading.attr="disabled" wire:click.prevent="create()">
+                Salvar
+            </x-jet-danger-button>
+        </x-slot>
+    </form>
+</x-jet-geral-modal>
+
+<!-- Modal -->
+<x-jet-dialog-modal wire:model="showModalDelete">
+    <x-slot name="title">
+        <strong>Excluir</strong>
+    </x-slot>
+
+    <x-slot name="content">
+        {!! $this->mensagemDelete !!}
+    </x-slot>
+
+    <x-slot name="footer">
+        <x-jet-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled">
+            {{ __('Closer') }}
+        </x-jet-button>
+        <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled" wire:click.prevent="delete('{!! $this->cod_plano_de_acao !!}')">
+            Sim, quero excluir
+        </x-jet-danger-button>
+    </x-slot>
+</x-jet-dialog-modal>
+
+<!-- Modal -->
+<x-jet-geral-modal wire:model="showModalAudit">
+    <x-slot name="title">
+        <strong>Ações Realizadas</strong>
+    </x-slot>
+
+    <x-slot name="content">
+        {!! $this->mensagemDelete !!}
+    </x-slot>
+
+    <x-slot name="footer">
+        <x-jet-button wire:click.prevent="$toggle('showModalAudit')" wire:loading.attr="disabled">
+            {{ __('Closer') }}
+        </x-jet-button>
+    </x-slot>
+</x-jet-geral-modal>
+
+</div>
