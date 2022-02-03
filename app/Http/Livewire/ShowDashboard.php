@@ -75,8 +75,7 @@ class ShowDashboard extends Component
     public function calculoPorArea($cod_objetivo_estrategico = '') {
 
         $anoVigente = date("Y");
-        // $mesVigente = date("m");
-        $mesVigente = (date("m")+2)*1;
+        $mesVigente = date("n");
 
         $anoSelecionado = ($this->ano)*1;
 
@@ -87,8 +86,7 @@ class ShowDashboard extends Component
         $resultado['grau_de_satisfacao'] = 'gray';
 
         $time = strtotime(date('Y-m-d'));
-        // $mesAnterior = (date("n", strtotime("-1 month", $time)))*1;
-        $mesAnterior = 2;
+        $mesAnterior = (date("n", strtotime("-1 month", $time)))*1;
         $ano = date("Y", strtotime("+1 month", $time));
 
         // --------------------------------------------
@@ -180,8 +178,6 @@ class ShowDashboard extends Component
 
             foreach($consultarObjetivoEstrategico AS $objetivoEstragico) {
 
-
-
                 foreach($objetivoEstragico->planosDeAcaoPorArea as $planoDeAcao) {
 
                     $anoInicio = date('Y', strtotime($planoDeAcao->dte_inicio));
@@ -201,130 +197,132 @@ class ShowDashboard extends Component
 
                     $contIndicador = 0;
 
-                    
+                    if($planoDeAcao->indicadores->count() > 0) {
 
-                    foreach($planoDeAcao->indicadores as $indicador) {
+                        foreach($planoDeAcao->indicadores as $indicador) {
 
-                        $unidadeMedida = $indicador->dsc_unidade_medida;
-                        $bln_acumulado = $indicador->bln_acumulado;
-                        $dsc_tipo = $indicador->dsc_tipo;
+                            $unidadeMedida = $indicador->dsc_unidade_medida;
+                            $bln_acumulado = $indicador->bln_acumulado;
+                            $dsc_tipo = $indicador->dsc_tipo;
 
-                        $flg_metaAno = false;
+                            $flg_metaAno = false;
 
-                        foreach($indicador->metaAno as $metaAno) {
+                            foreach($indicador->metaAno as $metaAno) {
 
-                            if($metaAno->num_ano == $anoSelecionado) {
+                                if($metaAno->num_ano == $anoSelecionado) {
 
-                                $flg_metaAno = true;
+                                    $flg_metaAno = true;
 
-                                $vlr_meta_ano = $metaAno->meta;
+                                    $vlr_meta_ano = $metaAno->meta;
 
-                                $metaAno = $metaAno->num_ano;
+                                    $metaAno = $metaAno->num_ano;
 
-                                $contIndicador = $contIndicador + 1;
+                                }
 
                             }
 
-                        }
+                            if($flg_metaAno && isset($metaAno) && !is_null($metaAno) && $metaAno != '' && $metaAno == $anoVigente) {
 
-                        if($flg_metaAno && isset($metaAno) && !is_null($metaAno) && $metaAno != '' && $metaAno == $anoVigente) {
+                                $contIndicador = $contIndicador + 1;
 
                             // Início do cálculo para o ano vigente
 
-                            $valorMetaPrevista = 0;
-                            $valorMetaRealizada = 0;
+                                $valorMetaPrevista = 0;
+                                $valorMetaRealizada = 0;
 
-                            if($mesVigente > 1) {
+                                if($mesVigente > 1) {
 
-                                $contEvolucaoIndicador = 1;
+                                    $contEvolucaoIndicador = 1;
 
-                                foreach($indicador->evolucaoIndicador as $evolucaoIndicador) {
+                                    foreach($indicador->evolucaoIndicador as $evolucaoIndicador) {
 
-                                    if($bln_acumulado === "Sim") {
+                                        if($bln_acumulado === "Sim") {
 
-                                        for ($contMes=1;$contMes<=$mesAnterior;$contMes++) {
+                                            for ($contMes=1;$contMes<=$mesAnterior;$contMes++) {
 
-                                            $column_name_mes = 'metaMes_'.$contMes.'_'.$anoSelecionado;
+                                                $column_name_mes = 'metaMes_'.$contMes.'_'.$anoSelecionado;
 
-                                            if($evolucaoIndicador->num_mes == $contMes && $evolucaoIndicador->num_ano == $anoSelecionado) {
+                                                if($evolucaoIndicador->num_mes == $contMes && $evolucaoIndicador->num_ano == $anoSelecionado) {
 
-                                                $valorMetaPrevista = $valorMetaPrevista + $evolucaoIndicador->vlr_previsto;
+                                                    $valorMetaPrevista = $valorMetaPrevista + $evolucaoIndicador->vlr_previsto;
 
-                                                $valorMetaRealizada = $valorMetaRealizada + $evolucaoIndicador->vlr_realizado;
+                                                    $valorMetaRealizada = $valorMetaRealizada + $evolucaoIndicador->vlr_realizado;
 
-                                            }
+                                                }
 
-                                            if($contEvolucaoIndicador == 12) {
+                                                if($contEvolucaoIndicador == 12) {
 
-                                                $contEvolucaoIndicador = 1;
+                                                    $contEvolucaoIndicador = 1;
 
-                                            }
+                                                }
 
-                                            $contEvolucaoIndicador = $contEvolucaoIndicador + 1;
-
-                                        }
-
-                                        if($dsc_tipo === "+") {
-
-                                            if($valorMetaPrevista > 0) {
-
-                                                $somaResultado = ($valorMetaRealizada/$vlr_meta_ano)*100;
+                                                $contEvolucaoIndicador = $contEvolucaoIndicador + 1;
 
                                             }
 
-                                        }
+                                            if($dsc_tipo === "+") {
 
-                                        if($dsc_tipo === "-") {
+                                                if($valorMetaPrevista > 0) {
 
-                                            if($valorMetaPrevista > 0) {
+                                                    $somaResultado = ($valorMetaRealizada/$vlr_meta_ano)*100;
 
-                                                $somaResultado = ($valorMetaRealizada/$vlr_meta_ano)*100;
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                    if($bln_acumulado === "Não") {
-
-                                        for ($contMes=1;$contMes<=$mesAnterior;$contMes++) {
-
-                                            $column_name_mes = 'metaMes_'.$contMes.'_'.$anoSelecionado;
-
-                                            if($evolucaoIndicador->num_mes == $contMes && $evolucaoIndicador->num_ano == $anoSelecionado) {
-
-                                                $valorMetaPrevista = $evolucaoIndicador->vlr_previsto;
-
-                                                $valorMetaRealizada = $evolucaoIndicador->vlr_realizado;
+                                                }
 
                                             }
 
-                                            if($contEvolucaoIndicador == 12) {
+                                            if($dsc_tipo === "-") {
 
-                                                $contEvolucaoIndicador = 1;
+                                                if($valorMetaPrevista > 0) {
 
-                                            }
+                                                    $somaResultado = ($valorMetaRealizada/$vlr_meta_ano)*100;
 
-                                            $contEvolucaoIndicador = $contEvolucaoIndicador + 1;
-
-                                        }
-
-                                        if($dsc_tipo === "+") {
-
-                                            if($valorMetaPrevista > 0) {
-
-                                                $somaResultado = ($valorMetaRealizada/$vlr_meta_ano)*100;
+                                                }
 
                                             }
 
                                         }
 
-                                        if($dsc_tipo === "-") {
+                                        if($bln_acumulado === "Não") {
 
-                                            if($valorMetaPrevista > 0) {
+                                            for ($contMes=1;$contMes<=$mesAnterior;$contMes++) {
 
-                                                $somaResultado = ((1-($valorMetaRealizada-$vlr_meta_ano)/$vlr_meta_ano)*100)-100;
+                                                $column_name_mes = 'metaMes_'.$contMes.'_'.$anoSelecionado;
+
+                                                if($evolucaoIndicador->num_mes == $contMes && $evolucaoIndicador->num_ano == $anoSelecionado) {
+
+                                                    $valorMetaPrevista = $evolucaoIndicador->vlr_previsto;
+
+                                                    $valorMetaRealizada = $evolucaoIndicador->vlr_realizado;
+
+                                                }
+
+                                                if($contEvolucaoIndicador == 12) {
+
+                                                    $contEvolucaoIndicador = 1;
+
+                                                }
+
+                                                $contEvolucaoIndicador = $contEvolucaoIndicador + 1;
+
+                                            }
+
+                                            if($dsc_tipo === "+") {
+
+                                                if($valorMetaPrevista > 0) {
+
+                                                    $somaResultado = ($valorMetaRealizada/$vlr_meta_ano)*100;
+
+                                                }
+
+                                            }
+
+                                            if($dsc_tipo === "-") {
+
+                                                if($valorMetaPrevista > 0) {
+
+                                                    $somaResultado = ((1-($valorMetaRealizada-$vlr_meta_ano)/$vlr_meta_ano)*100)-100;
+
+                                                }
 
                                             }
 
@@ -334,9 +332,7 @@ class ShowDashboard extends Component
 
                                 }
 
-                            }
-
-                            $calculo = $calculo + $somaResultado;
+                                $calculo = $calculo + $somaResultado;
 
                             // print("<br />Unidade de Medida: ".$unidadeMedida."<br />Acumulado: ".$bln_acumulado."<br />Tipo: ".$dsc_tipo."<br />Ano selecionado: ".$anoSelecionado."<br />Ano meta: ".$metaAno."<br />Mês vigente: ".$mesVigente."<br />Mês anterior: ".$mesAnterior."<br />Soma Valor Previsto: ".$valorMetaPrevista."<br />Soma Valor Realizado: ".$valorMetaRealizada."<br />Resultado: ".$somaResultado."<br />Total de indicadores: ".$contIndicador."<br />");
 
@@ -344,21 +340,23 @@ class ShowDashboard extends Component
 
                             // print("<br />Cáculo: ".$calculo/$contIndicador."<br /><br />");
 
-                            $resultado['percentual_alcancado'] = $calculo/$contIndicador;
+                                $resultado['percentual_alcancado'] = $calculo/$contIndicador;
 
-                            $consultarGrauSatisfacao = GrauSatisfacao::where('vlr_maximo','>=',$resultado['percentual_alcancado'])
-                            ->where('vlr_minimo','<=',$resultado['percentual_alcancado'])
-                            ->first();
+                                $consultarGrauSatisfacao = GrauSatisfacao::where('vlr_maximo','>=',$resultado['percentual_alcancado'])
+                                ->where('vlr_minimo','<=',$resultado['percentual_alcancado'])
+                                ->first();
 
-                            $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
+                                $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
 
-                            
+                                
 
-                        } else {
+                            } else {
 
                             // Início do cálculo para o ano selecionado diferete do ano vigente
 
                             // Fim do cálculo para o ano selecionado diferete do ano vigente
+
+                            }
 
                         }
 
@@ -706,7 +704,7 @@ class ShowDashboard extends Component
 
             if($grauSatisfacao->cor === 'yellow') {
 
-                $color = 'black';
+                $color = 'white';
 
             }
 
@@ -714,9 +712,9 @@ class ShowDashboard extends Component
 
         }
 
-        $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-gray-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">Sem meta prevista para o período</div>';
+        // $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-gray-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">Sem meta prevista para o período</div>';
 
-        $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-pink-800 text-sm antialiased sm:subpixel-antialiased md:antialiased">Não houve o preenchimento</div>';
+        // $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-pink-800 text-sm antialiased sm:subpixel-antialiased md:antialiased">Não houve o preenchimento</div>';
 
         return $montagemGrauSatisfacao;
 

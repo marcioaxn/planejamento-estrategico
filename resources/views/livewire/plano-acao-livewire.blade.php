@@ -248,10 +248,10 @@
                                     <span class="text-gray-400">Resp.:</span> {!! $responsavel->name !!}
 
                                     @endforeach
-                                    / 
+                                    
                                     @foreach($result->servidorSubstituto as $subtituto)
 
-                                    <span class="text-gray-400">Subs.:</span> {!! $subtituto->name !!}
+                                    / <span class="text-gray-400">Subs.:</span> {!! $subtituto->name !!}
 
                                     @endforeach
                                 </td>

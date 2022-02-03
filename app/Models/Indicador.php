@@ -37,7 +37,9 @@ class Indicador extends Model
 
     public function evolucaoIndicador() {
 
-        return $this->hasMany(EvolucaoIndicador::class, 'cod_indicador');
+        return $this->hasMany(EvolucaoIndicador::class, 'cod_indicador')
+        ->orderBy('num_ano')
+        ->orderBy('num_mes');
 
     }
 

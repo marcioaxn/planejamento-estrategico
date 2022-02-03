@@ -57,7 +57,8 @@ class PlanoAcao extends Model
 
     public function indicadores() {
 
-        return $this->hasMany(Indicador::class, 'cod_plano_de_acao');
+        return $this->hasMany(Indicador::class, 'cod_plano_de_acao')
+        ->orderBy('dsc_indicador');
 
     }
 

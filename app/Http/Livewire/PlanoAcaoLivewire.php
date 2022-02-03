@@ -446,21 +446,91 @@ class PlanoAcaoLivewire extends Component
 
                 }
 
-                if($idServidorSubstitutoAntigo != $this->user_id_substituto) {
+                if(isset($idServidorSubstitutoAntigo) && !is_null($idServidorSubstitutoAntigo) && $idServidorSubstitutoAntigo != '') {
 
-                    $consultarNovoServidorSubstituto = User::find($this->user_id_substituto);
+                    if($idServidorSubstitutoAntigo != $this->user_id_substituto) {
 
-                    $audit = Audit::create(array(
-                        'table' => 'tab_plano_de_acao',
-                        'table_id' => $this->cod_plano_de_acao,
-                        'column_name' => 'user_id_substituto',
-                        'data_type' => 'uuid',
-                        'ip' => $_SERVER['REMOTE_ADDR'],
-                        'user_id' => Auth::user()->id,
-                        'acao' => 'Editou o(a) servidor(a) substituo',
-                        'antes' => $servidorSubstitutoAntigo,
-                        'depois' => $consultarNovoServidorSubstituto->name
-                    ));
+                        $consultarNovoServidorSubstituto = User::find($this->user_id_substituto);
+
+                        $audit = Audit::create(array(
+                            'table' => 'tab_plano_de_acao',
+                            'table_id' => $this->cod_plano_de_acao,
+                            'column_name' => 'user_id_substituto',
+                            'data_type' => 'uuid',
+                            'ip' => $_SERVER['REMOTE_ADDR'],
+                            'user_id' => Auth::user()->id,
+                            'acao' => 'Editou o(a) servidor(a) substituo',
+                            'antes' => $servidorSubstitutoAntigo,
+                            'depois' => $consultarNovoServidorSubstituto->name
+                        ));
+
+                        // Início excluir o(a) atual servidor(a) substituto(a)
+
+                        $consultarRelUsersTabOrganizacoesTabPerfilAcesso = RelUsersTabOrganizacoesTabPerfilAcesso::where('cod_plano_de_acao',$this->cod_plano_de_acao)
+                        ->where('user_id',$idServidorSubstitutoAntigo)
+                        ->where('cod_organizacao',$this->cod_organizacao)
+                        ->where('cod_perfil','c00b9ebc-7014-4d37-97dc-7875e55fff5d')
+                        ->first();
+
+                        $consultarRelUsersTabOrganizacoesTabPerfilAcesso->delete();
+
+                        // Fim excluir o(a) atual servidor(a) substituto(a)
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início cadastrar o(a) novo servidor(a) substituto(a)
+
+                        $saveUsuarioResponsavel = new RelUsersTabOrganizacoesTabPerfilAcesso;
+
+                        $saveUsuarioResponsavel->user_id = $this->user_id_substituto;
+
+                        $saveUsuarioResponsavel->cod_organizacao = $this->cod_organizacao;
+
+                        $saveUsuarioResponsavel->cod_plano_de_acao = $this->cod_plano_de_acao;
+
+                        $saveUsuarioResponsavel->cod_perfil = 'c00b9ebc-7014-4d37-97dc-7875e55fff5d';
+
+                        $saveUsuarioResponsavel->save();
+
+                        // Fim cadastrar o(a) novo servidor(a) substituto(a)
+
+                        $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado('user_id_substituto').'</b> de <span style="color:#CD3333;">( '.$servidorSubstitutoAntigo.' )</span> para <span style="color:#28a745;">( '.$consultarNovoServidorSubstituto->name.' )</span>;<br>';
+
+                    }
+
+                } else {
+
+                    if(isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
+
+                        $saveUsuarioSubstituto = new RelUsersTabOrganizacoesTabPerfilAcesso;
+
+                        $saveUsuarioSubstituto->user_id = $this->user_id_substituto;
+
+                        $saveUsuarioSubstituto->cod_organizacao = $this->cod_organizacao;
+
+                        $saveUsuarioSubstituto->cod_plano_de_acao = $this->cod_plano_de_acao;
+
+                        $saveUsuarioSubstituto->cod_perfil = 'c00b9ebc-7014-4d37-97dc-7875e55fff5d';
+
+                        $saveUsuarioSubstituto->save();
+
+                    }
+
+                }
+
+            } else {
+
+                $servidorSubstitutoAntigo = '';
+                $idServidorSubstitutoAntigo = '';
+
+                foreach($editar->servidorSubstituto as $servidorSubstituto) {
+
+                    $servidorSubstitutoAntigo = $servidorSubstituto->name;
+                    $idServidorSubstitutoAntigo = $servidorSubstituto->id;
+
+                }
+
+                if(isset($idServidorSubstitutoAntigo) && !is_null($idServidorSubstitutoAntigo) && $idServidorSubstitutoAntigo != '') {
 
                     // Início excluir o(a) atual servidor(a) substituto(a)
 
@@ -473,26 +543,6 @@ class PlanoAcaoLivewire extends Component
                     $consultarRelUsersTabOrganizacoesTabPerfilAcesso->delete();
 
                     // Fim excluir o(a) atual servidor(a) substituto(a)
-
-                    // --- x --- x --- x --- x --- x --- x ---
-
-                    // Início cadastrar o(a) novo servidor(a) substituto(a)
-
-                    $saveUsuarioResponsavel = new RelUsersTabOrganizacoesTabPerfilAcesso;
-
-                    $saveUsuarioResponsavel->user_id = $this->user_id_substituto;
-
-                    $saveUsuarioResponsavel->cod_organizacao = $this->cod_organizacao;
-
-                    $saveUsuarioResponsavel->cod_plano_de_acao = $this->cod_plano_de_acao;
-
-                    $saveUsuarioResponsavel->cod_perfil = 'c00b9ebc-7014-4d37-97dc-7875e55fff5d';
-
-                    $saveUsuarioResponsavel->save();
-
-                    // Fim cadastrar o(a) novo servidor(a) substituto(a)
-
-                    $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado('user_id_substituto').'</b> de <span style="color:#CD3333;">( '.$servidorSubstitutoAntigo.' )</span> para <span style="color:#28a745;">( '.$consultarNovoServidorSubstituto->name.' )</span>;<br>';
 
                 }
 

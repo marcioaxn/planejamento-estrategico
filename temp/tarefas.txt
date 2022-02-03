@@ -1,0 +1,7 @@
+O que precisa de atenção:
+
+1. Incluir no relacionamento do Indicador o Ano Selecionado;
+
+2. No momento de incluir ou edittar um indicador não deixar aberto os anos e meses que não compreendem a data de início e conclusão do plano de ação;
+
+3. Na evolução mensal o acumulado e até o mês anterior;
