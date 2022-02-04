@@ -92,7 +92,7 @@
 
                 @foreach($resultPerspectiva->objetivosEstrategicos as $resultObjetivoEstragico)
 
-                <a href="{!! url($this->ano.'/perspectiva/'.$resultPerspectiva->cod_perspectiva.'/objetivo-estrategico/'.$resultObjetivoEstragico->cod_objetivo_estrategico.'/plano-de-acao') !!}" >
+                <a href="{!! url($this->ano.'/unidade/'.$this->cod_organizacao.'/perspectiva/'.$resultPerspectiva->cod_perspectiva.'/objetivo-estrategico/'.$resultObjetivoEstragico->cod_objetivo_estrategico.'/plano-de-acao') !!}" >
 
                     <div class="pt-2 pb-2 pl-3 pr-3 bg-white rounded-md border-2 border-gray-50 border-opacity-25 shadow ">
 

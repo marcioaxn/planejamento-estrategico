@@ -22,6 +22,8 @@
 
     <script src="https://kit.fontawesome.com/1d96c2b4cc.js" crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
     <script src="{{ asset('js/jquery-3.6.0.js') }}"></script>
 
     <script src="{{ asset('js/jquery.mask.js') }}" type="text/javascript"></script>

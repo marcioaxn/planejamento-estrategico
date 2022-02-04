@@ -60,7 +60,7 @@ Route::group(['middleware' => ['auth', 'trocarSenha']], function () {
 
 });
 
-Route::get('{ano}/perspectiva/{cod_perspectiva}/objetivo-estrategico/{cod_objetivo_estrategico}/plano-de-acao/{cod_plano_de_acao?}',ShowObjetivoEstrategicoLivewire::class)->name('showObjetivoEstrategico');
+Route::get('{ano}/unidade/{cod_organizacao}/perspectiva/{cod_perspectiva}/objetivo-estrategico/{cod_objetivo_estrategico}/plano-de-acao/{cod_plano_de_acao?}',ShowObjetivoEstrategicoLivewire::class)->name('showObjetivoEstrategico');
 
 Route::fallback( function () {
     $ano = date('Y');

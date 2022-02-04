@@ -56,7 +56,9 @@ class ObjetivoEstrategico extends Model
 
             return $this->hasMany(PlanoAcao::class, 'cod_objetivo_estrategico')
             ->with('tipoExecucao')
-            ->whereIn('cod_organizacao',$cod_organizacao);
+            ->whereIn('cod_organizacao',$cod_organizacao)
+            ->whereYear('dte_inicio','<=',Session::get('anoSelecionado'))
+            ->whereYear('dte_fim','>=',Session::get('anoSelecionado'));
 
         } else {
 

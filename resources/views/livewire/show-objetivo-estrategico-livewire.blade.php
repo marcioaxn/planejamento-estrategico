@@ -1,6 +1,26 @@
 <div class="pt-3 pb-3 pl-1 pr-1">
 
-    <div class="flex flex-wrap w-full text-base md:text-sm pt-3 pb-3 pl-3 pr-3 rounded-md border-1 border-gray-100">
+    <div class="flex flex-wrap w-full text-base md:text-sm pt-1 pb-3 pl-3 pr-3 rounded-md border-1 border-gray-100">
+
+        <div class="w-full md:w-1/1">
+
+            <div class="pt-0 pb-1 pl-3 pr-3 bg-white rounded-md border-2 border-gray-300 border-opacity-25 text-gray-600 text-lg items-center font-semibold text-lg " style="text-align: left!Important;">
+                Plano de Ação
+            </div>
+            
+        </div>
+
+        <div class="w-full md:w-1/1 pt-0 pb-0">
+
+            <div class="col-span-6 sm:col-span-4">
+                {!! Form::select('cod_organizacao', $this->organization, null, ['class' => 'w-full pl-3 border-2 border-gray-300 border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 text-center pt-1 h-10', 'style' => 'cursor: pointer;text-align: left !Important;', 'autocomplete' => 'off', 'wire:model' => "cod_organizacao"]) !!}
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="flex flex-wrap w-full text-base md:text-sm pt-1 pb-3 pl-3 pr-3 rounded-md border-1 border-gray-100">
 
         <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-1 pb-2 pl-1">
             Perspectiva: <strong>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}. {!! $this->perspectiva->dsc_perspectiva !!}</strong>
@@ -10,8 +30,10 @@
             Objetivo Estratégico:
         </div>
 
-        <div class="w-full md:w-4/6 border-b-2 border-gray-100 pl-1">
-            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 h-7 rounded-md text-left cursor-pointer', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrl(this.value);"]) !!}
+        <style type="text/css">select { text-align-last:left; }</style>
+
+        <div class="w-full md:w-4/6 border-b-2 border-gray-100 text-left pl-1">
+            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full text-left pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 h-7 rounded-md text-left cursor-pointer', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrl(this.value);"]) !!}
         </div>
 
         <script>
@@ -24,14 +46,14 @@
 
                 var nova_url = url_antiga.replace(cod_objetivo_estrategico_antigo,cod_objetivo_estrategico);
 
-                window.history.pushState('urlAtualizada', 'Title', nova_url);
+                window.history.pushState({}, 'Title', nova_url);
 
 
             }
 
         </script>
 
-        @if($this->planosAcao->count() > 0)
+        @if(!is_null($planoAcao) && $this->planosAcao->count() > 0)
 
         <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-3 pb-1 pl-1">Plano de Ação:</div>
 
@@ -665,7 +687,7 @@
 
                                                 @if($this->indicador->bln_acumulado == 'Sim')
 
-                                                <?php $resultado = $this->calculoMensal($this->indicador->dsc_unidade_medida,$this->indicador->dsc_tipo,$totalPrevisto,$totalRealizado) ?>
+                                                <?php $resultado = $this->calculoMensal($this->indicador->dsc_unidade_medida,$this->indicador->dsc_tipo,$totalPrevisto,$totalRealizado); $this->totalRealizado = $totalRealizado; ?>
 
                                                 <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
 
@@ -747,8 +769,6 @@
 
                     <div id="divConteudoTab2" style="display: none;">
 
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
                         <canvas id="chart-<?php print($this->cod_indicador) ?>" style="width: 100%!Important; height: 79px!Important;"></canvas>
 
                         @if($this->indicador->bln_acumulado === 'Não')
@@ -811,22 +831,28 @@
                         ]
                     },
                     options: {
-                        title: {
-                          display: true,
-                          text: ''
-                      }
-                  }
-              });
+                      title: {
+                        display: true,
+                        text: 'Teste'
+                    },
+                    scales: {
+                      y: {
+                        suggestedMin: 0,
+                        suggestedMax: <?php print($this->metaAno) ?>,
+                    }
+                }
+            }
+        });
 
-          </script>
+    </script>
 
-          @endif
+    @endif
 
-      </div>
+</div>
 
-      <div id="divConteudoTab3" style="display: none;">
-        Tab 3
-    </div>
+<div id="divConteudoTab3" style="display: none;">
+    Tab 3
+</div>
 
 </div>
 

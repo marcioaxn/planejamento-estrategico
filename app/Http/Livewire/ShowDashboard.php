@@ -41,6 +41,8 @@ class ShowDashboard extends Component
     public $objetivoEstragico = null;
     public $cod_objetivo_estrategico = null;
 
+    public $anoSelecionado = null;
+
     public $nom_organizacao = null;
     public $hierarquiaUnidade = null;
 
@@ -78,6 +80,12 @@ class ShowDashboard extends Component
         $mesVigente = date("n");
 
         $anoSelecionado = ($this->ano)*1;
+
+        $this->anoSelecionado = ($this->ano)*1;
+
+        Session()->forget('anoSelecionado');
+
+        Session()->put('anoSelecionado', $this->anoSelecionado);
 
         $resultado = [];
 
@@ -170,8 +178,17 @@ class ShowDashboard extends Component
         if(isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '' && isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '') {
 
             $consultarObjetivoEstrategico = ObjetivoEstrategico::with('planosDeAcaoPorArea','planosDeAcaoPorArea.indicadores','planosDeAcaoPorArea.indicadores.metaAno','planosDeAcaoPorArea.indicadores.evolucaoIndicador')
-            ->where('cod_objetivo_estrategico',$cod_objetivo_estrategico)
-            ->get();
+            ->where('cod_objetivo_estrategico',$cod_objetivo_estrategico);
+
+            $consultarObjetivoEstrategico = $consultarObjetivoEstrategico->whereHas('planosDeAcaoPorArea', function ($query) use($anoSelecionado) {
+                $query->whereYear('dte_inicio','<=',$anoSelecionado);
+            });
+
+            $consultarObjetivoEstrategico = $consultarObjetivoEstrategico->whereHas('planosDeAcaoPorArea', function ($query) use($anoSelecionado) {
+                $query->whereYear('dte_fim','>=',$anoSelecionado);
+            });
+
+            $consultarObjetivoEstrategico = $consultarObjetivoEstrategico->get();
 
             $somaResultado = 0;
             $calculo = 0;

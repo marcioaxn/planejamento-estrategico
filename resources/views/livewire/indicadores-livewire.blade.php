@@ -283,6 +283,15 @@
 
                     for($ano = $this->anoInicioDoPeiSelecionado;$ano<=$this->anoConclusaoDoPeiSelecionado;$ano++) {
 
+                        if($ano >= $this->anoInicioDoPlanoDeAcaoSelecionado && $ano <= $this->anoConclusaoDoPlanoDeAcaoSelecionado) {
+
+                            $this->inputValorClass = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2 text-right';
+                        } else {
+
+                            $this->inputValorClass = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2 text-right ler-somente';
+
+                        }
+
                         ?>
 
                         <div class="w-full md:w-1/4 px-3 mt-3 mb-1 md:mb-0 pt-6" style="display: {!! $this->habilitarCampoInserirMetas !!};">
@@ -394,7 +403,30 @@
 
                             }
 
+                            $mes_ano_inicio = $this->mesInicioDoPlanoDeAcaoSelecionado.$this->anoInicioDoPlanoDeAcaoSelecionado;
+
+                            $mes_ano_conclusao = $this->mesConclusaoDoPlanoDeAcaoSelecionado.$this->anoConclusaoDoPlanoDeAcaoSelecionado;
+
                             for($mes=1;$mes<=12;$mes++) {
+
+                                if($ano >= $this->anoInicioDoPlanoDeAcaoSelecionado && $ano <= $this->anoConclusaoDoPlanoDeAcaoSelecionado) {
+
+                                    if($mes >= $this->mesInicioDoPlanoDeAcaoSelecionado && $mes <= $this->mesConclusaoDoPlanoDeAcaoSelecionado) {
+
+                                        $this->$column_name_input_class_mes = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right';
+
+
+                                    } else {
+
+                                        if($this->anoConclusaoDoPlanoDeAcaoSelecionado == $ano) {
+
+                                            $this->$column_name_input_class_mes = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right ler-somente';
+
+                                        }
+
+                                    }
+
+                                }
 
                                 ?>
 
@@ -468,6 +500,8 @@
                     }
 
                     ?>
+
+                    <script type='text/javascript'>var unidadeMedida = document.getElementById('dsc_unidade_medida').value;if(unidadeMedida == 'Quantidade') {$('#vlr_realizado').mask('000.000.000.000.000',{reverse: true, selectOnFocus: true});} else if(unidadeMedida == 'Porcentagem') {$('#vlr_realizado').mask('000,00',{reverse: true, selectOnFocus: true});} else if(unidadeMedida == 'Dinheiro') {$('#vlr_realizado').mask('000.000.000.000.000,00',{reverse: true, selectOnFocus: true});}</script>
 
                     <script type='text/javascript'>
 

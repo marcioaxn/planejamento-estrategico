@@ -115,7 +115,7 @@
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-label for="dte_inicio" value="Data de Início" />
-                            {!! Form::date('dte_inicio',null,['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2 mr-0 pr-0 text-right','id' => 'dte_inicio', 'data-date-format' => 'DD MMMM YYYY', 'style' => 'width: 100%;', 'wire:model' => 'dte_inicio', 'autocomplete' => 'off', 'required' => 'required', 'min' => $this->primeiroAnoDoPeiSelecionado, 'max' => $this->ultimoAnoDoPeiSelecionado]) !!}
+                            {!! Form::date('dte_inicio',null,['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2 mr-0 pr-0 text-right','id' => 'dte_inicio', 'data-date-format' => 'DD MMMM YYYY', 'style' => 'width: 100%;', 'wire:model' => 'dte_inicio', 'autocomplete' => 'off', 'required' => 'required', 'min' => '2020-01-01', 'max' => $this->ultimoAnoDoPeiSelecionado]) !!}
                             <x-jet-input-error for="dte_inicio" class="mt-2" />
                         </div>
 

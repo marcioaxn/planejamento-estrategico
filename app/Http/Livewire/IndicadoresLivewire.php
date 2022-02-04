@@ -65,6 +65,11 @@ class IndicadoresLivewire extends Component
     public $anoInicioDoPeiSelecionado = null;
     public $anoConclusaoDoPeiSelecionado = null;
 
+    public $anoInicioDoPlanoDeAcaoSelecionado = null;
+    public $mesInicioDoPlanoDeAcaoSelecionado = null;
+    public $anoConclusaoDoPlanoDeAcaoSelecionado = null;
+    public $mesConclusaoDoPlanoDeAcaoSelecionado = null;
+
     public $habilitarCampoInserirMetas = 'none';
 
     public $primeiroAnoDoPeiSelecionado = null;
@@ -2123,6 +2128,25 @@ class IndicadoresLivewire extends Component
     public function render()
     {
 
+        if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
+
+            $consultarPlanoDeAcao = PlanoAcao::find($this->cod_plano_de_acao);
+
+            $dataInicioPlanoDeAcao = strtotime($consultarPlanoDeAcao->dte_inicio);
+            $dataConclusaoPlanoDeAcao = strtotime($consultarPlanoDeAcao->dte_fim);
+
+            $this->anoInicioDoPlanoDeAcaoSelecionado = date('Y',$dataInicioPlanoDeAcao);
+            $this->anoConclusaoDoPlanoDeAcaoSelecionado = date('Y',$dataConclusaoPlanoDeAcao);
+
+            $this->mesInicioDoPlanoDeAcaoSelecionado = date('n',$dataInicioPlanoDeAcao);
+            $this->mesConclusaoDoPlanoDeAcaoSelecionado = date('n',$dataConclusaoPlanoDeAcao);
+
+        } else {
+
+
+
+        }
+
         $indicadores = Pei::with('perspectivas','perspectivas.objetivosEstrategicos','perspectivas.objetivosEstrategicos.planosDeAcao','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores.linhaBase','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores.metaAno','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores.evolucaoIndicador','perspectivas.objetivosEstrategicos.planosDeAcao.indicadores.acoesRealizadas');
 
         // Início para montagem dos anos da linha de base
@@ -2266,7 +2290,7 @@ class IndicadoresLivewire extends Component
 
             $this->inputValorLinhaBaseClass = 'block w-full mt-1 rounded-r-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-right pl-3';
 
-            $this->inputValorClass = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2 text-right';
+            
 
             // Fim da abertura dos campos de preenchimento da linha de base e das metas previstas anuais
 
