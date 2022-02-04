@@ -68,6 +68,12 @@ class ShowDashboard extends Component
 
     }
 
+    public function detalharObjetivoEstrategico(ObjetivoEstrategico $objetivoEstragico) {
+
+        dd($objetivoEstragico);
+
+    }
+
     public function calculoPorArea($cod_objetivo_estrategico = '') {
 
         $anoVigente = date("Y");
@@ -105,37 +111,37 @@ class ShowDashboard extends Component
 
             foreach ($organization as $result) {
 
-                $organizacoes[$result->cod_organizacao] = $result->cod_organizacao;
+                $organizacoes[$result->cod_organizacao] = $this->codOrganizacaoPorHieraquia($result->cod_organizacao);
 
                 foreach($organizationChild as $resultChild1) {
 
                     if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
 
-                        $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->cod_organizacao;
+                        $organizacoes[$resultChild1->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild1->cod_organizacao);
 
                         foreach ($resultChild1->deshierarquia as $resultChild2) {
 
                             if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
 
-                                $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->cod_organizacao;
+                                $organizacoes[$resultChild2->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild2->cod_organizacao);
 
                                 foreach ($resultChild2->deshierarquia as $resultChild3) {
 
                                     if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
 
-                                        $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->cod_organizacao;
+                                        $organizacoes[$resultChild3->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild3->cod_organizacao);
 
                                         foreach ($resultChild3->deshierarquia as $resultChild4) {
 
                                             if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
 
-                                                $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->cod_organizacao;
+                                                $organizacoes[$resultChild4->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild4->cod_organizacao);
 
                                                 foreach ($resultChild4->deshierarquia as $resultChild5) {
 
                                                     if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
-                                                        $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->cod_organizacao;
+                                                        $organizacoes[$resultChild5->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild5->cod_organizacao);
 
                                                     }
 
@@ -357,39 +363,9 @@ class ShowDashboard extends Component
                                 ->where('vlr_minimo','<=',$resultado['percentual_alcancado'])
                                 ->first();
 
-                                if(!is_null($consultarGrauSatisfacao)) {
+                                $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
 
-                                    if($resultado['percentual_alcancado'] < 0) {
-
-                                        $resultado['grau_de_satisfacao'] = 'red';
-
-                                    } elseif($resultado['percentual_alcancado'] > 100) {
-
-                                        $resultado['grau_de_satisfacao'] = 'green';
-
-                                    } else {
-
-                                        $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
-
-                                    }
-
-                                } else {
-
-                                    if($resultado['percentual_alcancado'] < 0) {
-
-                                        $resultado['grau_de_satisfacao'] = 'red';
-
-                                    } elseif($resultado['percentual_alcancado'] > 100) {
-
-                                        $resultado['grau_de_satisfacao'] = 'green';
-
-                                    } else {
-
-                                        $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
-
-                                    }
-
-                                }
+                                
 
                             } else {
 
@@ -603,6 +579,106 @@ class ShowDashboard extends Component
                                                     foreach($result7->hierarquia as $result8) {
 
                                                         $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result8->sgl_organizacao;
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return $hierarquiaSuperior;
+
+    }
+
+    protected function codOrganizacaoPorHieraquia($cod_organizacao) {
+
+        return $cod_organizacao;
+
+        $organizacao = Organization::with('hierarquia')
+        ->where('cod_organizacao',$cod_organizacao)
+        ->get();
+
+        $hierarquiaSuperior = [];
+
+        array_push($hierarquiaSuperior,$cod_organizacao);
+
+        foreach($organizacao as $result1) {
+
+            if($result1->hierarquia) {
+
+                foreach($result1->hierarquia as $result2) {
+
+                    if(!in_array($result2->cod_organizacao, $hierarquiaSuperior)) {
+
+                        array_push($hierarquiaSuperior,$result2->cod_organizacao);
+
+                    }
+
+                    $organizacao2 = Organization::with('hierarquia')
+                    ->where('cod_organizacao',$result2->cod_organizacao)
+                    ->get();
+
+                    foreach($organizacao2 as $result3) {
+
+                        if($result3->hierarquia) {
+
+                            foreach($result3->hierarquia as $result4) {
+
+                                if(!in_array($result4->cod_organizacao, $hierarquiaSuperior)) {
+
+                                    array_push($hierarquiaSuperior,$result4->cod_organizacao);
+
+                                }
+
+                                $organizacao3 = Organization::with('hierarquia')
+                                ->where('cod_organizacao',$result4->cod_organizacao)
+                                ->get();
+
+                                foreach($organizacao3 as $result5) {
+
+                                    if($result5->hierarquia) {
+
+                                        foreach($result5->hierarquia as $result6) {
+
+                                            if(!in_array($result6->sgl_organizacao, $hierarquiaSuperior)) {
+
+                                                array_push($hierarquiaSuperior,$result6->sgl_organizacao);
+
+                                            }
+
+                                            $organizacao4 = Organization::with('hierarquia')
+                                            ->where('cod_organizacao',$result6->cod_organizacao)
+                                            ->get();
+
+                                            foreach($organizacao4 as $result7) {
+
+                                                if($result7->hierarquia) {
+
+                                                    foreach($result7->hierarquia as $result8) {
+
+                                                        if(!in_array($result8->sgl_organizacao, $hierarquiaSuperior)) {
+
+                                                            array_push($hierarquiaSuperior,$result8->sgl_organizacao);
+
+                                                        }
 
                                                     }
 

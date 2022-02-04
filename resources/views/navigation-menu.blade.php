@@ -9,9 +9,13 @@
 
         $ano = \Session('ano');
 
+        $this->ano = $ano;
+
     } else {
 
         $ano = date('Y');
+
+        $this->ano = $ano;
 
     }
 

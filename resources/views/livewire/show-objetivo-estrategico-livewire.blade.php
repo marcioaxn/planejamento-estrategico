@@ -13,8 +13,29 @@
         <div class="w-full md:w-1/1 pt-0 pb-0">
 
             <div class="col-span-6 sm:col-span-4">
-                {!! Form::select('cod_organizacao', $this->organization, null, ['class' => 'w-full pl-3 border-2 border-gray-300 border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 text-center pt-1 h-10', 'style' => 'cursor: pointer;text-align: left !Important;', 'autocomplete' => 'off', 'wire:model' => "cod_organizacao"]) !!}
+                {!! Form::select('cod_organizacao', $this->organization, null, ['class' => 'w-full pl-3 border-2 border-gray-300 border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 text-center pt-1 h-10', 'style' => 'cursor: pointer;text-align: left !Important;', 'autocomplete' => 'off', 'wire:model' => "cod_organizacao",'onchange' => "javascript: alterarUrlCodOrganizacao(this.value);"]) !!}
             </div>
+
+            <script>
+
+                function alterarUrlCodOrganizacao(cod_organizacao) {
+
+                    var url_antiga = window.location.pathname;
+
+                    var cod_organizacao_antigo = @this.cod_organizacao;
+
+                    var nova_url = url_antiga.replace(cod_organizacao_antigo,cod_organizacao);
+
+                    var origin = window.location.origin;
+
+                    window.location = origin + nova_url;
+
+                    // window.history.pushState({}, 'Title', nova_url);
+
+
+                }
+
+            </script>
 
         </div>
 
@@ -33,12 +54,12 @@
         <style type="text/css">select { text-align-last:left; }</style>
 
         <div class="w-full md:w-4/6 border-b-2 border-gray-100 text-left pl-1">
-            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full text-left pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 h-7 rounded-md text-left cursor-pointer', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrl(this.value);"]) !!}
+            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full text-left pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 h-7 rounded-md text-left cursor-pointer', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrlCodObjetivoEstrategico(this.value);"]) !!}
         </div>
 
         <script>
 
-            function alterarUrl(cod_objetivo_estrategico) {
+            function alterarUrlCodObjetivoEstrategico(cod_objetivo_estrategico) {
 
                 var url_antiga = window.location.pathname;
 
@@ -46,14 +67,16 @@
 
                 var nova_url = url_antiga.replace(cod_objetivo_estrategico_antigo,cod_objetivo_estrategico);
 
-                window.history.pushState({}, 'Title', nova_url);
+                var origin = window.location.origin;
+
+                window.location = origin + nova_url;
 
 
             }
 
         </script>
 
-        @if(!is_null($planoAcao) && $this->planosAcao->count() > 0)
+        @if(!is_null($this->planoAcao) && $this->planosAcao->count() > 0)
 
         <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-3 pb-1 pl-1">Plano de Ação:</div>
 
@@ -75,7 +98,7 @@
                 $calculo = 0;
 
                 $contIndicador = $contIndicador + 1;
-                
+
                 ?>
 
                 @foreach($indicador->evolucaoIndicador as $evolucaoIndicador)

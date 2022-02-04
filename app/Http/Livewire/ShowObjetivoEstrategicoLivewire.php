@@ -110,6 +110,24 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $this->anoSelecionado = $ano;
 
+        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+
+            $this->cod_organizacao = $cod_organizacao;
+
+            $this->cod_plano_de_acao = null;
+
+            Session()->forget('cod_plano_de_acao_identificado');
+
+        } else {
+
+            $this->cod_organizacao = null;
+
+            $this->cod_plano_de_acao = null;
+
+            Session()->forget('cod_plano_de_acao_identificado');
+
+        }
+
         if(isset($cod_perspectiva) && !is_null($cod_perspectiva) && $cod_perspectiva != '') {
 
             $this->cod_perspectiva = $cod_perspectiva;
@@ -309,6 +327,10 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public function render()
     {
 
+        Session()->forget('cod_plano_de_acao_identificado');
+
+        $this->cod_plano_de_acao = $this->cod_plano_de_acao;
+
         $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
         ->get();
 
@@ -373,8 +395,6 @@ class ShowObjetivoEstrategicoLivewire extends Component
         }
 
         $this->organization = $organizacoes;
-
-        $organizacoes = [];
 
         if(isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
 
@@ -499,10 +519,28 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $planosAcao = PlanoAcao::orderBy('num_nivel_hierarquico_apresentacao')
         ->where('cod_objetivo_estrategico',$this->cod_objetivo_estrategico)
-        ->whereIn('cod_organizacao',\Session::get('cod_organizacao'))
+        ->where('cod_organizacao',$this->cod_organizacao)
         ->whereYear('dte_inicio','<=',$anoSelecionado)
         ->whereYear('dte_fim','>=',$anoSelecionado)
         ->get();
+
+        $cods_plano_de_acao = '';
+
+        foreach($planosAcao as $result) {
+
+            $cods_plano_de_acao = $cods_plano_de_acao.$result->cod_plano_de_acao.',';
+
+        }
+
+        $cods_plano_de_acao = trim($cods_plano_de_acao,',');
+
+        $cods_plano_de_acao = explode(',', $cods_plano_de_acao);
+
+        if(!in_array($this->cod_plano_de_acao, $cods_plano_de_acao)) {
+
+            $this->cod_plano_de_acao = null;
+
+        }
 
         $this->planosAcao = $planosAcao;
 
@@ -530,6 +568,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $planoAcao = PlanoAcao::orderBy('num_nivel_hierarquico_apresentacao')
         ->with('tipoExecucao','servidorResponsavel','servidorSubstituto','indicadores','indicadores.evolucaoIndicador')
+        ->where('cod_organizacao',$this->cod_organizacao)
         ->where('cod_objetivo_estrategico',$this->cod_objetivo_estrategico)
         ->whereYear('dte_inicio','<=',$anoSelecionado)
         ->whereYear('dte_fim','>=',$anoSelecionado);
@@ -556,123 +595,135 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         }
 
-        if(is_null($this->cod_indicador_selecionado)) {
+        if(!is_null($planoAcao) && !is_null($planoAcao->indicadores)) {
 
-            $contIndicador = 1;
+            if(is_null($this->cod_indicador_selecionado)) {
 
-            if(!is_null($planoAcao)) {
+                $contIndicador = 1;
 
-                foreach($planoAcao->indicadores as $indicador) {
+                if(!is_null($planoAcao)) {
 
-                    if($contIndicador == 1) {
+                    foreach($planoAcao->indicadores as $indicador) {
 
-                        $this->cod_indicador = $indicador->cod_indicador;
+                        if($contIndicador == 1) {
+
+                            $this->cod_indicador = $indicador->cod_indicador;
+
+                        }
+
+                        $contIndicador = $contIndicador + 1;
 
                     }
 
-                    $contIndicador = $contIndicador + 1;
-
                 }
+
+            } else {
+
+                $this->cod_indicador = $this->cod_indicador_selecionado;
 
             }
 
-        } else {
+            if(isset($this->cod_indicador) && !is_null($this->cod_indicador) && $this->cod_indicador != '') {
 
-            $this->cod_indicador = $this->cod_indicador_selecionado;
-
-        }
-
-        if(isset($this->cod_indicador) && !is_null($this->cod_indicador) && $this->cod_indicador != '') {
-
-            $indicador = Indicador::with('linhaBase','metaAno','evolucaoIndicador')
-            ->orderBy('dsc_indicador');
+                $indicador = Indicador::with('linhaBase','metaAno','evolucaoIndicador')
+                ->orderBy('dsc_indicador');
 
             // $indicador = $indicador->whereHas('metaAno', function ($query) use($anoSelecionado) {
             //     $query->where('num_ano',$anoSelecionado);
             // });
 
-            if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
+                if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
 
-                $indicador = $indicador->where('cod_plano_de_acao',$this->cod_plano_de_acao);
+                    $indicador = $indicador->where('cod_plano_de_acao',$this->cod_plano_de_acao);
+
+                }
 
             }
 
-        }
+            if(!is_null($this->cod_indicador)) {
 
-        $indicador = $indicador->find($this->cod_indicador);
+                $indicador = $indicador->find($this->cod_indicador);
 
-        if($indicador) {
+                if($indicador) {
 
-            $this->indicador = $indicador;
+                    $this->indicador = $indicador;
 
-        } else {
+                } else {
 
-            $this->indicador = [];
+                    $this->indicador = [];
 
-        }
+                }
 
-        $dataChartMetaPrevista = '';
-        $dataChartMetaRealizada = '';
+                $dataChartMetaPrevista = '';
+                $dataChartMetaRealizada = '';
 
-        if(!is_null($planoAcao)) {
+                if(!is_null($planoAcao)) {
 
-            if($indicador) {
+                    if($indicador) {
 
-                if($indicador->evolucaoIndicador->count() > 0) {
+                        if($indicador->evolucaoIndicador->count() > 0) {
 
-                    foreach($indicador->metaAno as $metaAno) {
+                            foreach($indicador->metaAno as $metaAno) {
 
-                        if($metaAno->num_ano == $this->ano) {
+                                if($metaAno->num_ano == $this->ano) {
 
-                            $this->metaAno = $metaAno->meta;
-
-                        }
-
-                    }
-
-                    $somaPrevisto = 0;
-                    $somaRealizado = 0;
-
-                    foreach($indicador->evolucaoIndicador as $evolucaoIndicador) {
-
-                        if($evolucaoIndicador->num_ano == $this->ano) {
-
-                            if(isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto && $evolucaoIndicador->vlr_previsto > 0)) {
-
-                                if($indicador->bln_acumulado === 'Sim') {
-
-                                    $somaPrevisto = $somaPrevisto + $evolucaoIndicador->vlr_previsto;
-
-                                    if(isset($evolucaoIndicador->bln_atualizado) && !is_null($evolucaoIndicador->bln_atualizado && $evolucaoIndicador->bln_atualizado != '')) {
-
-                                        $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
-
-                                        $dataChartMetaRealizada = $dataChartMetaRealizada.$somaRealizado.',';
-
-                                    }
-
-                                    $dataChartMetaPrevista = $dataChartMetaPrevista.$somaPrevisto.',';
-
-                                    
-
-                                } else {
-
-                                    $dataChartMetaPrevista = $dataChartMetaPrevista.$evolucaoIndicador->vlr_previsto.',';
-
-                                    $dataChartMetaRealizada = $dataChartMetaRealizada.$evolucaoIndicador->vlr_realizado.',';
+                                    $this->metaAno = $metaAno->meta;
 
                                 }
 
                             }
 
+                            $somaPrevisto = 0;
+                            $somaRealizado = 0;
+
+                            foreach($indicador->evolucaoIndicador as $evolucaoIndicador) {
+
+                                if($evolucaoIndicador->num_ano == $this->ano) {
+
+                                    if(isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto && $evolucaoIndicador->vlr_previsto > 0)) {
+
+                                        if($indicador->bln_acumulado === 'Sim') {
+
+                                            $somaPrevisto = $somaPrevisto + $evolucaoIndicador->vlr_previsto;
+
+                                            if(isset($evolucaoIndicador->bln_atualizado) && !is_null($evolucaoIndicador->bln_atualizado && $evolucaoIndicador->bln_atualizado != '')) {
+
+                                                $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                                $dataChartMetaRealizada = $dataChartMetaRealizada.$somaRealizado.',';
+
+                                            }
+
+                                            $dataChartMetaPrevista = $dataChartMetaPrevista.$somaPrevisto.',';
+
+
+
+                                        } else {
+
+                                            $dataChartMetaPrevista = $dataChartMetaPrevista.$evolucaoIndicador->vlr_previsto.',';
+
+                                            $dataChartMetaRealizada = $dataChartMetaRealizada.$evolucaoIndicador->vlr_realizado.',';
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                            $this->dataChartMetaPrevista = trim($dataChartMetaPrevista,',');
+                            $this->dataChartMetaRealizada = trim($dataChartMetaRealizada,',');
+
                         }
 
                     }
 
-                    $this->dataChartMetaPrevista = trim($dataChartMetaPrevista,',');
-                    $this->dataChartMetaRealizada = trim($dataChartMetaRealizada,',');
-
                 }
+
+            } else {
+
+                $this->indicador = [];
 
             }
 
@@ -746,11 +797,51 @@ class ShowObjetivoEstrategicoLivewire extends Component
         ->where('vlr_minimo','<=',$percentual)
         ->first();
 
-        $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
+        if(!is_null($consultarGrauSatisfacao)) {
+
+            if($percentual < 0) {
+
+                $resultado['grau_de_satisfacao'] = 'red';
+
+            } elseif($percentual > 100) {
+
+                $resultado['grau_de_satisfacao'] = 'green';
+
+            } else {
+
+                $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
+
+            }
+
+        } else {
+
+            if($percentual < 0) {
+
+                $resultado['grau_de_satisfacao'] = 'red';
+
+            } elseif($percentual > 100) {
+
+                $resultado['grau_de_satisfacao'] = 'green';
+
+            } else {
+
+                $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
+
+            }
+
+        }
 
         $resultado['color'] = 'white';
 
-        if($consultarGrauSatisfacao->cor === 'yellow') {
+        if(!is_null($consultarGrauSatisfacao)) {
+
+            if($consultarGrauSatisfacao->cor === 'yellow') {
+
+                $resultado['color'] = 'black';
+
+            }
+
+        } else {
 
             $resultado['color'] = 'black';
 
