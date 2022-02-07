@@ -492,6 +492,36 @@ class IndicadoresLivewire extends Component
     public $iconAbrirFechar = 'fas fa-plus text-xs';
     public $iconFechar = 'fas fa-minus text-xs';
 
+    public function obterIndicadoresPorCodIndicadorEAnoSelecionado($cod_indicador = '',$anoSelecionado = '') {
+
+        $result = false;
+
+        if(isset($cod_indicador) && !is_null($cod_indicador) && $cod_indicador != '') {
+
+            $consultarIndicadorParaAcessarMetaAno = Indicador::with('metaAno');
+
+            if(isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+
+                $consultarIndicadorParaAcessarMetaAno = $consultarIndicadorParaAcessarMetaAno->whereHas('metaAno', function ($query) use($anoSelecionado) {
+                    $query->where('num_ano',$anoSelecionado);
+                });
+
+            }
+
+            $consultarIndicadorParaAcessarMetaAno = $consultarIndicadorParaAcessarMetaAno->find($cod_indicador);
+
+            if(!is_null($consultarIndicadorParaAcessarMetaAno)) {
+
+                $result = true;
+
+            }
+
+        }
+
+        return $result;
+
+    }
+
     public function create() {
 
         $contMetaAnualPreenchida = 0;

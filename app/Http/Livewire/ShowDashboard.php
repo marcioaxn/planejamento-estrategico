@@ -15,6 +15,7 @@ use Livewire\WithPagination;
 use \Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Http\Livewire\CalculoLivewire;
 
 ini_set('memory_limit', '7096M');
 ini_set('max_execution_time', 9900);
@@ -26,6 +27,8 @@ class ShowDashboard extends Component
     use WithPagination;
 
     public $grau_satisfacao = null;
+
+    public $calcularAcumuladoObjetivoEstrategico;
 
     public $calculoPorArea = null;
 
@@ -68,354 +71,13 @@ class ShowDashboard extends Component
 
     }
 
-    public function calculoPorArea($cod_objetivo_estrategico = '') {
+    protected function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '',$anoSelecionado = '') {
 
-        $anoVigente = date("Y");
-        $mesVigente = date("n");
+        $calcular = new CalculoLivewire;
 
-        $anoSelecionado = ($this->ano)*1;
+        $result = $calcular->calcularAcumuladoObjetivoEstrategico($cod_organizacao,$cod_objetivo_estrategico,$anoSelecionado);
 
-        $this->anoSelecionado = ($this->ano)*1;
-
-        Session()->forget('anoSelecionado');
-
-        Session()->put('anoSelecionado', $this->anoSelecionado);
-
-        $resultado = [];
-
-        $resultado['quantidade_plano_de_acao'] = 0;
-        $resultado['percentual_alcancado'] = 0;
-        $resultado['grau_de_satisfacao'] = 'gray';
-
-        $time = strtotime(date('Y-m-d'));
-        $mesAnterior = (date("n", strtotime("-1 month", $time)))*1;
-        $ano = date("Y", strtotime("+1 month", $time));
-
-        // --------------------------------------------
-
-        if(isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
-
-            $organizacoes = [];
-
-            $organization = Organization::where('cod_organizacao',$this->cod_organizacao)
-            ->get();
-
-            $organizationChild = Organization::orderBy('nom_organizacao')
-            ->get();
-
-            foreach ($organization as $result) {
-
-                $organizacoes[$result->cod_organizacao] = $result->cod_organizacao;
-
-                foreach($organizationChild as $resultChild1) {
-
-                    if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
-
-                        $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->cod_organizacao;
-
-                        foreach ($resultChild1->deshierarquia as $resultChild2) {
-
-                            if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
-
-                                $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->cod_organizacao;
-
-                                foreach ($resultChild2->deshierarquia as $resultChild3) {
-
-                                    if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
-
-                                        $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->cod_organizacao;
-
-                                        foreach ($resultChild3->deshierarquia as $resultChild4) {
-
-                                            if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
-
-                                                $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->cod_organizacao;
-
-                                                foreach ($resultChild4->deshierarquia as $resultChild5) {
-
-                                                    if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
-
-                                                        $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->cod_organizacao;
-
-                                                    }
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-            Session()->put('cod_organizacao', $organizacoes);
-
-        } else {
-
-            Session()->forget('cod_organizacao');
-
-        }
-
-        $consultarObjetivoEstrategico = [];
-
-        if(isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '' && isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '') {
-
-            $consultarObjetivoEstrategico = ObjetivoEstrategico::with('planosDeAcaoPorArea','planosDeAcaoPorArea.indicadores','planosDeAcaoPorArea.indicadores.metaAno','planosDeAcaoPorArea.indicadores.evolucaoIndicador')
-            ->where('cod_objetivo_estrategico',$cod_objetivo_estrategico);
-
-            $consultarObjetivoEstrategico = $consultarObjetivoEstrategico->whereHas('planosDeAcaoPorArea', function ($query) use($anoSelecionado) {
-                $query->whereYear('dte_inicio','<=',$anoSelecionado);
-            });
-
-            $consultarObjetivoEstrategico = $consultarObjetivoEstrategico->whereHas('planosDeAcaoPorArea', function ($query) use($anoSelecionado) {
-                $query->whereYear('dte_fim','>=',$anoSelecionado);
-            });
-
-            $consultarObjetivoEstrategico = $consultarObjetivoEstrategico->get();
-
-            $somaResultado = 0;
-            $calculo = 0;
-
-            foreach($consultarObjetivoEstrategico AS $objetivoEstragico) {
-
-                foreach($objetivoEstragico->planosDeAcaoPorArea as $planoDeAcao) {
-
-                    $anoInicio = date('Y', strtotime($planoDeAcao->dte_inicio));
-                    $anoConclusao = date('Y', strtotime($planoDeAcao->dte_fim));
-
-                    if($anoSelecionado >= $anoInicio && $anoSelecionado <= $anoConclusao) {
-
-                        // Início para pegar a quantidade de plano de ação por objetivo estratégico e por área
-
-                        $resultado['quantidade_plano_de_acao'] = $objetivoEstragico->planosDeAcaoPorArea->count();
-
-                        // Fim para pegar a quantidade de plano de ação por objetivo estratégico e por área
-
-                    }
-
-                    // Iniciar o acesso ao indicador
-
-                    $contIndicador = 0;
-
-                    if($planoDeAcao->indicadores->count() > 0) {
-
-                        foreach($planoDeAcao->indicadores as $indicador) {
-
-                            $unidadeMedida = $indicador->dsc_unidade_medida;
-                            $bln_acumulado = $indicador->bln_acumulado;
-                            $dsc_tipo = $indicador->dsc_tipo;
-
-                            $flg_metaAno = false;
-
-                            foreach($indicador->metaAno as $metaAno) {
-
-                                if($metaAno->num_ano == $anoSelecionado) {
-
-                                    $flg_metaAno = true;
-
-                                    $vlr_meta_ano = $metaAno->meta;
-
-                                    $metaAno = $metaAno->num_ano;
-
-                                }
-
-                            }
-
-                            if($flg_metaAno && isset($metaAno) && !is_null($metaAno) && $metaAno != '' && $metaAno == $anoVigente) {
-
-                                $contIndicador = $contIndicador + 1;
-
-                            // Início do cálculo para o ano vigente
-
-                                $valorMetaPrevista = 0;
-                                $valorMetaRealizada = 0;
-
-                                if($mesVigente > 1) {
-
-                                    $contEvolucaoIndicador = 1;
-
-                                    foreach($indicador->evolucaoIndicador as $evolucaoIndicador) {
-
-                                        if($bln_acumulado === "Sim") {
-
-                                            for ($contMes=1;$contMes<=$mesAnterior;$contMes++) {
-
-                                                $column_name_mes = 'metaMes_'.$contMes.'_'.$anoSelecionado;
-
-                                                if($evolucaoIndicador->num_mes == $contMes && $evolucaoIndicador->num_ano == $anoSelecionado) {
-
-                                                    $valorMetaPrevista = $valorMetaPrevista + $evolucaoIndicador->vlr_previsto;
-
-                                                    $valorMetaRealizada = $valorMetaRealizada + $evolucaoIndicador->vlr_realizado;
-
-                                                }
-
-                                                if($contEvolucaoIndicador == 12) {
-
-                                                    $contEvolucaoIndicador = 1;
-
-                                                }
-
-                                                $contEvolucaoIndicador = $contEvolucaoIndicador + 1;
-
-                                            }
-
-                                            if($dsc_tipo === "+") {
-
-                                                if($valorMetaPrevista > 0) {
-
-                                                    $somaResultado = ($valorMetaRealizada/$vlr_meta_ano)*100;
-
-                                                }
-
-                                            }
-
-                                            if($dsc_tipo === "-") {
-
-                                                if($valorMetaPrevista > 0) {
-
-                                                    $somaResultado = ($valorMetaRealizada/$vlr_meta_ano)*100;
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                        if($bln_acumulado === "Não") {
-
-                                            for ($contMes=1;$contMes<=$mesAnterior;$contMes++) {
-
-                                                $column_name_mes = 'metaMes_'.$contMes.'_'.$anoSelecionado;
-
-                                                if($evolucaoIndicador->num_mes == $contMes && $evolucaoIndicador->num_ano == $anoSelecionado) {
-
-                                                    $valorMetaPrevista = $evolucaoIndicador->vlr_previsto;
-
-                                                    $valorMetaRealizada = $evolucaoIndicador->vlr_realizado;
-
-                                                }
-
-                                                if($contEvolucaoIndicador == 12) {
-
-                                                    $contEvolucaoIndicador = 1;
-
-                                                }
-
-                                                $contEvolucaoIndicador = $contEvolucaoIndicador + 1;
-
-                                            }
-
-                                            if($dsc_tipo === "+") {
-
-                                                if($valorMetaPrevista > 0) {
-
-                                                    $somaResultado = ($valorMetaRealizada/$vlr_meta_ano)*100;
-
-                                                }
-
-                                            }
-
-                                            if($dsc_tipo === "-") {
-
-                                                if($valorMetaPrevista > 0) {
-
-                                                    $somaResultado = ((1-($valorMetaRealizada-$vlr_meta_ano)/$vlr_meta_ano)*100)-100;
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                                $calculo = $calculo + $somaResultado;
-
-                            // print("<br />Unidade de Medida: ".$unidadeMedida."<br />Acumulado: ".$bln_acumulado."<br />Tipo: ".$dsc_tipo."<br />Ano selecionado: ".$anoSelecionado."<br />Ano meta: ".$metaAno."<br />Mês vigente: ".$mesVigente."<br />Mês anterior: ".$mesAnterior."<br />Soma Valor Previsto: ".$valorMetaPrevista."<br />Soma Valor Realizado: ".$valorMetaRealizada."<br />Resultado: ".$somaResultado."<br />Total de indicadores: ".$contIndicador."<br />");
-
-                            // Fim do cálculo para o ano vigente
-
-                            // print("<br />Cáculo: ".$calculo/$contIndicador."<br /><br />");
-
-                                $resultado['percentual_alcancado'] = $calculo/$contIndicador;
-
-                                $consultarGrauSatisfacao = GrauSatisfacao::where('vlr_maximo','>=',$resultado['percentual_alcancado'])
-                                ->where('vlr_minimo','<=',$resultado['percentual_alcancado'])
-                                ->first();
-
-                                if(!is_null($consultarGrauSatisfacao)) {
-
-                                    if($resultado['percentual_alcancado'] < 0) {
-
-                                        $resultado['grau_de_satisfacao'] = 'red';
-
-                                    } elseif($resultado['percentual_alcancado'] > 100) {
-
-                                        $resultado['grau_de_satisfacao'] = 'green';
-
-                                    } else {
-
-                                        $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
-
-                                    }
-
-                                } else {
-
-                                    if($resultado['percentual_alcancado'] < 0) {
-
-                                        $resultado['grau_de_satisfacao'] = 'red';
-
-                                    } elseif($resultado['percentual_alcancado'] > 100) {
-
-                                        $resultado['grau_de_satisfacao'] = 'green';
-
-                                    } else {
-
-                                        $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
-
-                                    }
-
-                                }
-
-                            } else {
-
-                            // Início do cálculo para o ano selecionado diferete do ano vigente
-
-                            // Fim do cálculo para o ano selecionado diferete do ano vigente
-
-                            }
-
-                        }
-
-                    }
-
-                    // Fim do acesso ao indicador
-
-                }
-
-            }
-
-        }
-
-        
-
-        // dd("Unidade de Medida: ".$unidadeMedida,"Acumulado: ".$bln_acumulado,"Tipo: ".$dsc_tipo,"Ano selecionado: ".$anoSelecionado,"Ano meta: ".$metaAno,"Mês vigente: ".$mesVigente,"Mês anterior: ".$mesAnterior,"Soma Valor Previsto: ".$valorMetaPrevista,"Soma Valor Realizado: ".$valorMetaRealizada,"Resultado: ".$somaResultado,"Total de indicadores: ".$contIndicador);
-
-        return $resultado;
+        return $result;
 
     }
 
@@ -426,6 +88,8 @@ class ShowDashboard extends Component
         Session()->forget('cod_objetivo_estrategico');
 
         $ano = $this->ano;
+
+        $this->anoSelecionado = ($this->ano)*1;
 
         $cod_organizacao = $this->cod_organizacao;
 

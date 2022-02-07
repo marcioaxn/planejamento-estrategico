@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Livewire\CalculoLivewire;
+use Illuminate\Support\Facades\Storage;
 
 ini_set('memory_limit', '7096M');
 ini_set('max_execution_time', 9900);
@@ -51,6 +53,9 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     public $dataChartMetaPrevista = null;
     public $dataChartMetaRealizada = null;
+    public $dataChartLinhaBase = null;
+
+    public $linhaBase = null;
 
     public $pei = [];
     public $cod_pei = null;
@@ -73,6 +78,10 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     public $mesAnterior = null;
 
+    public $calcularAcumuladoPlanoDeAcao;
+    public $calcularAcumuladoIndicador;
+    public $obterResultadoComValorRealizadoEValorPrevisto;
+
     public $calculoMensal = null;
 
     public $cod_evolucao_indicador = null;
@@ -86,6 +95,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public $hierarquiaUnidade = null;
 
     public $grafico;
+
+    public $showModalIncluirPdf = false;
 
     public $editarForm = false;
     public $deleteForm = false;
@@ -160,6 +171,29 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $session->put("ano", $this->ano);
 
+    }
+
+    public function abrirModalIncluirPdf() {
+
+        $this->showModalIncluirPdf = true;
+
+    }
+
+    public function savePdf(Request $request)
+    {
+        $validatedData = $this->validate([
+            'pdf' => 'required|mimes:pdf|max:30000', // 3MB Max
+        ]);
+
+        $filename = $this->pdf->store('pdf');
+
+        $contents = Storage::get($filename);
+
+        $data = base64_encode(file_get_contents($contents));
+
+        dd($data);
+ 
+        // $this->photo->store('photos');
     }
 
     public function editForm($cod_evolucao_indicador = '') {
@@ -628,10 +662,6 @@ class ShowObjetivoEstrategicoLivewire extends Component
                 $indicador = Indicador::with('linhaBase','metaAno','evolucaoIndicador')
                 ->orderBy('dsc_indicador');
 
-            // $indicador = $indicador->whereHas('metaAno', function ($query) use($anoSelecionado) {
-            //     $query->where('num_ano',$anoSelecionado);
-            // });
-
                 if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
 
                     $indicador = $indicador->where('cod_plano_de_acao',$this->cod_plano_de_acao);
@@ -654,8 +684,19 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                 }
 
+                $num_linha_base = '';
+
+                foreach($indicador->linhaBase as $linhaBase) {
+
+                    $num_linha_base = $linhaBase->num_linha_base;
+
+                }
+
+                $this->linhaBase = $num_linha_base;
+
                 $dataChartMetaPrevista = '';
                 $dataChartMetaRealizada = '';
+                $dataChartLinhaBase = '';
 
                 if(!is_null($planoAcao)) {
 
@@ -676,9 +717,16 @@ class ShowObjetivoEstrategicoLivewire extends Component
                             $somaPrevisto = 0;
                             $somaRealizado = 0;
 
+                            $anoVigente = date('Y');
+
+                            $time = strtotime(date('Y-m-d'));
+                            $mesAnterior = (date("n", strtotime("-1 month", $time)))*1;
+
                             foreach($indicador->evolucaoIndicador as $evolucaoIndicador) {
 
                                 if($evolucaoIndicador->num_ano == $this->ano) {
+
+                                    $dataChartLinhaBase = $dataChartLinhaBase.$num_linha_base.',';
 
                                     if(isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto && $evolucaoIndicador->vlr_previsto > 0)) {
 
@@ -691,6 +739,16 @@ class ShowObjetivoEstrategicoLivewire extends Component
                                                 $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
 
                                                 $dataChartMetaRealizada = $dataChartMetaRealizada.$somaRealizado.',';
+
+                                            } else {
+
+                                                if($anoVigente != $this->anoSelecionado) {
+
+                                                    $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                                    $dataChartMetaRealizada = $dataChartMetaRealizada.$somaRealizado.',';
+
+                                                }
 
                                             }
 
@@ -714,6 +772,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                             $this->dataChartMetaPrevista = trim($dataChartMetaPrevista,',');
                             $this->dataChartMetaRealizada = trim($dataChartMetaRealizada,',');
+                            $this->dataChartLinhaBase = trim($dataChartLinhaBase,',');
 
                         }
 
@@ -734,56 +793,36 @@ class ShowObjetivoEstrategicoLivewire extends Component
         return view('livewire.show-objetivo-estrategico-livewire',['ano' => $this->ano,'cod_organizacao' => $this->cod_organizacao]);
     }
 
-    protected function calculoMensal($dsc_unidade_medida = '',$dsc_tipo = '',$vlr_previsto = 0,$vlr_realizado = 0) {
+    protected function calcularAcumuladoPlanoDeAcao($cod_plano_de_acao = '',$anoSelecionado = '') {
 
-        $resultado = [];
+        $calcular = new CalculoLivewire;
 
-        $resultado['percentual_alcancado'] = 0;
-        $resultado['grau_de_satisfacao'] = 'gray';
+        $result = $calcular->calcularAcumuladoPlanoDeAcao($cod_plano_de_acao,$anoSelecionado);
 
-        $calculo = 0;
+        return $result;
 
-        if(isset($dsc_tipo) && !is_null($dsc_tipo) && $dsc_tipo != '') {
+    }
 
-            if($dsc_tipo == '+') {
+    protected function calcularAcumuladoIndicador($cod_indicador = '',$anoSelecionado = '') {
 
-                if($vlr_previsto > 0) {
+        $calcular = new CalculoLivewire;
 
-                    $calculo = ($vlr_realizado/$vlr_previsto)*100;
+        $result = $calcular->calcularAcumuladoIndicador($cod_indicador,$anoSelecionado);
 
-                }
+        return $result;
 
-            }
+    }
 
-            if($dsc_tipo == '-') {
+    protected function obterResultadoComValorRealizadoEValorPrevisto($dsc_tipo = '',$vlr_realizado = '',$vlr_previsto = '') {
 
-                if($vlr_previsto > 0) {
+        // Possíveis variáveis para o emitir o resultado:
+        // $tipoCalculo,$cod_perspectiva,$cod_objetivo_estrategico,$cod_plano_de_acao,$cod_indicador,$mes
 
-                    $calculo = ((1-($vlr_realizado-$vlr_previsto)/$vlr_previsto)*100)-100;
+        $obterResultadoComValorRealizadoEValorPrevisto = new CalculoLivewire;
 
-                }
+        $result = $obterResultadoComValorRealizadoEValorPrevisto->obterResultadoComValorRealizadoEValorPrevisto($dsc_tipo,$vlr_realizado,$vlr_previsto);
 
-            }
-
-            $resultado['percentual_alcancado'] = $calculo;
-
-            $consultarGrauSatisfacao = GrauSatisfacao::where('vlr_maximo','>=',$calculo)
-            ->where('vlr_minimo','<=',$calculo)
-            ->first();
-
-            $resultado['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
-
-            $resultado['color'] = 'white';
-
-            if($consultarGrauSatisfacao->cor === 'yellow') {
-
-                $resultado['color'] = 'black';
-
-            }
-
-        }
-
-        return $resultado;
+        return $result;
 
     }
 

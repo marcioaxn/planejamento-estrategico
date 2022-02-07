@@ -84,107 +84,40 @@
 
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-12 2xl:grid-cols-12 gap-2 mt-0">
 
-                <?php $contPlanoAcao = 1; $somaPercentual = 0; ?>
+                <?php $contPlanoAcao = 1; $somaPercentual = 0; $calculoGeralPlanoAno = 0; ?>
 
                 @foreach($this->planosAcao as $resultPlanoAcao)
 
                 <?php $contIndicador = 0; ?>
 
-                @foreach($resultPlanoAcao->indicadores as $indicador)
-
-                <?php
-                $totalPrevisto = 0;
-                $totalRealizado = 0;
-                $calculo = 0;
-
-                $contIndicador = $contIndicador + 1;
-
-                ?>
-
-                @foreach($indicador->evolucaoIndicador as $evolucaoIndicador)
-
-                @if($evolucaoIndicador->num_ano == $this->ano)
-
                 <?php
 
-                if($this->ano == date('Y')) {
-
-                    if($evolucaoIndicador->num_mes <= $this->mesAnterior) {
-
-                        $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
-
-                        $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
-
-                    }
-
-                } else {
-
-                    $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
-
-                    $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
-
-                }
-
-                ?>
-
-                @endif
-
-                @php
-                $totalPrevisto > 0 ? $temMeta = true : $temMeta = false;
-                @endphp
-
-                @endforeach
-
-                <?php
-
-                if($totalPrevisto > 0) {
-
-                    if($indicador->dsc_tipo == '+') {
-
-                        $calculo = ($totalRealizado/$totalPrevisto)*100;
-
-                    }
-
-                    if($indicador->dsc_tipo == '-') {
-
-                        $calculo = ((1-($totalRealizado-$totalPrevisto)/$totalPrevisto)*100)-100;
-
-                    }
-
-                    $somaPercentual = $somaPercentual + $calculo;
-
-                }
-
-                ?>
-
-                @endforeach
-
-                <?php
-
-                $calculoGeralPlanoAno = 0;
-
-                if($contIndicador > 0) {
-
-                    $calculoGeralPlanoAno = $somaPercentual/$contIndicador;
-
-                }
-
-                $resultado = $this->getGrauSatisfacao($calculoGeralPlanoAno);
+                $resultado = $this->calcularAcumuladoPlanoDeAcao($resultPlanoAcao->cod_plano_de_acao,$this->anoSelecionado);
 
                 if($resultPlanoAcao->indicadores->count() > 0) {
 
                     ?>
-                    <div class="text-base text-center bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-white rounded-md border-2 border-{!! $resultado['grau_de_satisfacao'] !!}-50 border-opacity-25 shadow-md cursor-pointer" onclick="javascript: alterarPlanoAcao('<?php print($resultPlanoAcao->cod_plano_de_acao) ?>');">
-                        <?php is_null($this->cod_plano_de_acao) && $contPlanoAcao == 1 ? print('<i class="fas fa-arrow-circle-right"></i> ') : print(''); ?><?php $resultPlanoAcao->cod_plano_de_acao == $this->cod_plano_de_acao ? print('<i class="fas fa-arrow-circle-right"></i> ') : print(''); ?>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $this->objetivoEstrategico->num_nivel_hierarquico_apresentacao !!}.{!! $resultPlanoAcao->num_nivel_hierarquico_apresentacao !!}
-                    </div>
+
+                    <a href="{!! url($this->ano.'/unidade/'.$this->cod_organizacao.'/perspectiva/'.$this->cod_perspectiva.'/objetivo-estrategico/'.$this->cod_objetivo_estrategico.'/plano-de-acao/'.$resultPlanoAcao->cod_plano_de_acao) !!}" >
+
+                        <div class="text-base text-center bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-white rounded-md border-2 border-{!! $resultado['grau_de_satisfacao'] !!}-50 border-opacity-25 shadow-md cursor-pointer" onclick="javascript: alterarPlanoAcao('<?php print($resultPlanoAcao->cod_plano_de_acao) ?>');">
+                            <?php is_null($this->cod_plano_de_acao) && $contPlanoAcao == 1 ? print('<i class="fas fa-arrow-circle-right"></i> ') : print(''); ?><?php $resultPlanoAcao->cod_plano_de_acao == $this->cod_plano_de_acao ? print('<i class="fas fa-arrow-circle-right"></i> ') : print(''); ?>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $this->objetivoEstrategico->num_nivel_hierarquico_apresentacao !!}.{!! $resultPlanoAcao->num_nivel_hierarquico_apresentacao !!}
+                        </div>
+
+                    </a>
                     <?php
 
                 } else {
 
                     ?>
-                    <div class="text-base text-center bg-gray-500 text-white rounded-md border-2 border-gray-50 border-opacity-25 shadow-md cursor-pointer" onclick="javascript: alterarPlanoAcao('<?php print($resultPlanoAcao->cod_plano_de_acao) ?>');">
-                        <?php is_null($this->cod_plano_de_acao) && $contPlanoAcao == 1 ? print('<i class="fas fa-arrow-circle-right"></i> ') : print(''); ?><?php $resultPlanoAcao->cod_plano_de_acao == $this->cod_plano_de_acao ? print('<i class="fas fa-arrow-circle-right"></i> ') : print(''); ?>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $this->objetivoEstrategico->num_nivel_hierarquico_apresentacao !!}.{!! $resultPlanoAcao->num_nivel_hierarquico_apresentacao !!}
-                    </div>
+
+                    <a href="{!! url($this->ano.'/unidade/'.$this->cod_organizacao.'/perspectiva/'.$this->cod_perspectiva.'/objetivo-estrategico/'.$this->cod_objetivo_estrategico.'/plano-de-acao/'.$resultPlanoAcao->cod_plano_de_acao) !!}" >
+
+                        <div class="text-base text-center bg-gray-500 text-white rounded-md border-2 border-gray-50 border-opacity-25 shadow-md cursor-pointer" onclick="javascript: alterarPlanoAcao('<?php print($resultPlanoAcao->cod_plano_de_acao) ?>');">
+                            <?php is_null($this->cod_plano_de_acao) && $contPlanoAcao == 1 ? print('<i class="fas fa-arrow-circle-right"></i> ') : print(''); ?><?php $resultPlanoAcao->cod_plano_de_acao == $this->cod_plano_de_acao ? print('<i class="fas fa-arrow-circle-right"></i> ') : print(''); ?>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $this->objetivoEstrategico->num_nivel_hierarquico_apresentacao !!}.{!! $resultPlanoAcao->num_nivel_hierarquico_apresentacao !!}
+                        </div>
+
+                    </a>
                     <?php
 
                 }
@@ -316,17 +249,37 @@
 
                     if($evolucaoIndicador->num_mes <= $this->mesAnterior) {
 
-                        $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
+                        if($indicador->bln_acumulado === 'Sim') {
 
-                        $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+                            $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
+
+                            $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+
+                        } else {
+
+                            $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+
+                            $totalRealizado = $evolucaoIndicador->vlr_realizado;
+
+                        }
 
                     }
 
                 } else {
 
-                    $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
+                    if($indicador->bln_acumulado === 'Sim') {
 
-                    $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+                        $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
+
+                        $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+
+                    } else {
+
+                        $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+
+                        $totalRealizado = $evolucaoIndicador->vlr_realizado;
+
+                    }
 
                 }
 
@@ -338,7 +291,7 @@
 
                 @endforeach
 
-                <?php $resultado = $this->calculoMensal($indicador->dsc_unidade_medida,$indicador->dsc_tipo,$totalPrevisto,$totalRealizado) ?>
+                <?php $resultado = $this->calcularAcumuladoIndicador($indicador->cod_indicador,$this->anoSelecionado); ?>
 
                 @if($temMeta)
 
@@ -458,9 +411,6 @@
                     <li class="mr-2" role="presentation">
                         <button id="btnTab1" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-blue-600 active hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('1');">Evolução mensal</button>
                     </li>
-                    <li class="mr-2" role="presentation">
-                        <button id="btnTab2" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('2');">Análise gráfica</button>
-                    </li>
                     <li role="presentation">
                         <button id="btnTab3" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('3');">Gestão</button>
                     </li>
@@ -476,96 +426,227 @@
 
                 ?>
 
-                <div id="divEvolucaoMensal" style="display: block;">
+                <div class=" flex flex-wrap -mx-3 mb-6">
 
-                    <div class=" flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full md:w-1/1 px-3 mb-6 md:mb-0 pt-3">
 
-                        <div class="w-full md:w-3/3 px-3 mb-6 md:mb-0 pt-3">
+                        <div class="border-b border-gray-200 shadow rounded-md">
 
-                            <div class="border-b border-gray-200 shadow rounded-md">
+                            <table class="divide-gray-300 min-w-full border-collapse block md:table " style="width: 100%;">
+                                <thead>
 
-                                <table class="divide-gray-300 min-w-full border-collapse block md:table " style="width: 100%;">
-                                    <thead>
+                                    <tr class="shadow">
 
-                                        <tr class="shadow">
+                                        <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Meta</th>
 
-                                            <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Meta</th>
+                                        <?php $contMes = 1; ?>
 
-                                            <?php $contMes = 1; ?>
+                                        @foreach($this->indicador->evolucaoIndicador as $evolucaoIndicador)
 
-                                            @foreach($this->indicador->evolucaoIndicador as $evolucaoIndicador)
+                                        @if($evolucaoIndicador->num_ano == $this->ano)
 
-                                            @if($evolucaoIndicador->num_ano == $this->ano)
+                                        <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</th>
 
-                                            <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</th>
+                                        <?php $contMes = $contMes + 1; ?>
 
-                                            <?php $contMes = $contMes + 1; ?>
+                                        @endif
 
-                                            @endif
+                                        @endforeach
 
-                                            @endforeach
+                                        @if($this->indicador->bln_acumulado == 'Sim')
 
-                                            @if($this->indicador->bln_acumulado == 'Sim')
+                                        @if($this->ano == date('Y'))
 
-                                            @if($this->ano == date('Y'))
+                                        <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Acumulado até {!! mesNumeralParaExtensoCurto($this->mesAnterior) !!}</th>
 
-                                            <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Acumulado até {!! mesNumeralParaExtensoCurto($this->mesAnterior) !!}</th>
+                                        @else
 
-                                            @else
+                                        <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Total</th>
 
-                                            <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Total</th>
+                                        @endif
 
-                                            @endif
+                                        @endif
 
-                                            @endif
+                                    </tr>
 
-                                        </tr>
+                                </thead>
 
-                                    </thead>
+                                <tbody class="bg-white divide-y divide-gray-300 block md:table-row-group">
 
-                                    <tbody class="bg-white divide-y divide-gray-300 block md:table-row-group">
+                                    <tr class="border border-gray-500 md:border-none block md:table-row">
 
-                                        <tr class="border border-gray-500 md:border-none block md:table-row">
+                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Prevista</strong></td>
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Prevista</strong></td>
+                                        <?php
+                                        $contMes = 1;
+                                        ?>
 
-                                            <?php
-                                            $contMes = 1;
-                                            ?>
+                                        @foreach($this->indicador->evolucaoIndicador as $evolucaoIndicador)
 
-                                            @foreach($this->indicador->evolucaoIndicador as $evolucaoIndicador)
+                                        @if($evolucaoIndicador->num_ano == $this->ano)
 
-                                            @if($evolucaoIndicador->num_ano == $this->ano)
+                                        <?php
 
-                                            <?php
+                                        if($this->ano == date('Y')) {
 
-                                            if($this->ano == date('Y')) {
-
-                                                if($evolucaoIndicador->num_mes <= $this->mesAnterior) {
-
-                                                    $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
-
-                                                    $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
-
-                                                }
-
-                                            } else {
+                                            if($evolucaoIndicador->num_mes <= $this->mesAnterior) {
 
                                                 $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
 
                                                 $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
 
                                             }
-                                            
-                                            ?>
 
-                                            @if(!is_null($evolucaoIndicador->vlr_previsto))
+                                        } else {
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">{!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_previsto) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></td>
+                                            $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
+
+                                            $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                        }
+
+                                        ?>
+
+                                        @if(!is_null($evolucaoIndicador->vlr_previsto))
+
+                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">{!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_previsto) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></td>
+
+                                        @else
+
+                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">-</td>
+
+                                        @endif
+
+                                        <?php $contMes = $contMes + 1; ?>
+
+                                        @endif
+
+                                        @endforeach
+
+                                        @if($this->indicador->bln_acumulado == 'Sim')
+
+                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">
+                                            {!! $totalPrevisto !!}
+                                        </td>
+
+                                        @endif
+
+                                    </tr>
+
+                                    <tr class="border border-gray-500 md:border-none block md:table-row">
+
+                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Realizada</strong></td>
+
+                                        <?php $contMes = 1; ?>
+
+                                        @foreach($this->indicador->evolucaoIndicador as $evolucaoIndicador)
+
+                                        @if($evolucaoIndicador->num_ano == $this->ano)
+
+                                        @if($this->ano == date('Y'))
+
+                                        @if($evolucaoIndicador->num_mes <= $this->mesAnterior)
+
+                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
+
+                                                @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+
+                                                <div class="bg-pink-800 text-white rounded-md px-5 py-2">
+                                                    &nbsp;-
+                                                </div>
+
+                                                @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+
+                                                <div class="bg-gray-500 text-white rounded-md px-5 py-1">
+                                                    &nbsp;-
+                                                </div>
+
+                                                @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+
+                                                {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_realizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
+
+                                                @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+
+                                                @if(!is_null($evolucaoIndicador->vlr_realizado))
+
+                                                <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->indicador->dsc_tipo,$evolucaoIndicador->vlr_realizado,$evolucaoIndicador->vlr_previsto) ?>
+
+
+
+                                                <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+
+                                                    {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_realizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
+
+                                                </div>
+
+
+
+                                                @else
+
+                                                @endif
+
+                                            </td>
+                                            @else
+
+                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-right">
+
+                                                &nbsp;
+
+                                            </td>
+                                            @endif
 
                                             @else
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">-</td>
+                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-right">
+
+                                                &nbsp;
+
+                                            </td>
+                                            @endif
+
+                                            @else
+                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
+
+                                                @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+
+                                                <div class="bg-pink-800 text-white rounded-md px-5 py-1">
+                                                    &nbsp;-
+                                                </div>
+
+                                                @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+
+                                                <div class="bg-gray-500 text-white rounded-md px-5 py-1">
+                                                    &nbsp;-
+                                                </div>
+
+                                                @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+
+                                                {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_realizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
+
+                                                @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+
+                                                @if(!is_null($evolucaoIndicador->vlr_realizado))
+
+                                                <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->indicador->dsc_tipo,$evolucaoIndicador->vlr_realizado,$evolucaoIndicador->vlr_previsto) ?>
+
+
+
+                                                <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+
+                                                    {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_realizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
+
+                                                </div>
+
+
+
+                                                @else
+
+                                            </td>
+                                            @endif
+
+
+
+                                            @endif
 
                                             @endif
 
@@ -577,19 +658,29 @@
 
                                             @if($this->indicador->bln_acumulado == 'Sim')
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">
-                                                {!! $totalPrevisto !!}
+                                            <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->indicador->dsc_tipo,$totalRealizado,$totalPrevisto); $this->totalRealizado = $totalRealizado; ?>
+
+                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
+
+                                                <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+
+                                                    {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$totalRealizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
+
+                                                </div>
+
                                             </td>
 
                                             @endif
 
                                         </tr>
 
+                                        @auth
+
+                                        @if($this->liberarAcessoParaAtualizar)
+
                                         <tr class="border border-gray-500 md:border-none block md:table-row">
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Realizada</strong></td>
-
-                                            <?php $contMes = 1; ?>
+                                            <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Atualização</strong></td>
 
                                             @foreach($this->indicador->evolucaoIndicador as $evolucaoIndicador)
 
@@ -599,53 +690,13 @@
 
                                             @if($evolucaoIndicador->num_mes <= $this->mesAnterior)
 
-                                                <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
+                                                <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-5 text-sm text-right">
 
-                                                    @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-
-                                                    <div class="bg-pink-800 text-white rounded-md px-5 py-2">
-                                                        &nbsp;-
-                                                    </div>
-
-                                                    @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-
-                                                    <div class="bg-gray-500 text-white rounded-md px-5 py-1">
-                                                        &nbsp;-
-                                                    </div>
-
-                                                    @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-
-                                                    {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_realizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
-
-                                                    @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-
-                                                    @if(!is_null($evolucaoIndicador->vlr_realizado))
-
-                                                    <?php $resultado = $this->calculoMensal($this->indicador->dsc_unidade_medida,$this->indicador->dsc_tipo,$evolucaoIndicador->vlr_previsto,$evolucaoIndicador->vlr_realizado) ?>
-
-
-
-                                                    <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
-
-                                                        {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_realizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
-
-                                                    </div>
-
-
-
-                                                    @else
-
-                                                    @endif
+                                                    <a href="javascript: void(0);" wire:click.prevent="abrirModalIncluirPdf()"><i class="fas fa-file-pdf text-base text-red-600"></i></a>
+                                                    &nbsp;&nbsp;    
+                                                    <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"><i class="fas fa-edit text-base text-green-600"></i></a>
 
                                                 </td>
-                                                @else
-
-                                                <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-right">
-
-                                                    &nbsp;
-
-                                                </td>
-                                                @endif
 
                                                 @else
 
@@ -654,55 +705,10 @@
                                                     &nbsp;
 
                                                 </td>
-                                                @endif
-
-                                                @else
-                                                <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
-
-                                                    @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-
-                                                    <div class="bg-pink-800 text-white rounded-md px-5 py-1">
-                                                        &nbsp;-
-                                                    </div>
-
-                                                    @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-
-                                                    <div class="bg-gray-500 text-white rounded-md px-5 py-1">
-                                                        &nbsp;-
-                                                    </div>
-
-                                                    @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-
-                                                    {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_realizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
-
-                                                    @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-
-                                                    @if(!is_null($evolucaoIndicador->vlr_realizado))
-
-                                                    <?php $resultado = $this->calculoMensal($this->indicador->dsc_unidade_medida,$this->indicador->dsc_tipo,$evolucaoIndicador->vlr_previsto,$evolucaoIndicador->vlr_realizado) ?>
-
-
-
-                                                    <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
-
-                                                        {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_realizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
-
-                                                    </div>
-
-
-
-                                                    @else
-
-                                                </td>
-                                                @endif
-
-
 
                                                 @endif
 
                                                 @endif
-
-                                                <?php $contMes = $contMes + 1; ?>
 
                                                 @endif
 
@@ -710,194 +716,144 @@
 
                                                 @if($this->indicador->bln_acumulado == 'Sim')
 
-                                                <?php $resultado = $this->calculoMensal($this->indicador->dsc_unidade_medida,$this->indicador->dsc_tipo,$totalPrevisto,$totalRealizado); $this->totalRealizado = $totalRealizado; ?>
-
-                                                <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
-
-                                                    <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
-
-                                                        {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$totalRealizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
-
-                                                    </div>
-
-                                                </td>
+                                                <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">&nbsp;</td>
 
                                                 @endif
 
                                             </tr>
 
-                                            @auth
+                                            @endif
 
-                                            @if($this->liberarAcessoParaAtualizar)
+                                            @endauth
 
-                                            <tr class="border border-gray-500 md:border-none block md:table-row">
+                                        </tbody>
 
-                                                <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Atualização</strong></td>
-
-                                                @foreach($this->indicador->evolucaoIndicador as $evolucaoIndicador)
-
-                                                @if($evolucaoIndicador->num_ano == $this->ano)
-
-                                                @if($this->ano == date('Y'))
-
-                                                @if($evolucaoIndicador->num_mes <= $this->mesAnterior)
-
-                                                    <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-5 text-sm text-right">
-
-                                                        <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"><i class="fas fa-edit text-green-600"></i></a>
-
-                                                    </td>
-
-                                                    @else
-
-                                                    <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-right">
-
-                                                        &nbsp;
-
-                                                    </td>
-
-                                                    @endif
-
-                                                    @endif
-
-                                                    @endif
-
-                                                    @endforeach
-
-                                                    @if($this->indicador->bln_acumulado == 'Sim')
-
-                                                    <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">&nbsp;</td>
-
-                                                    @endif
-
-                                                </tr>
-
-                                                @endif
-
-                                                @endauth
-
-                                            </tbody>
-
-                                        </table>
-
-                                    </div>
+                                    </table>
 
                                 </div>
 
                             </div>
 
-                        </div>
+                            <div class="w-full md:w-1/1 px-3 mt-2 mb-6 md:mb-0 pt-6">
 
-                    </div>
+                                <p>Gráfico da Evolução Mensal</p>
 
-                    <div id="divConteudoTab2" style="display: none;">
+                                <canvas id="chart-<?php print($this->cod_indicador) ?>" style="width: 100%!Important; height: 333px!Important;"></canvas>
 
-                        <canvas id="chart-<?php print($this->cod_indicador) ?>" style="width: 100%!Important; height: 79px!Important;"></canvas>
+                                @if($this->indicador->bln_acumulado === 'Não')
 
-                        @if($this->indicador->bln_acumulado === 'Não')
+                                <script type="text/javascript">
 
-                        <script type="text/javascript">
+                                    new Chart(document.getElementById("chart-<?php print($this->cod_indicador) ?>"), {
+                                        type: 'bar',
+                                        data: {
+                                          labels: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
+                                          datasets: [
+                                          {
+                                            label: "Meta prevista",
+                                            backgroundColor: "#3e95cd",
+                                            data: [<?php print($this->dataChartMetaPrevista) ?>]
+                                        },{
+                                            label: "Meta realizada",
+                                            backgroundColor: "#8e5ea2",
+                                            data: [<?php print($this->dataChartMetaRealizada) ?>]
+                                        }
+                                        ]
+                                    },
+                                    options: {
+                                        title: {
+                                            display: true,
+                                            text: 'Teste'
+                                        },
+                                        scales: {
+                                            y: {
+                                                suggestedMin: 0,
+                                                suggestedMax: <?php print($this->metaAno) ?>+5,
+                                            }
+                                        }
+                                    }
+                                });
 
-                            new Chart(document.getElementById("chart-<?php print($this->cod_indicador) ?>"), {
-                                type: 'bar',
-                                data: {
-                                  labels: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
-                                  datasets: [
-                                  {
-                                      label: "Meta prevista",
-                                      backgroundColor: "#3e95cd",
-                                      data: [<?php print($this->dataChartMetaPrevista) ?>]
-                                  }, {
-                                      label: "Meta realizada",
-                                      backgroundColor: "#8e5ea2",
-                                      data: [<?php print($this->dataChartMetaRealizada) ?>]
-                                  }
-                                  ]
-                              },
-                              options: {
+                            </script>
+
+                            @endif
+
+                            @if($this->indicador->bln_acumulado === 'Sim')
+
+                            <script type="text/javascript">
+
+                                new Chart(document.getElementById("chart-<?php print($this->cod_indicador) ?>"), {
+                                  type: 'line',
+                                  data: {
+                                    labels: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
+                                    datasets: [{ 
+                                        data: [<?php print($this->dataChartMetaPrevista) ?>],
+                                        label: "Meta Prevista",
+                                        backgroundColor: "#3e95cd",
+                                        borderColor: "#3e95cd",
+                                        fill: false
+                                    }, { 
+                                        data: [<?php print($this->dataChartMetaRealizada) ?>],
+                                        label: "Meta Realizada",
+                                        backgroundColor: "#9A3412",
+                                        borderColor: "#9A3412",
+                                        fill: false
+                                    },{
+                                        label: "Linha de base",
+                                        backgroundColor: "#696969",
+                                        data: [<?php print($this->dataChartLinhaBase) ?>]
+                                    }
+                                    ]
+                                },
+                                options: {
                                   title: {
                                     display: true,
                                     text: 'Teste'
                                 },
                                 scales: {
-                                  y: {
-                                    suggestedMin: 0,
-                                    suggestedMax: <?php print($this->metaAno) ?>+5,
+                                    y: {
+                                        suggestedMin: 0,
+                                        suggestedMax: <?php print($this->linhaBase) ?>+50,
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
 
-                </script>
+                    </script>
 
-                @endif
+                    @endif
 
-                @if($this->indicador->bln_acumulado === 'Sim')
+                </div>
 
-                <script type="text/javascript">
+            </div>
 
-                    new Chart(document.getElementById("chart-<?php print($this->cod_indicador) ?>"), {
-                      type: 'line',
-                      data: {
-                        labels: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
-                        datasets: [{ 
-                            data: [<?php print($this->dataChartMetaPrevista) ?>],
-                            label: "Meta Prevista",
-                            borderColor: "#3e95cd",
-                            fill: false
-                        }, { 
-                            data: [<?php print($this->dataChartMetaRealizada) ?>],
-                            label: "Meta Realizada",
-                            borderColor: "#8e5ea2",
-                            fill: false
-                        }
-                        ]
-                    },
-                    options: {
-                      title: {
-                        display: true,
-                        text: 'Teste'
-                    },
-                    scales: {
-                      y: {
-                        suggestedMin: 0,
-                        suggestedMax: <?php print($this->metaAno) ?>,
-                    }
-                }
-            }
-        });
+        </div>
 
-    </script>
+        <div id="divConteudoTab3" style="display: none;">
+            Tab 3
+        </div>
+
+    </div>
+
+    @else
+
+    <div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
+
+        Não há registro de indicadores para esse plano de ação
+
+    </div>
 
     @endif
 
-</div>
+    @else
 
-<div id="divConteudoTab3" style="display: none;">
-    Tab 3
-</div>
+    <div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
 
-</div>
+        Não há registro de plano de ação e indicadores para esse objetivo estratégico
 
-@else
+    </div>
 
-<div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
-
-    Não há registro de indicadores para esse plano de ação
-
-</div>
-
-@endif
-
-@else
-
-<div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
-
-    Não há registro de plano de ação e indicadores para esse objetivo estratégico
-
-</div>
-
-@endif
+    @endif
 
 </div>
 
@@ -939,6 +895,30 @@
         </x-slot>
     </form>
 </x-jet-dialog-modal>
+
+<!-- Modal -->
+<x-jet-geral-modal wire:model="showModalIncluirPdf">
+    <form method="POST" enctype="multipart/form-data" wire:submit.prevent="">
+        <x-slot name="title">
+            <strong>Incluir PDF</strong>
+        </x-slot>
+
+        <x-slot name="content">
+            <input type="file" wire:model="pdf">
+            <x-jet-input-error for="pdf" class="mt-2" />
+            <div wire:loading wire:target="pdf">Uploading...</div>
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-button wire:click.prevent="$toggle('showModalIncluirPdf')" wire:loading.attr="disabled">
+                {{ __('Closer') }}
+            </x-jet-button>
+            <x-jet-danger-button wire:click.prevent="$toggle('showModalIncluirPdf')" wire:loading.attr="disabled" wire:click.prevent="savePdf()">
+                Salvar
+            </x-jet-danger-button>
+        </x-slot>
+    </form>
+</x-jet-geral-modal>
 
 <!-- Modal -->
 <x-jet-geral-modal wire:model="showModalResultadoEdicao">

@@ -128,77 +128,27 @@
 
                             <div class="w-full pt-1" style="width: 100%!Important;">
 
-                                @php
-                                $acoes = rand(3, 17);
-                                $resultado = rand(10, 1000) / 10;
-
-                                $grauSatisfacao = '';
-
-                                if($resultado <= 100) {
-                                    $grauSatisfacao = 'green';
-                                }
-
-                                if($resultado <= 69) {
-                                    $grauSatisfacao = 'yellow';
-                                }
-
-                                if($resultado <= 35) {
-                                    $grauSatisfacao = 'red';
-                                }
-
-                                @endphp
-
                                 <?php
 
-                                $quantidade_plano_de_acao = null;
-                                $percentual_alcancado = null;
-                                $grau_de_satisfacao = null;
-
-                                if(isset($resultObjetivoEstragico) && isset($resultObjetivoEstragico->cod_objetivo_estrategico) && !is_null($resultObjetivoEstragico->cod_objetivo_estrategico) && $resultObjetivoEstragico->cod_objetivo_estrategico != '') {
-
-                                    $resultCalculo = $this->calculoPorArea($resultObjetivoEstragico->cod_objetivo_estrategico);
-
-                                    foreach($resultCalculo AS $key => $value) {
-
-                                        if($key === 'quantidade_plano_de_acao') {
-
-                                            $quantidade_plano_de_acao = $value;
-
-                                        }
-
-                                        if($key === 'percentual_alcancado') {
-
-                                            $percentual_alcancado = $value;
-
-                                        }
-
-                                        if($key === 'grau_de_satisfacao') {
-
-                                            $grau_de_satisfacao = $value;
-
-                                        }
-
-                                    }
-
-                                }
+                                $result = $this->calcularAcumuladoObjetivoEstrategico($this->cod_organizacao,$resultObjetivoEstragico->cod_objetivo_estrategico,$this->anoSelecionado);
 
                                 ?>
 
                                 <div class="flex mb-2 items-center justify-between" style="width: 100%!Important;">
 
-                                    <div class="text-xs text-gray-500">{!! $quantidade_plano_de_acao !!} ações/iniciativas   /projetos</div>
+                                    <div class="text-xs text-gray-500">{!! $result['quantidadePlanosDeAcao'] !!} ações/iniciativas   /projetos</div>
 
                                     <div class="text-right">
 
-                                        <span class="text-xs font-semibold inline-block text-gray-500">{!! converteValor('MYSQL','PTBR',$percentual_alcancado) !!}%</span>
+                                        <span class="text-xs font-semibold inline-block text-gray-500">{!! converteValor('MYSQL','PTBR',$result['percentual_alcancado']) !!}%</span>
 
                                     </div>
 
                                 </div>
 
-                                <div class="overflow-hidden h-2 text-xs flex rounded bg-{{ $grau_de_satisfacao }}-50" style="width: 100%!Important;">
+                                <div class="overflow-hidden h-2 text-xs flex rounded bg-{{ $result['grau_de_satisfacao'] }}-50" style="width: 100%!Important;">
 
-                                    <div style="width:{!! $percentual_alcancado  !!}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-{{ $grau_de_satisfacao }}-500 "></div>
+                                    <div style="width:{!! $result['percentual_alcancado']  !!}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-{{ $result['grau_de_satisfacao'] }}-500 "></div>
 
                                 </div>
 

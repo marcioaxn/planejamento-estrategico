@@ -31,6 +31,49 @@ class GrauSatisfacaoLivewire extends Component
     public $showModalDelete = false;
     public $mensagemDelete = null;
 
+    public function obterGrauSatisfacao($prc_alcancado = '') {
+
+        $result = [];
+
+        $result['grau_de_satisfacao'] = 'red';
+        $result['color'] = 'white';
+
+        if(isset($prc_alcancado) && !is_null($prc_alcancado) && $prc_alcancado != '') {
+
+            if($prc_alcancado < 0) {
+
+                $result['grau_de_satisfacao'] = 'red';
+
+            } elseif($prc_alcancado > 100) {
+
+                $result['grau_de_satisfacao'] = 'green';
+
+            } else {
+
+                $consultarGrauSatisfacao = GrauSatisfacao::where('vlr_maximo','>=',$prc_alcancado)
+                ->where('vlr_minimo','<=',$prc_alcancado)
+                ->first();
+
+                if(!is_null($consultarGrauSatisfacao)) {
+
+                    $result['grau_de_satisfacao'] = $consultarGrauSatisfacao->cor;
+
+                    if($consultarGrauSatisfacao->cor === 'yellow') {
+
+                        $result['color'] = 'black';
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return $result;
+
+    }
+
     public function create() {
 
         // Necessário incluir a parte de validação
