@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class RelOrganization extends Model
+class Arquivo extends Model
 {
     use Uuids;
     use SoftDeletes;
@@ -15,11 +15,12 @@ class RelOrganization extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $table = 'rel_organizacao';
+    protected $table = 'pei.tab_arquivos';
 
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'cod_arquivo';
 
     public $timestamps = true;
 
     protected $guarded = array();
+    
 }

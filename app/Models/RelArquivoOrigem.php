@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class RelOrganization extends Model
+class RelArquivoOrigem extends Model
 {
     use Uuids;
     use SoftDeletes;
@@ -15,7 +15,7 @@ class RelOrganization extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $table = 'rel_organizacao';
+    protected $table = 'pei.rel_arquivos_origem';
 
     protected $primaryKey = 'id';
 

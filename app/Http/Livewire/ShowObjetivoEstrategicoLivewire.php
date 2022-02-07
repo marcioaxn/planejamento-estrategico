@@ -15,6 +15,8 @@ use App\Models\PlanoAcao;
 use App\Models\Indicador;
 use App\Models\EvolucaoIndicador;
 use App\Models\GrauSatisfacao;
+use App\Models\Arquivo;
+use App\Models\RelArquivoOrigem;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use \Illuminate\Session\SessionManager;
@@ -24,6 +26,7 @@ use Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Livewire\CalculoLivewire;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 
 ini_set('memory_limit', '7096M');
 ini_set('max_execution_time', 9900);
@@ -32,9 +35,10 @@ set_time_limit(900000000);
 class ShowObjetivoEstrategicoLivewire extends Component
 {
 
-    use WithPagination;
     use WithFileUploads;
 
+    public $formIncluirPdf = null;
+    public $txt_assunto = null;
     public $pdf;
 
     public $organization = null;
@@ -173,27 +177,61 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     }
 
-    public function abrirModalIncluirPdf() {
+    public function abrirModalIncluirPdf($cod_evolucao_indicador = '',$num_mes = '') {
+
+        $this->cod_evolucao_indicador = $cod_evolucao_indicador;
+
+        $this->formIncluirPdf = '<div class="flex flex-wrap w-full"><div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Selecione o PDF o qual deseja inserir para '.mesNumeralParaExtenso($num_mes).'/'.$this->anoSelecionado.'</label><input type="file" wire:model="pdf"></div></div>
+
+        <div class="w-full md:w-3/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Assunto de que trata o arquivo PDF</label><input type="text" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-right pl-3" name="txt_assunto" id="txt_assunto" wire:model="txt_assunto" ></div></div>
+
+        </div></form>';
 
         $this->showModalIncluirPdf = true;
 
     }
 
+    public function downloadPdf(Arquivo $pdf) {
+
+        $content = base64_decode($pdf->data);
+        return response($content)->header('Content-Type', $pdf->dsc_tipo);
+
+    }
+
+    protected $validationAttributes = [
+        'pdf' => 'arquivo',
+        'txt_assunto' => 'Assunto de que trata o arquivo PDF'
+    ];
+
     public function savePdf(Request $request)
     {
-        $validatedData = $this->validate([
-            'pdf' => 'required|mimes:pdf|max:30000', // 3MB Max
+
+        $this->validate([
+            'pdf' => 'required|mimes:pdf|max:30000',
+            'txt_assunto' => 'required'
         ]);
 
-        $filename = $this->pdf->store('pdf');
+        $nome = $this->pdf->hashName();
+        $tipo = $this->pdf->getMimeType();
+        $data = base64_encode(file_get_contents($this->pdf->getRealPath()));
 
-        $contents = Storage::get($filename);
+        $up = new Arquivo;
 
-        $data = base64_encode(file_get_contents($contents));
+        $up->dsc_nome_arquivo = $nome;
+        $up->dsc_tipo = $tipo;
+        $up->data = $data;
+        $up->txt_assunto = $this->txt_assunto;
+        $up->cod_evolucao_indicador = $this->cod_evolucao_indicador;
 
-        dd($data);
- 
-        // $this->photo->store('photos');
+        if(isset($data) && !is_null($data) && $data != '') {
+
+            $up->save();
+        }
+
+        $this->showModalIncluirPdf = false;
+
+        $this->showModalInformacao = true;
+        $this->mensagemInformacao = "Aquivo ".$nome." foi gravado com sucesso.";
     }
 
     public function editForm($cod_evolucao_indicador = '') {
@@ -659,7 +697,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
             if(isset($this->cod_indicador) && !is_null($this->cod_indicador) && $this->cod_indicador != '') {
 
-                $indicador = Indicador::with('linhaBase','metaAno','evolucaoIndicador')
+                $indicador = Indicador::with('linhaBase','metaAno','evolucaoIndicador','evolucaoIndicador.arquivos')
                 ->orderBy('dsc_indicador');
 
                 if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {

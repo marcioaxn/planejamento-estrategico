@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrincipalController;
 use App\Http\Controllers\OrganizacaoController;
+use App\Http\Controllers\ArquivosController;
 
 use App\Http\Livewire\{
     ShowDashboard,
@@ -61,6 +62,8 @@ Route::group(['middleware' => ['auth', 'trocarSenha']], function () {
 });
 
 Route::get('{ano}/unidade/{cod_organizacao}/perspectiva/{cod_perspectiva}/objetivo-estrategico/{cod_objetivo_estrategico}/plano-de-acao/{cod_plano_de_acao?}',ShowObjetivoEstrategicoLivewire::class)->name('showObjetivoEstrategico');
+
+Route::get('{ano}/evolucao-mensal-arquivo/{cod_arquivo}','App\Http\Controllers\ArquivosController@show')->name('showArquivoEvolucaoMensal');
 
 Route::fallback( function () {
     $ano = date('Y');

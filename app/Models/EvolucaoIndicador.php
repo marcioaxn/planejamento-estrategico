@@ -23,6 +23,11 @@ class EvolucaoIndicador extends Model
 
     protected $guarded = array();
 
+    public function arquivos()
+    {
+        return $this->hasMany(Arquivo::class, 'cod_evolucao_indicador');
+    }
+
     public function acoesRealizadas() {
 
         return $this->hasMany(Acoes::class, 'table_id')

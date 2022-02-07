@@ -13,7 +13,7 @@
         <div class="w-full md:w-1/1 pt-0 pb-0">
 
             <div class="col-span-6 sm:col-span-4">
-                {!! Form::select('cod_organizacao', $this->organization, null, ['class' => 'w-full pl-3 border-2 border-gray-300 border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 text-center pt-1 h-10', 'style' => 'cursor: pointer;text-align: left !Important;', 'autocomplete' => 'off', 'wire:model' => "cod_organizacao",'onchange' => "javascript: alterarUrlCodOrganizacao(this.value);"]) !!}
+                {!! Form::select('cod_organizacao', $this->organization, null, ['class' => 'w-full pl-3 border-2 border-gray-300 border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 text-blue-500 text-center pt-1 h-10', 'style' => 'cursor: pointer;text-align: left !Important;', 'autocomplete' => 'off', 'wire:model' => "cod_organizacao",'onchange' => "javascript: alterarUrlCodOrganizacao(this.value);"]) !!}
             </div>
 
             <script>
@@ -54,7 +54,7 @@
         <style type="text/css">select { text-align-last:left; }</style>
 
         <div class="w-full md:w-4/6 border-b-2 border-gray-100 text-left pl-1">
-            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full text-left pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 h-7 rounded-md text-left cursor-pointer', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrlCodObjetivoEstrategico(this.value);"]) !!}
+            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full text-left pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 h-7 text-blue-500 rounded-md text-left cursor-pointer', 'placeholder' => 'Selecione', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrlCodObjetivoEstrategico(this.value);"]) !!}
         </div>
 
         <script>
@@ -692,8 +692,13 @@
 
                                                 <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-5 text-sm text-right">
 
-                                                    <a href="javascript: void(0);" wire:click.prevent="abrirModalIncluirPdf()"><i class="fas fa-file-pdf text-base text-red-600"></i></a>
-                                                    &nbsp;&nbsp;    
+                                                    @foreach($evolucaoIndicador->arquivos as $arquivo)
+                                                    <a href="{!! url($this->anoSelecionado.'/evolucao-mensal-arquivo/'.$arquivo->cod_arquivo) !!}" target="_blank"><i class="fas fa-file-pdf text-base text-blue-600"></i></a>
+                                                    &nbsp;&nbsp;
+                                                    @endforeach
+
+                                                    <a href="javascript: void(0);" wire:click.prevent="abrirModalIncluirPdf('{!! $evolucaoIndicador->cod_evolucao_indicador !!}','{!! $evolucaoIndicador->num_mes !!}')"><i class="fas fa-file-pdf text-base text-red-600"></i></a>
+                                                    &nbsp;&nbsp;
                                                     <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"><i class="fas fa-edit text-base text-green-600"></i></a>
 
                                                 </td>
@@ -904,8 +909,10 @@
         </x-slot>
 
         <x-slot name="content">
-            <input type="file" wire:model="pdf">
+            {!! $this->formIncluirPdf !!}
+            
             <x-jet-input-error for="pdf" class="mt-2" />
+            <x-jet-input-error for="txt_assunto" class="mt-2" />
             <div wire:loading wire:target="pdf">Uploading...</div>
         </x-slot>
 

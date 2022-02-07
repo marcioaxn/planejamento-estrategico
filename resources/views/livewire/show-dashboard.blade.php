@@ -16,7 +16,7 @@
             <style type="text/css">select { text-align-last:center; }</style>
 
             <div class="col-span-6 sm:col-span-4">
-                {!! Form::select('cod_organizacao', $this->organization, $this->cod_organizacao, ['class' => 'w-full border-2 border-gray-300 border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 text-center pt-1 h-10', 'style' => 'cursor: pointer;text-align: center !Important;', 'wire:model' => "cod_organizacao", 'autocomplete' => 'off', 'onchange' => "javascript: var url = '".url($ano)."'+'/'+this.value;window.location.href = url;"]) !!}
+                {!! Form::select('cod_organizacao', $this->organization, $this->cod_organizacao, ['class' => 'w-full border-2 border-gray-300 border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 text-blue-500 text-center pt-1 h-10', 'style' => 'cursor: pointer;text-align: center !Important;', 'wire:model' => "cod_organizacao", 'autocomplete' => 'off', 'onchange' => "javascript: var url = '".url($ano)."'+'/'+this.value;window.location.href = url;"]) !!}
             </div>
 
         </div>
