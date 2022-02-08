@@ -768,41 +768,37 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                                     $dataChartLinhaBase = $dataChartLinhaBase.$num_linha_base.',';
 
-                                    if(isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto && $evolucaoIndicador->vlr_previsto > 0)) {
+                                    if($indicador->bln_acumulado === 'Sim') {
 
-                                        if($indicador->bln_acumulado === 'Sim') {
+                                        $somaPrevisto = $somaPrevisto + $evolucaoIndicador->vlr_previsto;
 
-                                            $somaPrevisto = $somaPrevisto + $evolucaoIndicador->vlr_previsto;
+                                        if(isset($evolucaoIndicador->bln_atualizado) && !is_null($evolucaoIndicador->bln_atualizado && $evolucaoIndicador->bln_atualizado != '')) {
 
-                                            if(isset($evolucaoIndicador->bln_atualizado) && !is_null($evolucaoIndicador->bln_atualizado && $evolucaoIndicador->bln_atualizado != '')) {
+                                            $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                            $dataChartMetaRealizada = $dataChartMetaRealizada.$somaRealizado.',';
+
+                                        } else {
+
+                                            if($anoVigente != $this->anoSelecionado) {
 
                                                 $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
 
                                                 $dataChartMetaRealizada = $dataChartMetaRealizada.$somaRealizado.',';
 
-                                            } else {
-
-                                                if($anoVigente != $this->anoSelecionado) {
-
-                                                    $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
-
-                                                    $dataChartMetaRealizada = $dataChartMetaRealizada.$somaRealizado.',';
-
-                                                }
-
                                             }
 
-                                            $dataChartMetaPrevista = $dataChartMetaPrevista.$somaPrevisto.',';
-
-
-
-                                        } else {
-
-                                            $dataChartMetaPrevista = $dataChartMetaPrevista.$evolucaoIndicador->vlr_previsto.',';
-
-                                            $dataChartMetaRealizada = $dataChartMetaRealizada.$evolucaoIndicador->vlr_realizado.',';
-
                                         }
+
+                                        $dataChartMetaPrevista = $dataChartMetaPrevista.$somaPrevisto.',';
+
+
+
+                                    } else {
+
+                                        $dataChartMetaPrevista = $dataChartMetaPrevista.$evolucaoIndicador->vlr_previsto.',';
+
+                                        $dataChartMetaRealizada = $dataChartMetaRealizada.$evolucaoIndicador->vlr_realizado.',';
 
                                     }
 
