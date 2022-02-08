@@ -41,7 +41,7 @@ Route::get('/', function () {
 
 Route::get('{ano?}/{cod_organizacao?}', ShowDashboard::class)->name('pei.dashboard');
 
-Route::group(['middleware' => ['auth', 'trocarSenha']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'verified','auth', 'trocarSenha']], function () {
 
     Route::get('{ano}/adm/organization', ShowOrganization::class)->name('organization');
 
