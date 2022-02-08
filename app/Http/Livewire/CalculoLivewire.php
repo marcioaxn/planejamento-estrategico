@@ -198,7 +198,7 @@ class CalculoLivewire extends Component
 
                         if($indicadores->count() > 0) {
 
-                            $resultadoCalculo = ($totalResultado)/$indicadores->count();
+                            $resultadoCalculo = ($totalResultado);
 
                             $resultadoGeralCalculo = $resultadoGeralCalculo + $resultadoCalculo;
 
@@ -225,7 +225,17 @@ class CalculoLivewire extends Component
                 $resultado['quantidadePlanosDeAcao'] = $planosAcao->count();
                 $resultado['percentual_alcancado'] = $prc_alcancado;
 
-                $resultado['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
+                if($planosAcao->count() > 0) {
+
+                    $resultado['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
+
+                } else {
+
+                    $resultado['grau_de_satisfacao'] = 'gray';
+
+                }
+
+                
                 $resultado['color'] = $getgrauSatisfacao['color'];
 
             } else {
