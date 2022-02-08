@@ -198,7 +198,7 @@ class CalculoLivewire extends Component
 
                         if($indicadores->count() > 0) {
 
-                            $resultadoCalculo = ($totalResultado);
+                            $resultadoCalculo = ($totalResultado)/$indicadores->count();
 
                             $resultadoGeralCalculo = $resultadoGeralCalculo + $resultadoCalculo;
 
