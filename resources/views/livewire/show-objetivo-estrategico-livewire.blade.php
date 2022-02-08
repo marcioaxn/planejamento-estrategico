@@ -224,7 +224,15 @@
 
         @if($this->indicador)
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-2 pb-1 pl-1"><strong><?php $planoAcao->indicadores->count() > 1 ? print('Indicadores') : print('Indicador'); ?>: </strong></div>
+        <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-2 pb-1 pl-1">
+            <strong><?php $planoAcao->indicadores->count() > 1 ? print('Indicadores') : print('Indicador'); ?>: </strong>
+
+            <br />
+
+            <div class="mt-1 mb-1 pt-1" wire:loading>
+                <p><i class='fa fa-circle-notch fa-spin text-blue-600'></i> Carregando...</p>
+            </div>
+        </div>
 
         <div class="w-full md:w-5/6 border-b-2 border-gray-100 pt-0 pb-2 pl-1">
 
@@ -411,10 +419,10 @@
             <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
                 <ul class="flex flex-wrap -mb-px" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
                     <li class="mr-2" role="presentation">
-                        <button id="btnTab1" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-4 border-blue-600 active hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('1');">Evolução mensal</button>
+                        <button id="btnTab1" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-4 border-blue-600 active hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('1');">Evolução mensal - Resumo</button>
                     </li>
                     <li role="presentation">
-                        <button id="btnTab3" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('3');">Gestão</button>
+                        <button id="btnTab3" class="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300" onclick="javascript: abrirFecharTabs('3');">Evolução mensal - Detalhamento</button>
                     </li>
                 </ul>
             </div>
@@ -1010,7 +1018,7 @@
 
                                         @endif
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-justify">
+                                        <td class="md:border md:border-gray-100 text-left block md:table-cell pt-2 pb-2 pl-1 pl-3 pr-3 text-sm text-justify" style="width: 45%!Important;">
 
                                             {!! nl2br($evolucaoIndicador->txt_avaliacao) !!}
 
@@ -1019,7 +1027,8 @@
                                         <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-left">
 
                                             @foreach($evolucaoIndicador->arquivos as $arquivo)
-                                            <a class="px-1 py-1 mt-2 mb-2 pt-3 pb-3" href="{!! url($this->anoSelecionado.'/evolucao-mensal-arquivo/'.$arquivo->cod_arquivo) !!}" target="_blank"><i class="fas fa-file-pdf text-lg text-red-600"></i> {!! $arquivo->txt_assunto !!}</a>
+                                            <a class="px-1 py-1 mt-2 mt-1 mb-2 pt-3 pb-3" href="{!! url($this->anoSelecionado.'/evolucao-mensal-arquivo/'.$arquivo->cod_arquivo) !!}" target="_blank"><i class="fas fa-file-pdf text-lg text-red-600"></i> {!! $arquivo->txt_assunto !!}</a>
+                                            <br />
                                             @endforeach
 
                                         </td>
