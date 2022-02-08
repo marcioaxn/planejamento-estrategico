@@ -692,12 +692,7 @@
 
                                                 <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-5 text-sm text-right">
 
-                                                    @foreach($evolucaoIndicador->arquivos as $arquivo)
-                                                    <a href="{!! url($this->anoSelecionado.'/evolucao-mensal-arquivo/'.$arquivo->cod_arquivo) !!}" target="_blank"><i class="fas fa-file-pdf text-base text-blue-600"></i></a>
-                                                    &nbsp;&nbsp;
-                                                    @endforeach
-
-                                                    <a href="javascript: void(0);" wire:click.prevent="abrirModalIncluirPdf('{!! $evolucaoIndicador->cod_evolucao_indicador !!}','{!! $evolucaoIndicador->num_mes !!}')"><i class="fas fa-file-pdf text-base text-red-600"></i></a>
+                                                    <i class="fas fa-file-pdf text-base text-red-600" wire:click.prevent="abrirModalIncluirPdf('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"></i>
                                                     &nbsp;&nbsp;
                                                     <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"><i class="fas fa-edit text-base text-green-600"></i></a>
 

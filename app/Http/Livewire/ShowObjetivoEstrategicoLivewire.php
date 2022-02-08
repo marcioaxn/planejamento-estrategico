@@ -177,11 +177,13 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     }
 
-    public function abrirModalIncluirPdf($cod_evolucao_indicador = '',$num_mes = '') {
+    public function abrirModalIncluirPdf($cod_evolucao_indicador = '') {
+
+        $consultarEvolucaoIndicador = EvolucaoIndicador::find($cod_evolucao_indicador);
 
         $this->cod_evolucao_indicador = $cod_evolucao_indicador;
 
-        $this->formIncluirPdf = '<div class="flex flex-wrap w-full"><div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Selecione o PDF o qual deseja inserir para '.mesNumeralParaExtenso($num_mes).'/'.$this->anoSelecionado.'</label><input type="file" wire:model="pdf"></div></div>
+        $this->formIncluirPdf = '<div class="flex flex-wrap w-full"><div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Selecione o PDF o qual deseja inserir para '.mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes).'/'.$this->anoSelecionado.'</label><input type="file" wire:model="pdf"></div></div>
 
         <div class="w-full md:w-3/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Assunto de que trata o arquivo PDF</label><input type="text" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-right pl-3" name="txt_assunto" id="txt_assunto" wire:model="txt_assunto" ></div></div>
 

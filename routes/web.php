@@ -34,12 +34,12 @@ Route::get('/', function () {
     $cod_organizacao = null;
 
     return redirect()->action(ShowDashboard::class,['ano' => $ano,'cod_organizacao' => $cod_organizacao]);
-})->name('principal');
+})->name('pei.principal');
 
 // Route::PATCH('{ano}',[PrincipalController::class, 'index']);
 // Route::get('{ano}',[PrincipalController::class, 'index']);
 
-Route::get('{ano?}/{cod_organizacao?}', ShowDashboard::class)->name('dashboard');
+Route::get('{ano?}/{cod_organizacao?}', ShowDashboard::class)->name('pei.dashboard');
 
 Route::group(['middleware' => ['auth', 'trocarSenha']], function () {
 
@@ -61,7 +61,7 @@ Route::group(['middleware' => ['auth', 'trocarSenha']], function () {
 
 });
 
-Route::get('{ano}/unidade/{cod_organizacao}/perspectiva/{cod_perspectiva}/objetivo-estrategico/{cod_objetivo_estrategico}/plano-de-acao/{cod_plano_de_acao?}',ShowObjetivoEstrategicoLivewire::class)->name('showObjetivoEstrategico');
+Route::get('{ano}/unidade/{cod_organizacao}/perspectiva/{cod_perspectiva}/objetivo-estrategico/{cod_objetivo_estrategico}/plano-de-acao/{cod_plano_de_acao?}',ShowObjetivoEstrategicoLivewire::class)->name('pei.showObjetivoEstrategico');
 
 Route::get('{ano}/evolucao-mensal-arquivo/{cod_arquivo}','App\Http\Controllers\ArquivosController@show')->name('showArquivoEvolucaoMensal');
 
