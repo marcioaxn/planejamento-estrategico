@@ -441,13 +441,17 @@
                     <div class="w-full md:w-1/1 px-3 mb-6 md:mb-0 pt-3">
 
                         <div class="border-b border-gray-200 shadow rounded-md">
+                        
+                        <div class="flex flex-col">
+                    <div class="overflow-x-auto">
+    <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+      <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead class="border-b">
 
-                            <table class="divide-gray-300 min-w-full border-collapse block md:table " style="width: 100%;">
-                                <thead>
+                                    <tr class="">
 
-                                    <tr class="shadow">
-
-                                        <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Meta</th>
+                                        <th class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">Meta</th>
 
                                         <?php $contMes = 1; ?>
 
@@ -455,7 +459,7 @@
 
                                         @if($evolucaoIndicador->num_ano == $this->ano)
 
-                                        <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</th>
+                                        <th class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</th>
 
                                         <?php $contMes = $contMes + 1; ?>
 
@@ -467,11 +471,11 @@
 
                                         @if($this->ano == date('Y'))
 
-                                        <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Acumulado até {!! mesNumeralParaExtensoCurto($this->mesAnterior) !!}</th>
+                                        <th class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">Acumulado até {!! mesNumeralParaExtensoCurto($this->mesAnterior) !!}</th>
 
                                         @else
 
-                                        <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Total</th>
+                                        <th class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">Total</th>
 
                                         @endif
 
@@ -481,11 +485,11 @@
 
                                 </thead>
 
-                                <tbody class="bg-white divide-y divide-gray-300 block md:table-row-group">
+                                <tbody class="">
 
-                                    <tr class="border border-gray-500 md:border-none block md:table-row">
+                                    <tr class="border-b">
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Prevista</strong></td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right"><strong>Prevista</strong></td>
 
                                         <?php
                                         $contMes = 1;
@@ -519,11 +523,11 @@
 
                                         @if(!is_null($evolucaoIndicador->vlr_previsto))
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">{!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_previsto) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">{!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_previsto) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></td>
 
                                         @else
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">-</td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">-</td>
 
                                         @endif
 
@@ -535,7 +539,7 @@
 
                                         @if($this->indicador->bln_acumulado == 'Sim')
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right">
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
                                             {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$totalPrevisto) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?>
                                         </td>
 
@@ -543,9 +547,9 @@
 
                                     </tr>
 
-                                    <tr class="border border-gray-500 md:border-none block md:table-row">
+                                    <tr class="border-b">
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Realizada</strong></td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right"><strong>Realizada</strong></td>
 
                                         <?php $contMes = 1; ?>
 
@@ -557,7 +561,7 @@
 
                                         @if($evolucaoIndicador->num_mes <= $this->mesAnterior)
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
+                                            <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                                 @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
 
@@ -598,7 +602,7 @@
                                             </td>
                                             @else
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-right">
+                                            <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                                 &nbsp;
 
@@ -607,7 +611,7 @@
 
                                             @else
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-right">
+                                            <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                                 &nbsp;
 
@@ -615,7 +619,7 @@
                                             @endif
 
                                             @else
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
+                                            <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                                 @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
 
@@ -670,7 +674,7 @@
 
                                             <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->indicador->dsc_tipo,$totalRealizado,$totalPrevisto); $this->totalRealizado = $totalRealizado; ?>
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
+                                            <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                                 <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
@@ -688,9 +692,9 @@
 
                                         @if($this->liberarAcessoParaAtualizar)
 
-                                        <tr class="border border-gray-500 md:border-none block md:table-row">
+                                        <tr class="border-b">
 
-                                            <td class="md:border md:border-gray-100 text-left block md:table-cell px-5 py-3 pl-3 text-sm text-gray-600 text-right"><strong>Atualização</strong></td>
+                                            <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right"><strong>Atualização</strong></td>
 
                                             @foreach($this->indicador->evolucaoIndicador as $evolucaoIndicador)
 
@@ -710,7 +714,7 @@
 
                                                 @else
 
-                                                <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-right">
+                                                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                                     &nbsp;
 
@@ -726,7 +730,7 @@
 
                                                 @if($this->indicador->bln_acumulado == 'Sim')
 
-                                                <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">&nbsp;</td>
+                                                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">&nbsp;</td>
 
                                                 @endif
 
@@ -739,6 +743,11 @@
                                         </tbody>
 
                                     </table>
+
+                                    </div>
+    </div>
+  </div>
+</div>
 
                                 </div>
 
@@ -856,18 +865,22 @@
 
                         ?>
 
-                        <table class="border-collapse block md:table " style="width: 100%;">
+                        <div class="flex flex-col">
+                    <div class="overflow-x-auto">
+    <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+      <div class="overflow-x-auto">
+                        
+                        <table class="min-w-full">
+                                <thead class="border-b">
 
-                            <thead>
+                                <tr class="border-b">
 
-                                <tr>
+                                    <th class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">Mês</th>
+                                    <th class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">Meta Prevista</th>
+                                    <th class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">Meta Realizada</th>
 
-                                    <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Mês</th>
-                                    <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Meta Prevista</th>
-                                    <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Meta Realizada</th>
-
-                                    <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-left">Avaliação qualitativa</th>
-                                    <th class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Arquivos</th>
+                                    <th class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-left">Avaliação qualitativa</th>
+                                    <th class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">Arquivos</th>
 
                                 </tr>
 
@@ -879,9 +892,9 @@
 
                                 @if($evolucaoIndicador->num_ano == $this->ano)
 
-                                <tr>
+                                <tr class="border-b">
 
-                                    <td class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</td>
+                                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</td>
 
                                     <?php
 
@@ -907,11 +920,11 @@
 
                                     @if(!is_null($evolucaoIndicador->vlr_previsto))
 
-                                    <td class="bg-white px-6 py-2 pl-3 text-xs text-black md:border md:border-gray-100 text-left block md:table-cell text-right">{!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_previsto) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></td>
+                                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">{!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$evolucaoIndicador->vlr_previsto) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></td>
 
                                     @else
 
-                                    <td class="bg-white px-6 py-2 pl-3 text-xs text-black md:border md:border-gray-100 text-left block md:table-cell text-right">-</td>
+                                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">-</td>
 
                                     @endif
 
@@ -919,7 +932,7 @@
 
                                     @if($evolucaoIndicador->num_mes <= $this->mesAnterior)
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                             @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
 
@@ -960,7 +973,7 @@
                                         </td>
                                         @else
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-right">
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                             &nbsp;
 
@@ -969,7 +982,7 @@
 
                                         @else
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-right">
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                             &nbsp;
 
@@ -977,7 +990,7 @@
                                         @endif
 
                                         @else
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-1 text-sm text-right">
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
                                             @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
 
@@ -1018,13 +1031,13 @@
 
                                         @endif
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell pt-2 pb-2 pl-1 pl-3 pr-3 text-sm text-justify" style="width: 45%!Important;">
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-justify" style="width: 45%!Important;">
 
                                             {!! nl2br($evolucaoIndicador->txt_avaliacao) !!}
 
                                         </td>
 
-                                        <td class="md:border md:border-gray-100 text-left block md:table-cell pt-1 pb-1 pl-1 pr-3 text-sm text-left">
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-left">
 
                                             @foreach($evolucaoIndicador->arquivos as $arquivo)
                                             <a class="px-1 py-1 mt-2 mt-1 mb-2 pt-3 pb-3" href="{!! url($this->anoSelecionado.'/evolucao-mensal-arquivo/'.$arquivo->cod_arquivo) !!}" target="_blank"><i class="fas fa-file-pdf text-lg text-red-600"></i> {!! $arquivo->txt_assunto !!}</a>
@@ -1041,17 +1054,17 @@
 
                                     @endforeach
 
-                                    <tr>
+                                    <tr class="border-b">
 
                                         @if($this->indicador->bln_acumulado == 'Sim')
 
                                         @if($this->ano == date('Y'))
 
-                                        <td class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Acumulado até {!! mesNumeralParaExtensoCurto($this->mesAnterior) !!}</td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">Acumulado até {!! mesNumeralParaExtensoCurto($this->mesAnterior) !!}</td>
 
                                         @else
 
-                                        <td class="bg-white px-6 py-2 pl-3 text-xs text-black font-bold md:border md:border-gray-100 text-left block md:table-cell text-right">Total</td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">Total</td>
 
                                         @endif
 
@@ -1062,6 +1075,11 @@
                                 </tbody>
 
                             </table>
+
+                            </div>
+    </div>
+  </div>
+</div>
 
                         </div>
 
