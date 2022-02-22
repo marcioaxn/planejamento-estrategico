@@ -35,7 +35,7 @@ set_time_limit(900000000);
 class ShowObjetivoEstrategicoLivewire extends Component
 {
 
-    use WithFileUploads;
+    use WithPagination,WithFileUploads;
 
     public $formIncluirPdf = null;
     public $txt_assunto = null;

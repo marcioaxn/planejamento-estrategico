@@ -411,7 +411,7 @@
 
                                 if($ano >= $this->anoInicioDoPlanoDeAcaoSelecionado && $ano <= $this->anoConclusaoDoPlanoDeAcaoSelecionado) {
 
-                                    if($mes >= $this->mesInicioDoPlanoDeAcaoSelecionado && $mes <= $this->mesConclusaoDoPlanoDeAcaoSelecionado) {
+                                    if($mes <= $this->mesInicioDoPlanoDeAcaoSelecionado && $mes <= $this->mesConclusaoDoPlanoDeAcaoSelecionado) {
 
                                         $this->$column_name_input_class_mes = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right';
 
