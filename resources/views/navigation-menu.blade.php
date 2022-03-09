@@ -149,6 +149,12 @@
 
                                 <div class="border-t blue-gray-100"></div>
 
+                                <x-jet-dropdown-link href="{{ url($ano.'/adm/usuarios') }}" :active="request()->routeIs('usuarios')">
+                                    Usuários
+                                </x-jet-dropdown-link>
+
+                                <div class="border-t blue-gray-100"></div>
+
                                 <x-jet-dropdown-link href="{{ url($ano.'/adm/pei') }}" :active="request()->routeIs('PlanejamentoEstrategicoIntegrado')">
                                     Planejamento Estratégico Integrado
                                 </x-jet-dropdown-link>

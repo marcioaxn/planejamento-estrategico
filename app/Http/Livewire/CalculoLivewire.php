@@ -9,6 +9,8 @@ use App\Models\Perspectiva;
 use App\Models\ObjetivoEstrategico;
 use App\Models\PlanoAcao;
 use App\Models\Indicador;
+use App\Models\LinhaBase;
+use App\Models\MetaAno;
 use App\Models\EvolucaoIndicador;
 use App\Models\GrauSatisfacao;
 use Illuminate\Support\Facades\DB;
@@ -136,6 +138,7 @@ class CalculoLivewire extends Component
 
                             $totalRealizado = 0;
                             $totalPrevisto = 0;
+                            $totalPrevistoAnual = 0;
 
                             if(!is_null($indicador)) {
 
@@ -143,6 +146,12 @@ class CalculoLivewire extends Component
                                 ->where('num_ano',$anoSelecionado)
                                 ->orderBy('num_mes')
                                 ->get();
+
+                                $consultarMetaAno = MetaAno::where('cod_indicador',$indicador->cod_indicador)
+                                ->where('num_ano',$anoSelecionado)
+                                ->first();
+
+                                $totalPrevistoAnual = $consultarMetaAno->meta;
 
                                 foreach($evolucaoIndicador as $evolucaoIndicador) {
 
@@ -154,13 +163,13 @@ class CalculoLivewire extends Component
 
                                                 if($indicador->bln_acumulado === 'Sim') {
 
-                                                    $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
+                                                    // $totalPrevisto = $totalPrevistoAnual;
 
                                                     $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
 
                                                 } else {
 
-                                                    $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                                    // $totalPrevisto = $totalPrevistoAnual;
 
                                                     $totalRealizado = $evolucaoIndicador->vlr_realizado;
 
@@ -174,13 +183,13 @@ class CalculoLivewire extends Component
 
                                         if($indicador->bln_acumulado === 'Sim') {
 
-                                            $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
+                                            // $totalPrevisto = $totalPrevistoAnual;
 
                                             $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
 
                                         } else {
 
-                                            $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                            // $totalPrevisto = $totalPrevistoAnual;
 
                                             $totalRealizado = $evolucaoIndicador->vlr_realizado;
 
@@ -192,13 +201,17 @@ class CalculoLivewire extends Component
 
                             }
 
-                            $totalResultado = $totalResultado+$this->prc_alcancado($indicador->dsc_tipo,$totalRealizado,$totalPrevisto);
+                            // print($totalRealizado." - ".$totalPrevistoAnual."<br>");
+
+                            $totalResultado = $totalResultado+$this->prc_alcancado($indicador->dsc_tipo,$totalRealizado,$totalPrevistoAnual);
 
                         }
 
                         if($indicadores->count() > 0) {
 
                             $resultadoCalculo = ($totalResultado)/$indicadores->count();
+
+                            // print("Geral: ".$resultadoCalculo."<br>");
 
                             $resultadoGeralCalculo = $resultadoGeralCalculo + $resultadoCalculo;
 
@@ -346,7 +359,11 @@ class CalculoLivewire extends Component
 
             if($indicadores->count() > 0) {
 
+                // print("Total: ".$totalResultado."<br>");
+
                 $resultadoCalculo = ($totalResultado)/$indicadores->count();
+
+                // print("Geral: ".$resultadoCalculo);
 
                 $grauSatisfacao = new GrauSatisfacaoLivewire;
 

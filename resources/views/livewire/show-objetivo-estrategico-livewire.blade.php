@@ -565,7 +565,7 @@
 
                                                 @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
 
-                                                <div class="bg-pink-800 text-white rounded-md px-5 py-2">
+                                                <div class="bg-pink-800 text-white rounded-md px-5 py-1">
                                                     &nbsp;-
                                                 </div>
 
@@ -937,7 +937,7 @@
 
                                             @if(!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
 
-                                            <div class="bg-pink-800 text-white rounded-md px-5 py-2">
+                                            <div class="bg-pink-800 text-white rounded-md px-5 py-1">
                                                 &nbsp;-
                                             </div>
 

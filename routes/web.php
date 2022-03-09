@@ -15,7 +15,8 @@ use App\Http\Livewire\{
     PlanoAcaoLivewire,
     IndicadoresLivewire,
     GrauSatisfacaoLivewire,
-    ShowObjetivoEstrategicoLivewire
+    ShowObjetivoEstrategicoLivewire,
+    UsuariosLivewire
 };
 
 
@@ -44,6 +45,8 @@ Route::get('{ano?}/{cod_organizacao?}', ShowDashboard::class)->name('pei.dashboa
 Route::group(['middleware' => ['auth:sanctum', 'verified','auth', 'trocarSenha']], function () {
 
     Route::get('{ano}/adm/organization', ShowOrganization::class)->name('organization');
+
+    Route::get('{ano}/adm/usuarios', UsuariosLivewire::class)->name('usuarios');
 
     Route::get('{ano}/adm/pei',PlanejamentoEstrategicoIntegrado::class)->name('PlanejamentoEstrategicoIntegrado');
 

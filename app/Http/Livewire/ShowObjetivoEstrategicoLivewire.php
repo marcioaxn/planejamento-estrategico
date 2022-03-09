@@ -726,12 +726,16 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                 $num_linha_base = '';
 
-                foreach($indicador->linhaBase as $linhaBase) {
+                if($indicador) {
 
-                    $num_linha_base = $linhaBase->num_linha_base;
+                    foreach($indicador->linhaBase as $linhaBase) {
+
+                        $num_linha_base = $linhaBase->num_linha_base;
+    
+                    }
 
                 }
-
+                
                 $this->linhaBase = $num_linha_base;
 
                 $dataChartMetaPrevista = '';
