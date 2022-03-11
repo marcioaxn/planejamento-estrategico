@@ -108,6 +108,8 @@ class CalculoLivewire extends Component
 
                 $resultadoGeralCalculo = 0;
 
+                $contPlanoAcao = 0;
+
                 foreach($planosAcao as $planoAcao) {
 
                     $resultadoCalculo = 0;
@@ -208,6 +210,8 @@ class CalculoLivewire extends Component
                         }
 
                         if($indicadores->count() > 0) {
+
+                            // print("Quantidade de Indicadores: ".$planosAcao->count()."<br>");
 
                             $resultadoCalculo = ($totalResultado)/$indicadores->count();
 
