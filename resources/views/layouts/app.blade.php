@@ -18,7 +18,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script src="https://kit.fontawesome.com/1d96c2b4cc.js" crossorigin="anonymous"></script>
 

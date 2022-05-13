@@ -53,11 +53,11 @@ class ShowDashboard extends Component
 
     public $detalharObjetivoEstrategico = null;
 
-    public function mount(SessionManager $session, Request $request, $ano,$cod_organizacao = '')
+    public function mount(SessionManager $session, Request $request, $ano, $cod_organizacao = '')
     {
         $this->ano = $ano;
 
-        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+        if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
             $this->cod_organizacao = $cod_organizacao;
 
@@ -71,43 +71,54 @@ class ShowDashboard extends Component
 
     }
 
-    protected function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '',$anoSelecionado = '') {
+    protected function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '', $anoSelecionado = '')
+    {
 
         $calcular = new CalculoLivewire;
 
-        $result = $calcular->calcularAcumuladoObjetivoEstrategico($cod_organizacao,$cod_objetivo_estrategico,$anoSelecionado);
+        $result = $calcular->calcularAcumuladoObjetivoEstrategico($cod_organizacao, $cod_objetivo_estrategico, $anoSelecionado);
 
         return $result;
 
     }
 
-    public function render($ano = '',$cod_organizacao = '')
+    public function render($ano = '', $cod_organizacao = '')
     {
+
+        if (isset($this->ano) && !is_null($this->ano) && $this->ano != '' && is_numeric($this->ano)) {
+
+            $this->ano = $this->ano;
+
+        } else {
+
+            $this->ano = date('Y');
+
+        }
 
         Session()->forget('cod_organizacao');
         Session()->forget('cod_objetivo_estrategico');
 
         $ano = $this->ano;
 
-        $this->anoSelecionado = ($this->ano)*1;
+        $this->anoSelecionado = ($this->ano) * 1;
 
         $cod_organizacao = $this->cod_organizacao;
 
-        $this->pei = Pei::where('num_ano_inicio_pei','<=',$ano)
-        ->where('num_ano_fim_pei','>=',$ano)
-        ->first();
+        $this->pei = Pei::where('num_ano_inicio_pei', '<=', $ano)
+            ->where('num_ano_fim_pei', '>=', $ano)
+            ->first();
 
         $nom_organizacao = $this->nom_organizacao;
 
-        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+        if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
             // $this->cod_organizacao = $cod_organizacao;
 
         } else {
 
             $consultarOrganizacaoDeVisualizacao = Organization::select('cod_organizacao')
-            ->whereColumn('cod_organizacao', 'rel_cod_organizacao')
-            ->first();
+                ->whereColumn('cod_organizacao', 'rel_cod_organizacao')
+                ->first();
 
             $this->cod_organizacao = $consultarOrganizacaoDeVisualizacao->cod_organizacao;
 
@@ -120,45 +131,45 @@ class ShowDashboard extends Component
         $organizacoes = [];
 
         $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
-        ->get();
+            ->get();
 
         $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
-        ->orderBy('nom_organizacao')
-        ->get();
+            ->orderBy('nom_organizacao')
+            ->get();
 
         foreach ($organization as $result) {
 
-            $organizacoes[$result->cod_organizacao] = $result->sgl_organizacao.' - '.$result->nom_organizacao.$this->hierarquiaUnidade($result->cod_organizacao);
+            $organizacoes[$result->cod_organizacao] = $result->sgl_organizacao . ' - ' . $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
 
-            foreach($organizationChild as $resultChild1) {
+            foreach ($organizationChild as $resultChild1) {
 
-                if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
+                if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
 
-                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->sgl_organizacao.' - '.$resultChild1->nom_organizacao.$this->hierarquiaUnidade($resultChild1->cod_organizacao);
+                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->sgl_organizacao . ' - ' . $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
 
                     foreach ($resultChild1->deshierarquia as $resultChild2) {
 
-                        if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
+                        if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
 
-                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->sgl_organizacao.' - '.$resultChild2->nom_organizacao.$this->hierarquiaUnidade($resultChild2->cod_organizacao);
+                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->sgl_organizacao . ' - ' . $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
 
                             foreach ($resultChild2->deshierarquia as $resultChild3) {
 
-                                if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
+                                if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
 
-                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->sgl_organizacao.' - '.$resultChild3->nom_organizacao.$this->hierarquiaUnidade($resultChild3->cod_organizacao);
+                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->sgl_organizacao . ' - ' . $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
 
                                     foreach ($resultChild3->deshierarquia as $resultChild4) {
 
-                                        if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
+                                        if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
 
-                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->sgl_organizacao.' - '.$resultChild4->nom_organizacao.$this->hierarquiaUnidade($resultChild4->cod_organizacao);
+                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->sgl_organizacao . ' - ' . $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
 
                                             foreach ($resultChild4->deshierarquia as $resultChild5) {
 
-                                                if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
+                                                if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
-                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->sgl_organizacao.' - '.$resultChild5->nom_organizacao.$this->hierarquiaUnidade($resultChild5->cod_organizacao);
+                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->sgl_organizacao . ' - ' . $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
 
                                                 }
 
@@ -184,89 +195,90 @@ class ShowDashboard extends Component
 
         $this->organization = $organizacoes;
 
-        if($this->pei) {
+        if ($this->pei) {
 
             $this->existePei = true;
 
-            $missaoVisaoValores = MissaoVisaoValores::where('cod_pei',$this->pei->cod_pei);
+            $missaoVisaoValores = MissaoVisaoValores::where('cod_pei', $this->pei->cod_pei);
 
-            if(isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
+            if (isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
 
-                $missaoVisaoValores = $missaoVisaoValores->where('cod_organizacao',$this->cod_organizacao);
+                $missaoVisaoValores = $missaoVisaoValores->where('cod_organizacao', $this->cod_organizacao);
 
             }
 
             $this->missaoVisaoValores = $missaoVisaoValores->first();
 
-            $this->perspectiva = Perspectiva::where('cod_pei',$this->pei->cod_pei)
-            ->with('objetivosEstrategicos')
-            ->orderBy('num_nivel_hierarquico_apresentacao','desc')
-            ->get();
+            $this->perspectiva = Perspectiva::where('cod_pei', $this->pei->cod_pei)
+                ->with('objetivosEstrategicos')
+                ->orderBy('num_nivel_hierarquico_apresentacao', 'desc')
+                ->get();
 
             $this->grau_satisfacao = $this->grauSatisfacao();
 
-            return view('livewire.show-dashboard',['ano' => $ano,'cod_organizacao' => $this->cod_organizacao]);
+            return view('livewire.show-dashboard', ['ano' => $ano, 'cod_organizacao' => $this->cod_organizacao]);
 
         } else {
 
             $this->existePei = false;
 
-            return view('livewire.show-dashboard',['ano' => $ano,'cod_organizacao' => $this->cod_organizacao]);
+            return view('livewire.show-dashboard', ['ano' => $ano, 'cod_organizacao' => $this->cod_organizacao]);
 
         }
     }
 
-    protected function hierarquiaUnidade($cod_organizacao) {
+    protected function hierarquiaUnidade($cod_organizacao)
+    {
 
         $organizacao = Organization::with('hierarquia')
-        ->where('cod_organizacao',$cod_organizacao)
-        ->get();
+            ->where('cod_organizacao', $cod_organizacao)
+            ->get();
 
         $hierarquiaSuperior = null;
 
-        foreach($organizacao as $result1) {
+        foreach ($organizacao as $result1) {
 
-            if($result1->hierarquia) {
+            if ($result1->hierarquia) {
 
-                foreach($result1->hierarquia as $result2) {
+                foreach ($result1->hierarquia as $result2) {
 
-                    $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result2->sgl_organizacao;
+                    $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result2->sgl_organizacao;
 
                     $organizacao2 = Organization::with('hierarquia')
-                    ->where('cod_organizacao',$result2->cod_organizacao)
-                    ->get();
+                        ->where('cod_organizacao', $result2->cod_organizacao)
+                        ->get();
 
-                    foreach($organizacao2 as $result3) {
+                    foreach ($organizacao2 as $result3) {
 
-                        if($result3->hierarquia) {
+                        if ($result3->hierarquia) {
 
-                            foreach($result3->hierarquia as $result4) {
+                            foreach ($result3->hierarquia as $result4) {
 
-                                $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result4->sgl_organizacao;
+                                $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result4->sgl_organizacao;
 
                                 $organizacao3 = Organization::with('hierarquia')
-                                ->where('cod_organizacao',$result4->cod_organizacao)
-                                ->get();
+                                    ->where('cod_organizacao', $result4->cod_organizacao)
+                                    ->get();
 
-                                foreach($organizacao3 as $result5) {
+                                foreach ($organizacao3 as $result5) {
 
-                                    if($result5->hierarquia) {
+                                    if ($result5->hierarquia) {
 
-                                        foreach($result5->hierarquia as $result6) {
+                                        foreach ($result5->hierarquia as $result6) {
 
-                                            $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result6->sgl_organizacao;
+                                            $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result6->sgl_organizacao;
 
                                             $organizacao4 = Organization::with('hierarquia')
-                                            ->where('cod_organizacao',$result6->cod_organizacao)
-                                            ->get();
+                                                ->where('cod_organizacao', $result6->cod_organizacao)
+                                                ->get();
 
-                                            foreach($organizacao4 as $result7) {
+                                            foreach ($organizacao4 as $result7) {
 
-                                                if($result7->hierarquia) {
+                                                if ($result7->hierarquia) {
 
-                                                    foreach($result7->hierarquia as $result8) {
+                                                    foreach ($result7->hierarquia as $result8) {
 
-                                                        $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result8->sgl_organizacao;
+                                                        $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result8->sgl_organizacao;
 
                                                     }
 
@@ -296,24 +308,25 @@ class ShowDashboard extends Component
 
     }
 
-    public function grauSatisfacao() {
+    public function grauSatisfacao()
+    {
 
         $consultarGrauSatisfacao = GrauSatisfacao::orderBy('vlr_minimo')
-        ->get();
+            ->get();
 
         $montagemGrauSatisfacao = '';
 
-        foreach($consultarGrauSatisfacao as $grauSatisfacao) {
+        foreach ($consultarGrauSatisfacao as $grauSatisfacao) {
 
             $color = 'white';
 
-            if($grauSatisfacao->cor === 'yellow') {
+            if ($grauSatisfacao->cor === 'yellow') {
 
                 $color = 'white';
 
             }
 
-            $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-'.$color.' bg-'.$grauSatisfacao->cor.'-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">'.$grauSatisfacao->dsc_grau_satisfcao.' de '.converteValor('MYSQL','PTBR',$grauSatisfacao->vlr_minimo).'% a '.converteValor('MYSQL','PTBR',$grauSatisfacao->vlr_maximo).'%</div>';
+            $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-' . $color . ' bg-' . $grauSatisfacao->cor . '-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">' . $grauSatisfacao->dsc_grau_satisfcao . ' de ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_minimo) . '% a ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_maximo) . '%</div>';
 
         }
 

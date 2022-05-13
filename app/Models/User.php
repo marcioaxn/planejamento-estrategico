@@ -25,7 +25,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'name',
-        'cpf',
         'email',
         'password',
         'ativo'
@@ -45,4 +44,18 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function servidorResponsavel()
+    {
+        return $this->belongsToMany(PlanoAcao::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'user_id', 'cod_plano_de_acao')
+            ->where('cod_perfil', 'c00b9ebc-7014-4d37-97dc-7875e55fff4c')
+            ->whereNull('rel_users_tab_organizacoes_tab_perfil_acesso.deleted_at');
+    }
+
+    public function servidorSubstituto()
+    {
+        return $this->belongsToMany(PlanoAcao::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'user_id', 'cod_plano_de_acao')
+            ->where('cod_perfil', 'c00b9ebc-7014-4d37-97dc-7875e55fff5d')
+            ->whereNull('rel_users_tab_organizacoes_tab_perfil_acesso.deleted_at');
+    }
 }

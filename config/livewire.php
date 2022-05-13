@@ -54,8 +54,7 @@ return [
     |
     */
 
-    'asset_url' => 'http://'.$_SERVER['SERVER_ADDR'].'/governanca-pr/public',
-    // 'asset_url' => 'http://127.0.0.1/governanca-pr/public',
+    'asset_url' => config('app.url'),
 
     /*
     |--------------------------------------------------------------------------
