@@ -2,12 +2,15 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Acoes;
+use App\Models\Audit;
 use Mail;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Organization;
 use Livewire\Component;
+use Auth;
 
 class UsuariosLivewire extends Component
 {
@@ -19,6 +22,7 @@ class UsuariosLivewire extends Component
     public $name = null;
     public $email = null;
     public $adm = null;
+    public $ativo = null;
 
     public $senha = null;
 
@@ -94,201 +98,283 @@ class UsuariosLivewire extends Component
     public function create()
     {
 
-        // Início da consulta para verificar se esse usuário já está cadastrado
+        // Início do IF para verificar se o usuário logado tem perfil de administrador para prosseguir com o procedimento
+        if (Auth::user()->adm == 1) {
 
-        // Início do IF para verificar se a variável email foi informada
-        if (isset($this->email) && !is_null($this->email) && $this->email != '') {
+            // Início do IF que verifica se existe o ID do usuário, pois se existir será a parte do update
+            if (isset($this->user_id) && !is_null($this->user_id) && $this->user_id != '') {
 
-            $consultaUsuario = User::where('email', $this->email)
-                ->first();
+                $modificacoes = '';
+                $alteracao = array();
 
-            if ($consultaUsuario) {
+                // Consultar o usuário pelo ID
+                $consultaUsuario = User::find($this->user_id);
 
-                $this->showModalResultadoEdicao = true;
-                $this->mensagemResultadoEdicao = "Não será permitida a inclusão desse cadastro, pois já existe um usuário(a) cadastrado(a) com este e-mail ( " . $this->email . " ).";
+                // dd($consultaUsuario->ativo, $this->ativo);
 
-                return false;
+                // Início do IF para verificar se houve alteração no nome de usuário
+                if ($consultaUsuario->name != $this->name) {
+
+                    $alteracao['name'] = $this->name;
+
+                    $audit = Audit::create(array(
+                        'table' => 'users',
+                        'table_id' => $this->user_id,
+                        'column_name' => 'name',
+                        'data_type' => 'character varying',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou',
+                        'antes' => $consultaUsuario->name,
+                        'depois' => $this->name
+                    ));
+
+                    $modificacoes .= 'Alterou o(a) <b>Nome</b> de <span style="color:#CD3333;">( ' . $consultaUsuario->name . ' )</span> para <span style="color:#28a745;">( ' . $this->name . ' )</span>;<br>';
+
+                }
+                // Fim do IF para verificar se houve alteração no nome de usuário
+
+                // Início do IF para verificar se houve alteração no email de usuário
+                if ($consultaUsuario->email != $this->email) {
+
+                    $alteracao['email'] = $this->email;
+
+                    $audit = Audit::create(array(
+                        'table' => 'users',
+                        'table_id' => $this->user_id,
+                        'column_name' => 'email',
+                        'data_type' => 'character varying',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou',
+                        'antes' => $consultaUsuario->email,
+                        'depois' => $this->email
+                    ));
+
+                    $modificacoes .= 'Alterou o(a) <b>E-mail</b> de <span style="color:#CD3333;">( ' . $consultaUsuario->email . ' )</span> para <span style="color:#28a745;">( ' . $this->email . ' )</span>;<br>';
+
+                }
+                // Fim do IF para verificar se houve alteração no email de usuário
+
+                // Início do IF para verificar se houve alteração na ativação do usuário
+
+                $this->ativo == false ? $this->ativo = 0 : $this->ativo = 1;
+
+                if ($consultaUsuario->ativo != $this->ativo) {
+
+                    $alteracao['ativo'] = $this->ativo;
+
+                    $consultaUsuario->ativo == 1 ? $ativoTabela = "Ativo" : $ativoTabela = "Inativo";
+                    $this->ativo == 1 ? $ativoForm = "Ativo" : $ativoForm = "Inativo";
+
+                    $audit = Audit::create(array(
+                        'table' => 'users',
+                        'table_id' => $this->user_id,
+                        'column_name' => 'ativo',
+                        'data_type' => 'smallint',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou',
+                        'antes' => $ativoTabela,
+                        'depois' => $ativoForm
+                    ));
+
+                    $modificacoes .= 'Alterou o(a) <b>Ativação do cadastro</b> de <span style="color:#CD3333;">( ' . $ativoTabela . ' )</span> para <span style="color:#28a745;">( ' . $ativoForm . ' )</span>;<br>';
+
+                }
+                // Fim do IF para verificar se houve alteração na ativação do usuário
+
+                // Início do IF para verificar se houve modificação
+                if (isset($modificacoes) && !is_null($modificacoes) && $modificacoes != '') {
+
+                    $consultaUsuario->update($alteracao);
+
+                    $acao = Acoes::create(array(
+                        'table' => 'users',
+                        'table_id' => $this->user_id,
+                        'user_id' => Auth::user()->id,
+                        'acao' => $modificacoes
+                    ));
+
+                    $assunto = "Cadastro alterado no sistema " . config('app.name');
+                    $header = config('app.name');
+                    $textoEmail = "<p>Informo que houve alteração no seu cadastro no sistema " . config('app.name') . ", conforme a seguinte lista: <br /><br />" . $modificacoes . "</p><p class='pt-6'>Em caso de dúvidas envie uma mensagem para: email@organizacao.com.br</p><p class='pt-6'>Atenciosamente,<br><strong>Equipe " . config('app.name') . "</strong></p>";
+
+                    $email = $this->email;
+                    $nome = $this->name;
+
+                    Mail::send('email.cadastro', ['name' => $nome, 'textoEmail' => $textoEmail, 'header' => $header], function ($message) use ($email, $nome, $assunto, $header) {
+                        $message->to($email, $nome)->subject($assunto);
+                        $message->from('maxnprojetos@gmail.com', config('app.name'));
+                    });
+
+                    $this->showModalResultadoEdicao = true;
+
+                    $this->mensagemResultadoEdicao = "Será encaminhada uma mensagem de e-mail para esse usuário informando que houve modificação em seu cadastro, conforme a seguinte lista:<br /><br />" . $modificacoes;
+
+                    $this->name = null;
+                    $this->email = null;
+                    $this->adm = null;
+                    $this->ativo = null;
+
+                    $this->abrirFecharForm = 'none';
+                    $this->iconAbrirFechar = 'fas fa-plus text-xs';
+
+                    $this->editarForm = false;
+
+                }
+                // Fim do IF para verificar se houve modificação
+                // --- x --- x --- x ---
+
+                // Este ELSE é para o caso do usuário ter clicado em Editar, mas não fizera nenhuma alteração
+
+                else {
+
+                    $this->showModalResultadoEdicao = true;
+
+                    $this->mensagemResultadoEdicao = 'Por não ter nenhuma modificação nada foi feito.';
+
+                }
+
+            }
+            // Fim do IF que verifica se existe o ID do usuário, pois se existir será a parte do update
+            // --- x --- x --- x ---
+
+            else {
+
+                // Início da consulta para verificar se esse usuário já está cadastrado
+
+                // Início do IF para verificar se a variável email foi informada
+                if (isset($this->email) && !is_null($this->email) && $this->email != '') {
+
+                    $consultaUsuario = User::where('email', $this->email)
+                        ->first();
+
+                    if ($consultaUsuario) {
+
+                        $this->showModalResultadoEdicao = true;
+                        $this->mensagemResultadoEdicao = "Não será permitida a inclusão desse cadastro, pois já existe um usuário(a) cadastrado(a) com este e-mail ( " . $this->email . " ).";
+
+                        return false;
+
+                    }
+
+                }
+                // Fim do IF para verificar se a variável email foi informada
+                // --- x --- x --- x ---
+
+                // Fim da consulta para verificar se esse usuário já está cadastrado
+                // --- x --- x --- x ---
+
+                // Início do IF para ter a certeza de que o usuário não existe no banco de dados
+                if (!$consultaUsuario) {
+
+                    $gravarNovoUsuario = new User;
+
+                    $gravarNovoUsuario->name = $this->name;
+                    $gravarNovoUsuario->email = $this->email;
+                    $gravarNovoUsuario->adm = $this->adm;
+
+                    $this->senha = gerar_senha();
+
+                    $gravarNovoUsuario->password = Hash::make($this->senha);
+
+                    $assunto = "Cadastro no sistema " . config('app.name');
+                    $header = config('app.name');
+                    $textoEmail = "<p>Informo que foi feito o seu cadastro no sistema " . config('app.name') . ".<br /><br />O seu perfil de acesso ao sistema é " . tipoPerfil($this->adm) . "<br /><br />A sua senha inicial é <br /><br /><span class='text-base font-semibold text-black'>" . $this->senha . "</span><br /><br />O endereço de acesso ao sistema é <a class='text-blue-600' href='" . config('app.url') . "' target='_blank'>" . config('app.url') . "</a></p><p class='pt-6'>Em caso de dúvidas envie uma mensagem para: email@organizacao.com.br</p><p class='pt-6'>Atenciosamente,<br><strong>Equipe " . config('app.name') . "</strong></p>";
+
+                    $email = $this->email;
+                    $nome = $this->name;
+
+                    Mail::send('email.cadastro', ['name' => $nome, 'textoEmail' => $textoEmail, 'header' => $header], function ($message) use ($email, $nome, $assunto, $header) {
+                        $message->to($email, $nome)->subject($assunto);
+                        $message->from('maxnprojetos@gmail.com', config('app.name'));
+                    });
+
+                    if ($this->adm == 2) {
+
+                        $complementoInformacao = null;
+
+                        $complementoInformacao = "<br /><br /><span class='text-red-700'>No caso desse(a) usuário(a) que o perfil é de Gestor(a), você poderá no menu <strong>Administração do Sistema</strong> e submenu <strong>Plano de Ação</strong> efetuar a indicação se ele(a) atuará como Servidor(a) Responsável ou como Servidor(a) Substituto(a) num determinado Plano de Ação.<br /><br />Se o Plano de Ação ainda não foi criado essa indicação é feita no momento da criação, mas se já foi o caminho será editar o Plano de Ação e dessa forma efetuar a indicação.</span>";
+
+                    }
+
+                    $gravarNovoUsuario->save();
+
+                    $this->showModalResultadoEdicao = true;
+                    $this->mensagemResultadoEdicao = "Foi feito com sucesso o cadastro do(a) " . $this->name . ".<br /><br />Foi gerada uma senha e ela foi encaminhada para este e-mail ( " . $this->email . " )." . $complementoInformacao;
+
+                    $this->name = null;
+                    $this->email = null;
+                    $this->adm = null;
+
+                    $this->abrirFecharForm = 'none';
+                    $this->iconAbrirFechar = 'fas fa-plus text-xs';
+
+                    $this->editarForm = false;
+
+                }
+                // Fim do IF para ter a certeza de que o usuário não existe no banco de dados
+                // --- x --- x --- x ---
 
             }
 
-        }
-        // Fim do IF para verificar se a variável email foi informada
-        // --- x --- x --- x ---
-
-        // Fim da consulta para verificar se esse usuário já está cadastrado
-        // --- x --- x --- x ---
-
-        // Início do IF para ter a certeza de que o usuário não existe no banco de dados
-        if (!$consultaUsuario) {
-
-            $gravarNovoUsuario = new User;
-
-            $gravarNovoUsuario->name = $this->name;
-            $gravarNovoUsuario->email = $this->email;
-            $gravarNovoUsuario->adm = $this->adm;
-
-            $this->senha = gerar_senha();
-
-            $gravarNovoUsuario->password = Hash::make($this->senha);
-
-            $assunto = "Cadastro no sistema " . config('app.name');
-            $header = config('app.name');
-            $textoEmail = "<p>Informo que foi feito o seu cadastro no sistema " . config('app.name') . ".<br /><br />O seu perfil de acesso ao sistema é " . tipoPerfil($this->adm) . "<br /><br />A sua senha inicial é <br /><br /><span class='text-base font-semibold text-black'>" . $this->senha . "</span><br /><br />O endereço de acesso ao sistema é <a class='text-blue-600' href='" . config('app.url') . "' target='_blank'>" . config('app.url') . "</a></p><p class='pt-6'>Em caso de dúvidas envie uma mensagem para: email@organizacao.com.br</p><p class='pt-6'>Atenciosamente,<br><strong>Equipe " . config('app.name') . "</strong></p>";
-
-            $email = $this->email;
-            $nome = $this->name;
-
-            Mail::send('email.cadastro', ['name' => $nome, 'textoEmail' => $textoEmail, 'header' => $header], function ($message) use ($email, $nome, $assunto, $header) {
-                $message->to($email, $nome)->subject($assunto);
-                $message->from('maxnprojetos@gmail.com', config('app.name'));
-            });
-
-            if ($this->adm == 2) {
-
-                $complementoInformacao = null;
-
-                $complementoInformacao = "<br /><br /><span class='text-red-700'>No caso desse(a) usuário(a) que o perfil é de Gestor(a), você poderá no menu <strong>Administração do Sistema</strong> e submenu <strong>Plano de Ação</strong> efetuar a indicação se ele(a) atuará como Servidor(a) Responsável ou como Servidor(a) Substituto(a) num determinado Plano de Ação.<br /><br />Se o Plano de Ação ainda não foi criado essa indicação é feita no momento da criação, mas se já foi o caminho será editar o Plano de Ação e dessa forma efetuar a indicação.</span>";
-
-            }
-
-            $gravarNovoUsuario->save();
+        } else {
 
             $this->showModalResultadoEdicao = true;
-            $this->mensagemResultadoEdicao = "Foi feito com sucesso o cadastro do(a) " . $this->name . ".<br /><br />Foi gerada uma senha e ela foi encaminhada para este e-mail ( " . $this->email . " )." . $complementoInformacao;
 
-            $this->name = null;
-            $this->email = null;
-            $this->adm = null;
-
-            $this->abrirFecharForm = 'none';
-            $this->iconAbrirFechar = 'fas fa-plus text-xs';
-
-            $this->editarForm = false;
+            $this->mensagemResultadoEdicao = 'Você não possui a permissão para prosseguir com esse procedimento';
 
         }
-        // Fim do IF para ter a certeza de que o usuário não existe no banco de dados
-        // --- x --- x --- x ---
+        // Fim do IF para verificar se o usuário logado tem perfil de administrador para prosseguir com o procedimento
+
+    }
+
+    public function editForm(User $singleData)
+    {
+
+        $this->user_id = $singleData->id;
+        $this->name = $singleData->name;
+        $this->email = $singleData->email;
+        $this->adm = $singleData->adm;
+        $this->ativo = $singleData->ativo;
+
+        $this->abrirFecharForm = 'block';
+        $this->iconAbrirFechar = 'fas fa-minus text-xs';
+
+        $this->editarForm = true;
+
+    }
+
+    public function cancelar()
+    {
+
+        $this->name = null;
+        $this->email = null;
+        $this->adm = null;
+
+        $this->editarForm = false;
 
     }
 
     public function render()
     {
 
-        $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
+        $this->users = User::orderBy('name')
+            ->with('servidorResponsavel', 'servidorResponsavel.unidade', 'servidorSubstituto', 'servidorSubstituto.unidade')
             ->get();
 
-        $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
-            ->orderBy('nom_organizacao')
-            ->get();
+//        foreach ($this->users as $user) {
+//
+//            foreach($user->servidorResponsavel as $responsavel) {
+//                dd($responsavel);
+//            }
+//
+//        }
 
-        foreach ($organization as $result) {
 
-            if ($this->editarForm == false) {
 
-                $organizacoes[$result->cod_organizacao] = $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
-
-            } else {
-
-                $organizacoes[$result->cod_organizacao] = $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
-
-            }
-
-            foreach ($organizationChild as $resultChild1) {
-
-                if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
-
-                    if ($this->editarForm == false) {
-
-                        $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
-
-                    } else {
-
-                        $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
-
-                    }
-
-                    foreach ($resultChild1->deshierarquia as $resultChild2) {
-
-                        if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
-
-                            if ($this->editarForm == false) {
-
-                                $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
-
-                            } else {
-
-                                $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
-
-                            }
-
-                            foreach ($resultChild2->deshierarquia as $resultChild3) {
-
-                                if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
-
-                                    if ($this->editarForm == false) {
-
-                                        $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
-
-                                    } else {
-
-                                        $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
-
-                                    }
-
-                                    foreach ($resultChild3->deshierarquia as $resultChild4) {
-
-                                        if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
-
-                                            if ($this->editarForm == false) {
-
-                                                $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
-
-                                            } else {
-
-                                                $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
-
-                                            }
-
-                                            foreach ($resultChild4->deshierarquia as $resultChild5) {
-
-                                                if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
-
-                                                    if ($this->editarForm == false) {
-
-                                                        $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
-
-                                                    } else {
-
-                                                        $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
-
-                                                    }
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        $this->organization = $organizacoes;
-
-        $this->users = User::with('servidorResponsavel', 'servidorResponsavel.unidade', 'servidorSubstituto', 'servidorSubstituto.unidade')
-            ->get();
+        // dd($this->users);
 
         return view('livewire.usuarios-livewire');
     }

@@ -80,6 +80,26 @@
 
                     </div>
 
+                    @if($this->editarForm == true)
+                        <div class="w-full md:w-1/3 px-3 mb-3 pt-1">
+
+                            <div class="col-span-6 sm:col-span-4">
+                                <x-jet-label for="ativo" value="Ativo"/>
+
+                                <input
+                                    class="form-check-input appearance-none w-9 rounded-full float-left h-5 align-top bg-white bg-no-repeat bg-contain bg-gray-300 focus:outline-none cursor-pointer shadow-sm"
+                                    type="checkbox" role="switch" id="ativo" name="ativo"
+                                    wire:model="ativo" @if($this->ativo == 1)
+                                    {!! 'checked' !!}
+                                    @endif>
+
+                                <x-jet-input-error for="email" class="mt-2"/>
+                            </div>
+
+                        </div>
+
+                    @endif
+
                     <div class="w-full md:w-1/1 px-3 mt-6 mb-3 md:mb-0 pt-1 text-right">
 
                         @if($this->editarForm == true)
@@ -125,6 +145,9 @@
                             style="text-align: left!Important;">E-mail
                         </th>
                         <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
+                            style="text-align: left!Important;">Gestão
+                        </th>
+                        <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
                             style="text-align: left!Important;">Ação
                         </th>
                     </tr>
@@ -134,30 +157,44 @@
 
                     @foreach($this->users as $user)
 
-                        <tr class="border border-gray-500 md:border-none block md:table-row">
+                        <tr class="border border-gray-500 md:border-none block md:table-row @if($user->adm == 1) {!! 'bg-blue-50' !!} @endif @if($user->ativo == 0) {!! 'bg-red-50' !!} @endif">
 
-                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600 bg-blue-50 ">
-                                {!! $contUser++ !!}. {!! $user->name !!}
+                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600 ">
+                                {!! $contUser++ !!}. @if($user->adm == 1)
+                                    {!! '&nbsp;<i class="fa-solid fa-user-gear shadow-sm text-sky-700 cursor-help " title="Usuário(a) com perfil de Administrador(a)"></i>&nbsp;' !!}
+                                @endif @if($user->ativo == 0)
+                                    {!! '&nbsp;<i class="fa-solid fa-user-slash shadow-sm text-red-600 cursor-help " title="Usuário(a) inativo(a), dessa forma ele(a) não pode utilizar o sistema"></i>&nbsp;' !!}
+                                @endif @if($user->trocarsenha == 1)
+                                    {!! '&nbsp;<i class="fa-solid fa-user-lock shadow-sm text-orange-600 cursor-help " title="Usuário(a) ainda não alterou a senha inicial, dessa forma ele(a) não pode utilizar o sistema, exceto para efetuar a alteração da senha inicial ou o seu nome"></i>&nbsp;' !!}
+                                @endif {!! $user->name !!}
                             </td>
 
                             <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">
                                 {{ $user->email }}
                             </td>
 
-                            <td>
+                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">
+                                @foreach($user->servidorResponsavel as $responsavel)
+                                    {!! '&nbsp;<i class="fa-solid fa-user shadow-sm text-violet-900 cursor-help " title="Atuação como Responsável pelo Plano de Ação ' . $responsavel->dsc_plano_de_acao . ' na ' . $responsavel->unidade->sgl_organizacao . '"></i>&nbsp;' !!}
+                                @endforeach
+
+                                @foreach($user->servidorSubstituto as $substituto)
+                                    {!! '&nbsp;<i class="fa-solid fa-user-group shadow-sm text-violet-600 cursor-help " title="Atuação como Substituto(a) no Plano de Ação ' . $substituto->dsc_plano_de_acao . ' na ' . $substituto->unidade->sgl_organizacao . '"></i>&nbsp;' !!}
+                                @endforeach
+                            </td>
+
+                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600 ">
                                 <div class="flex justify-center">
                                     <div class="flex items-center">
                                         <div class="text-sm">
-                                            <a href="#" wire:click.prevent="edit({{ $user->id }})"
-                                               class="text-blue-500 hover:text-blue-700">
-                                                <i class="fas fa-edit"></i>
+                                            <a href="javascript: void(0);"
+                                               wire:click.prevent="editForm('{{ $user->id }}')">
+                                                <i class="fas fa-edit text-green-600 hover:text-green-900"
+                                                   title="Editar o cadastro"></i>
                                             </a>
                                         </div>
                                         <div class="text-sm ml-2">
-                                            <a href="#" wire:click.prevent="delete({{ $user->id }})"
-                                               class="text-red-500 hover:text-red-700">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
+
                                         </div>
                                     </div>
                                 </div>

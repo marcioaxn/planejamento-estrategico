@@ -20,7 +20,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <script src="https://kit.fontawesome.com/1d96c2b4cc.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" crossorigin="anonymous"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 

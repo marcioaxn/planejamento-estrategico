@@ -26,7 +26,7 @@ class MissaoVisaoValoresLivewire extends Component
     public $cod_pei = null;
     public $cod_organizacao = null;
     public $hierarquiaUnidade = null;
-    
+
     public $abrirFecharForm = 'none';
     public $iconAbrirFechar = 'fas fa-plus text-xs';
     public $iconFechar = 'fas fa-minus text-xs';
@@ -192,7 +192,7 @@ class MissaoVisaoValoresLivewire extends Component
 
         $this->abrirFecharForm = 'none';
         $this->iconAbrirFechar = 'fas fa-plus text-xs';
-        
+
         $this->editarForm = false;
 
     }
@@ -365,7 +365,6 @@ class MissaoVisaoValoresLivewire extends Component
         $this->cod_pei = null;
         $this->cod_organizacao = null;
         $this->editarForm = false;
-
 
         $this->showModalResultadoEdicao = true;
 
@@ -579,7 +578,7 @@ class MissaoVisaoValoresLivewire extends Component
             information_schema.columns
             WHERE
             table_schema = 'pei'
-            AND table_name = 'tab_missao_visao_valores' 
+            AND table_name = 'tab_missao_visao_valores'
             AND column_name NOT IN ('cod_missao_visao_valores','cod_pei','cod_organizacao','created_at','updated_at','deleted_at');");
 
         return $estrutura;
@@ -594,7 +593,7 @@ class MissaoVisaoValoresLivewire extends Component
             information_schema.columns
             WHERE
             table_schema = 'pei'
-            AND table_name = 'tab_missao_visao_valores' 
+            AND table_name = 'tab_missao_visao_valores'
             AND column_name NOT IN ('cod_missao_visao_valores','created_at','updated_at','deleted_at');");
 
         return $estrutura;
@@ -684,5 +683,5 @@ class MissaoVisaoValoresLivewire extends Component
         }
 
     }
-    
+
 }
