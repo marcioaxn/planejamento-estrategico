@@ -611,10 +611,10 @@ function verificarSeExisteValorAPagar($sitConvenio = '', $valorContrato = 0, $va
     }
 }
 
-function gerar_senha($tamanho = 17, $maiusculas = true, $numeros = true, $simbolos = false)
+function gerar_senha($tamanho = 16, $maiusculas = true, $numeros = true, $simbolos = false)
 {
     $lmin = 'bcdefhjkmrstwxyz';
-    $lmai = 'ABÇDEFJKMPRZ';
+    $lmai = 'ABCDEFJKMPRZ';
     $num = '2356789';
     $simb = '@';
     $retorno = '';

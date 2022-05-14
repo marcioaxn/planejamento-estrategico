@@ -16,9 +16,8 @@ class TrocarSenha {
      * @return mixed
      */
     public function handle($request, Closure $next) {
-        // dd(Auth::user()->trocarsenha);
         if (!Auth::guest() && Auth::user()->trocarsenha === 1) {
-            return redirect()->action('UsersController@paginaTrocarSenha');
+            return redirect('/user/profile');
         }
 
         return $next($request);

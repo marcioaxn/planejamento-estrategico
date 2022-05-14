@@ -16,6 +16,7 @@ use \Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Livewire\CalculoLivewire;
+use Illuminate\Support\Facades\Auth;
 
 ini_set('memory_limit', '7096M');
 ini_set('max_execution_time', 9900);
@@ -55,6 +56,13 @@ class ShowDashboard extends Component
 
     public function mount(SessionManager $session, Request $request, $ano, $cod_organizacao = '')
     {
+
+        if (!Auth::guest() && Auth::user()->trocarsenha === 1) {
+
+            return redirect('/user/profile');
+
+        }
+
         $this->ano = $ano;
 
         if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {

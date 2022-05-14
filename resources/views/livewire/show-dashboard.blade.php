@@ -8,7 +8,7 @@
             <div class="pt-1 pb-1 pl-3 pr-3 bg-white rounded-md border-2 border-gray-300 border-opacity-25 text-gray-600 text-lg items-center font-semibold text-lg " style="text-align: center!Important;">
                 Mapa Estratégico
             </div>
-            
+
         </div>
 
         <div class="w-full md:w-1/1 pt-0 pb-0 pl-3 pr-3 ">
@@ -74,7 +74,7 @@
         </div>
 
         @endif
-        
+
     </div>
 
     <div class="pt-2 pl-2 pr-2">
