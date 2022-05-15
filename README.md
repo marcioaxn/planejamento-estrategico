@@ -1,18 +1,12 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://maxn.com.br/img/brasao.png" width="50"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Sistema de Gestão e Acompanhamento do Planejamento Estratégico Corporativo
 
-## About Laravel
+Esse sistema é fruto de conhecimento adquirido em mais de 15 anos, como profissional que atuou no acompanhamento das atividades de alguns planejamentos estratégicos ou como desenvolvedor (full stack em um dos projetos) na manutenção de sistemas corporativos de gestão em planejamentos estratégicos. Ele foi desenvolvido em PHP, por meio da framework Laravel, utlizando a stack Livewire. A camada de banco de dados utilizada na criação e desenvolvimento foi o PostgreSQL. Tailwind como framework de estilização dos componentes HTML. Esta versão do sistema conta com o seguinte:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Mapa estratégico, na página inicial, que se monta conforme é feito o cadastro das perspectivas e objetivos estratégicos;
+- Sem restrição de acesso para navegar no Mapa estratégico, exceto para efetuar gestão sobre a administração do sistema ou os indicadores de monitoramento do plano de ação, os quais precisam de permissão;
+- Menu de administração do sistema com os seguintes itens para a administração:<br /> 1. Unidades da Organização;<br />2. Usuários;<br />3. Planejamento Estratégico Integrado;<br />4. Missão, Visão e Valores;<br />5. Perspectiva;<br />6. Objetivo Estratégico;<br />7. Plano de Ação;<br />8. Indicadores; e<br />9. Grau de Satisfação;
 - Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
 - Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
 - Database agnostic [schema migrations](https://laravel.com/docs/migrations).

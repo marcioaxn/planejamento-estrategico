@@ -188,7 +188,8 @@
                                     <div class="flex items-center">
                                         <div class="text-sm">
                                             <a href="javascript: void(0);"
-                                               wire:click.prevent="editForm('{{ $user->id }}')">
+                                               wire:click.prevent="editForm('{{ $user->id }}')"
+                                               onclick="javascript: document.documentElement.scrollTop = 0;">
                                                 <i class="fas fa-edit text-green-600 hover:text-green-900"
                                                    title="Editar o cadastro"></i>
                                             </a>

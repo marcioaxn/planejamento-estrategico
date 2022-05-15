@@ -35,7 +35,7 @@ set_time_limit(900000000);
 class ShowObjetivoEstrategicoLivewire extends Component
 {
 
-    use WithPagination,WithFileUploads;
+    use WithFileUploads;
 
     public $formIncluirPdf = null;
     public $txt_assunto = null;
@@ -119,13 +119,13 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public $iconAbrirFechar = 'fas fa-plus text-xs';
     public $iconFechar = 'fas fa-minus text-xs';
 
-    public function mount(SessionManager $session, Request $request, $ano, $cod_organizacao = '',$cod_perspectiva = '',$cod_objetivo_estrategico = '',$cod_plano_de_acao = '')
+    public function mount(SessionManager $session, Request $request, $ano, $cod_organizacao = '', $cod_perspectiva = '', $cod_objetivo_estrategico = '', $cod_plano_de_acao = '')
     {
         $this->ano = $ano;
 
         $this->anoSelecionado = $ano;
 
-        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+        if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
             $this->cod_organizacao = $cod_organizacao;
 
@@ -143,7 +143,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         }
 
-        if(isset($cod_perspectiva) && !is_null($cod_perspectiva) && $cod_perspectiva != '') {
+        if (isset($cod_perspectiva) && !is_null($cod_perspectiva) && $cod_perspectiva != '') {
 
             $this->cod_perspectiva = $cod_perspectiva;
 
@@ -153,7 +153,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         }
 
-        if(isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '') {
+        if (isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '') {
 
             $this->cod_objetivo_estrategico = $cod_objetivo_estrategico;
 
@@ -163,7 +163,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         }
 
-        if(isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '') {
+        if (isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '') {
 
             $this->cod_plano_de_acao = $cod_plano_de_acao;
 
@@ -177,13 +177,14 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     }
 
-    public function abrirModalIncluirPdf($cod_evolucao_indicador = '') {
+    public function abrirModalIncluirPdf($cod_evolucao_indicador = '')
+    {
 
         $consultarEvolucaoIndicador = EvolucaoIndicador::find($cod_evolucao_indicador);
 
         $this->cod_evolucao_indicador = $cod_evolucao_indicador;
 
-        $this->formIncluirPdf = '<div class="flex flex-wrap w-full"><div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Selecione o PDF o qual deseja inserir para '.mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes).'/'.$this->anoSelecionado.'</label><input type="file" wire:model="pdf"></div></div>
+        $this->formIncluirPdf = '<div class="flex flex-wrap w-full"><div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Selecione o PDF o qual deseja inserir para ' . mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes) . '/' . $this->anoSelecionado . '</label><input type="file" wire:model="pdf"></div></div>
 
         <div class="w-full md:w-3/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Assunto de que trata o arquivo PDF</label><input type="text" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-right pl-3" name="txt_assunto" id="txt_assunto" wire:model="txt_assunto" ></div></div>
 
@@ -193,7 +194,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     }
 
-    public function downloadPdf(Arquivo $pdf) {
+    public function downloadPdf(Arquivo $pdf)
+    {
 
         $content = base64_decode($pdf->data);
         return response($content)->header('Content-Type', $pdf->dsc_tipo);
@@ -225,7 +227,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
         $up->txt_assunto = $this->txt_assunto;
         $up->cod_evolucao_indicador = $this->cod_evolucao_indicador;
 
-        if(isset($data) && !is_null($data) && $data != '') {
+        if (isset($data) && !is_null($data) && $data != '') {
 
             $up->save();
         }
@@ -233,10 +235,11 @@ class ShowObjetivoEstrategicoLivewire extends Component
         $this->showModalIncluirPdf = false;
 
         $this->showModalInformacao = true;
-        $this->mensagemInformacao = "Aquivo ".$nome." foi gravado com sucesso.";
+        $this->mensagemInformacao = "Aquivo " . $nome . " foi gravado com sucesso.";
     }
 
-    public function editForm($cod_evolucao_indicador = '') {
+    public function editForm($cod_evolucao_indicador = '')
+    {
 
         $singleData = EvolucaoIndicador::find($cod_evolucao_indicador);
 
@@ -250,11 +253,11 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $num_ano = $singleData->num_ano;
         $num_mes = $singleData->num_mes;
-        $this->vlr_realizado = formatarValorConformeUnidadeMedida($dsc_unidade_medida,'MYSQL','PTBR',$singleData->vlr_realizado);
+        $this->vlr_realizado = formatarValorConformeUnidadeMedida($dsc_unidade_medida, 'MYSQL', 'PTBR', $singleData->vlr_realizado);
 
         $this->txt_avaliacao = $singleData->txt_avaliacao;
 
-        $mensagemResultadoEdicao = '<div class="flex flex-wrap w-full"><div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Valor realizado de '.mesNumeralParaExtenso($num_mes).'/'.$num_ano.'</label><input type="text" class="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right" id="vlr_realizado" name="vlr_realizado" wire:model="vlr_realizado" required><script type="text/javascript">var unidadeMedida = "'.$this->dsc_unidade_medida.'";if(unidadeMedida == "Quantidade") {$("#vlr_realizado").mask("000.000.000.000.000",{reverse: true, selectOnFocus: true});} else if(unidadeMedida == "Porcentagem") {$("#vlr_realizado").mask("000,00",{reverse: true, selectOnFocus: true});} else if(unidadeMedida == "Dinheiro") {$("#vlr_realizado").mask("000.000.000.000.000,00",{reverse: true, selectOnFocus: true});}</script></div></div>
+        $mensagemResultadoEdicao = '<div class="flex flex-wrap w-full"><div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Valor realizado de ' . mesNumeralParaExtenso($num_mes) . '/' . $num_ano . '</label><input type="text" class="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right" id="vlr_realizado" name="vlr_realizado" wire:model="vlr_realizado" required><script type="text/javascript">var unidadeMedida = "' . $this->dsc_unidade_medida . '";if(unidadeMedida == "Quantidade") {$("#vlr_realizado").mask("000.000.000.000.000",{reverse: true, selectOnFocus: true});} else if(unidadeMedida == "Porcentagem") {$("#vlr_realizado").mask("000,00",{reverse: true, selectOnFocus: true});} else if(unidadeMedida == "Dinheiro") {$("#vlr_realizado").mask("000.000.000.000.000,00",{reverse: true, selectOnFocus: true});}</script></div></div>
 
         <div class="w-full md:w-3/4 px-3 mb-1 md:mb-0 pt-3"><div class="col-span-6 sm:col-span-4"><label class="block font-medium text-sm text-gray-700 mb-2">Avaliação qualitativa</label><textarea class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm pt-2 pl-2" id="txt_avaliacao" name="txt_avaliacao" rows="5" wire:model="txt_avaliacao" style="width: 100%"></textarea></div></div>
 
@@ -281,7 +284,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
         $this->validateOnly($propertyName);
     }
 
-    public function create() {
+    public function create()
+    {
 
         $validatedData = Validator::make(
             ['vlr_realizado' => $this->vlr_realizado],
@@ -289,24 +293,24 @@ class ShowObjetivoEstrategicoLivewire extends Component
             ['required' => 'O campo Valor realizado é de preenchimento obrigatório.'],
         )->validate();
 
-        if(isset($this->cod_evolucao_indicador) && !is_null($this->cod_evolucao_indicador) && $this->cod_evolucao_indicador != '') {
+        if (isset($this->cod_evolucao_indicador) && !is_null($this->cod_evolucao_indicador) && $this->cod_evolucao_indicador != '') {
 
             $consultarEvolucaoIndicador = EvolucaoIndicador::find($this->cod_evolucao_indicador);
 
             $alteracao = [];
             $modificacoes = '';
 
-            if(is_null($consultarEvolucaoIndicador->vlr_realizado)) {
+            if (is_null($consultarEvolucaoIndicador->vlr_realizado)) {
 
-                $alteracao['vlr_realizado'] = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->vlr_realizado);
+                $alteracao['vlr_realizado'] = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'PTBR', 'MYSQL', $this->vlr_realizado);
 
-                $modificacoes = $modificacoes . "Inseriu para ".mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes)."/".$consultarEvolucaoIndicador->num_ano." o valor realizado de <span class='text-green-800'>".$this->vlr_realizado."</span><br /><br />";
+                $modificacoes = $modificacoes . "Inseriu para " . mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes) . "/" . $consultarEvolucaoIndicador->num_ano . " o valor realizado de <span class='text-green-800'>" . $this->vlr_realizado . "</span><br /><br />";
 
             } else {
 
-                if($consultarEvolucaoIndicador->vlr_realizado != formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->vlr_realizado)) {
+                if ($consultarEvolucaoIndicador->vlr_realizado != formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'PTBR', 'MYSQL', $this->vlr_realizado)) {
 
-                    $alteracao['vlr_realizado'] = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'PTBR','MYSQL',$this->vlr_realizado);
+                    $alteracao['vlr_realizado'] = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'PTBR', 'MYSQL', $this->vlr_realizado);
 
                     $audit = Audit::create(array(
                         'table' => 'tab_evolucao_indicador',
@@ -316,29 +320,29 @@ class ShowObjetivoEstrategicoLivewire extends Component
                         'ip' => $_SERVER['REMOTE_ADDR'],
                         'user_id' => Auth::user()->id,
                         'acao' => 'Editou',
-                        'antes' => formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$consultarEvolucaoIndicador->vlr_realizado),
+                        'antes' => formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'MYSQL', 'PTBR', $consultarEvolucaoIndicador->vlr_realizado),
                         'depois' => $this->vlr_realizado
                     ));
 
-                    $modificacoes = $modificacoes . "Alterou o valor realizado de <span class='text-green-800'><strong>".formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$consultarEvolucaoIndicador->vlr_realizado)."</strong></span> para <span class='text-green-800'><strong>".$this->vlr_realizado."</strong></span> no mês de ".mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes)."/".$consultarEvolucaoIndicador->num_ano."<br /><br />";
+                    $modificacoes = $modificacoes . "Alterou o valor realizado de <span class='text-green-800'><strong>" . formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'MYSQL', 'PTBR', $consultarEvolucaoIndicador->vlr_realizado) . "</strong></span> para <span class='text-green-800'><strong>" . $this->vlr_realizado . "</strong></span> no mês de " . mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes) . "/" . $consultarEvolucaoIndicador->num_ano . "<br /><br />";
 
                 }
 
             }
 
-            if(is_null($consultarEvolucaoIndicador->txt_avaliacao) && is_null($this->txt_avaliacao)) {
+            if (is_null($consultarEvolucaoIndicador->txt_avaliacao) && is_null($this->txt_avaliacao)) {
 
-                // 
+                //
 
-            } elseif(is_null($consultarEvolucaoIndicador->txt_avaliacao) && !is_null($this->txt_avaliacao)) {
+            } elseif (is_null($consultarEvolucaoIndicador->txt_avaliacao) && !is_null($this->txt_avaliacao)) {
 
                 $alteracao['txt_avaliacao'] = $this->txt_avaliacao;
 
-                $modificacoes = $modificacoes . "Inseriu para ".mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes)."/".$consultarEvolucaoIndicador->num_ano." a seguinte Avaliação Qualitativa<br /><br /><span class='text-green-800'>".nl2br($this->txt_avaliacao)."</span><br /><br />";
+                $modificacoes = $modificacoes . "Inseriu para " . mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes) . "/" . $consultarEvolucaoIndicador->num_ano . " a seguinte Avaliação Qualitativa<br /><br /><span class='text-green-800'>" . nl2br($this->txt_avaliacao) . "</span><br /><br />";
 
             } else {
 
-                if($consultarEvolucaoIndicador->txt_avaliacao != $this->txt_avaliacao) {
+                if ($consultarEvolucaoIndicador->txt_avaliacao != $this->txt_avaliacao) {
 
                     $alteracao['txt_avaliacao'] = $this->txt_avaliacao;
 
@@ -354,7 +358,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
                         'depois' => $this->txt_avaliacao
                     ));
 
-                    $modificacoes = $modificacoes . "Alterou a Avaliação Qualitativa do mês de ".mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes)."/".$consultarEvolucaoIndicador->num_ano."<br /><br />De <span class='text-red-600'>".nl2br($consultarEvolucaoIndicador->txt_avaliacao)."</span><br /><br />Para <span class='text-green-600'>".nl2br($this->txt_avaliacao)."</span><br /><br />";
+                    $modificacoes = $modificacoes . "Alterou a Avaliação Qualitativa do mês de " . mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes) . "/" . $consultarEvolucaoIndicador->num_ano . "<br /><br />De <span class='text-red-600'>" . nl2br($consultarEvolucaoIndicador->txt_avaliacao) . "</span><br /><br />Para <span class='text-green-600'>" . nl2br($this->txt_avaliacao) . "</span><br /><br />";
 
                 }
 
@@ -362,7 +366,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         }
 
-        if(isset($modificacoes) && !is_null($modificacoes) && $modificacoes != '') {
+        if (isset($modificacoes) && !is_null($modificacoes) && $modificacoes != '') {
 
             $alteracao['bln_atualizado'] = '1';
 
@@ -406,45 +410,45 @@ class ShowObjetivoEstrategicoLivewire extends Component
         $this->cod_plano_de_acao = $this->cod_plano_de_acao;
 
         $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
-        ->get();
+            ->get();
 
         $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
-        ->orderBy('nom_organizacao')
-        ->get();
+            ->orderBy('nom_organizacao')
+            ->get();
 
         foreach ($organization as $result) {
 
-            $organizacoes[$result->cod_organizacao] = $result->sgl_organizacao.' - '.$result->nom_organizacao.$this->hierarquiaUnidade($result->cod_organizacao);
+            $organizacoes[$result->cod_organizacao] = $result->sgl_organizacao . ' - ' . $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
 
-            foreach($organizationChild as $resultChild1) {
+            foreach ($organizationChild as $resultChild1) {
 
-                if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
+                if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
 
-                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->sgl_organizacao.' - '.$resultChild1->nom_organizacao.$this->hierarquiaUnidade($resultChild1->cod_organizacao);
+                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->sgl_organizacao . ' - ' . $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
 
                     foreach ($resultChild1->deshierarquia as $resultChild2) {
 
-                        if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
+                        if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
 
-                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->sgl_organizacao.' - '.$resultChild2->nom_organizacao.$this->hierarquiaUnidade($resultChild2->cod_organizacao);
+                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->sgl_organizacao . ' - ' . $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
 
                             foreach ($resultChild2->deshierarquia as $resultChild3) {
 
-                                if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
+                                if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
 
-                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->sgl_organizacao.' - '.$resultChild3->nom_organizacao.$this->hierarquiaUnidade($resultChild3->cod_organizacao);
+                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->sgl_organizacao . ' - ' . $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
 
                                     foreach ($resultChild3->deshierarquia as $resultChild4) {
 
-                                        if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
+                                        if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
 
-                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->sgl_organizacao.' - '.$resultChild4->nom_organizacao.$this->hierarquiaUnidade($resultChild4->cod_organizacao);
+                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->sgl_organizacao . ' - ' . $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
 
                                             foreach ($resultChild4->deshierarquia as $resultChild5) {
 
-                                                if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
+                                                if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
-                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->sgl_organizacao.' - '.$resultChild5->nom_organizacao.$this->hierarquiaUnidade($resultChild5->cod_organizacao);
+                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->sgl_organizacao . ' - ' . $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
 
                                                 }
 
@@ -470,47 +474,47 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $this->organization = $organizacoes;
 
-        if(isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
+        if (isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
 
             $organizacoes = [];
 
-            $organization = Organization::where('cod_organizacao',$this->cod_organizacao)
-            ->get();
+            $organization = Organization::where('cod_organizacao', $this->cod_organizacao)
+                ->get();
 
             $organizationChild = Organization::orderBy('nom_organizacao')
-            ->get();
+                ->get();
 
             foreach ($organization as $result) {
 
                 $organizacoes[$result->cod_organizacao] = $this->codOrganizacaoPorHieraquia($result->cod_organizacao);
 
-                foreach($organizationChild as $resultChild1) {
+                foreach ($organizationChild as $resultChild1) {
 
-                    if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
+                    if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
 
                         $organizacoes[$resultChild1->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild1->cod_organizacao);
 
                         foreach ($resultChild1->deshierarquia as $resultChild2) {
 
-                            if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
+                            if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
 
                                 $organizacoes[$resultChild2->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild2->cod_organizacao);
 
                                 foreach ($resultChild2->deshierarquia as $resultChild3) {
 
-                                    if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
+                                    if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
 
                                         $organizacoes[$resultChild3->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild3->cod_organizacao);
 
                                         foreach ($resultChild3->deshierarquia as $resultChild4) {
 
-                                            if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
+                                            if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
 
                                                 $organizacoes[$resultChild4->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild4->cod_organizacao);
 
                                                 foreach ($resultChild4->deshierarquia as $resultChild5) {
 
-                                                    if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
+                                                    if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
                                                         $organizacoes[$resultChild5->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild5->cod_organizacao);
 
@@ -545,11 +549,11 @@ class ShowObjetivoEstrategicoLivewire extends Component
         }
 
         $time = strtotime(date('Y-m-d'));
-        $this->mesAnterior = (date("n", strtotime("-1 month", $time)))*1;
+        $this->mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
 
         Session()->forget('anoSelecionado');
 
-        if(isset($this->anoSelecionado) && !is_null($this->anoSelecionado) && $this->anoSelecionado != '') {
+        if (isset($this->anoSelecionado) && !is_null($this->anoSelecionado) && $this->anoSelecionado != '') {
 
             Session()->put('anoSelecionado', $this->anoSelecionado);
 
@@ -569,9 +573,9 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_objetivo_estrategico AS dsc_objetivo_estrategico, cod_objetivo_estrategico"));
 
-        if(isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '' && $perspectiva->count() > 0) {
+        if (isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '' && $perspectiva->count() > 0) {
 
-            $objetivoEstrategico = $objetivoEstrategico->where('cod_perspectiva',$this->cod_perspectiva);
+            $objetivoEstrategico = $objetivoEstrategico->where('cod_perspectiva', $this->cod_perspectiva);
 
         } else {
 
@@ -582,8 +586,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
         $anoSelecionado = $this->anoSelecionado;
 
         $objetivoEstrategico = $objetivoEstrategico->orderBy('num_nivel_hierarquico_apresentacao')
-        ->with('perspectiva')
-        ->pluck('dsc_objetivo_estrategico','cod_objetivo_estrategico');
+            ->with('perspectiva')
+            ->pluck('dsc_objetivo_estrategico', 'cod_objetivo_estrategico');
 
         $this->objetivoEstragico = $objetivoEstrategico;
 
@@ -592,25 +596,25 @@ class ShowObjetivoEstrategicoLivewire extends Component
         $this->objetivoEstrategico = $objetivoEstrategico;
 
         $planosAcao = PlanoAcao::orderBy('num_nivel_hierarquico_apresentacao')
-        ->where('cod_objetivo_estrategico',$this->cod_objetivo_estrategico)
-        ->where('cod_organizacao',$this->cod_organizacao)
-        ->whereYear('dte_inicio','<=',$anoSelecionado)
-        ->whereYear('dte_fim','>=',$anoSelecionado)
-        ->get();
+            ->where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico)
+            ->where('cod_organizacao', $this->cod_organizacao)
+            ->whereYear('dte_inicio', '<=', $anoSelecionado)
+            ->whereYear('dte_fim', '>=', $anoSelecionado)
+            ->get();
 
         $cods_plano_de_acao = '';
 
-        foreach($planosAcao as $result) {
+        foreach ($planosAcao as $result) {
 
-            $cods_plano_de_acao = $cods_plano_de_acao.$result->cod_plano_de_acao.',';
+            $cods_plano_de_acao = $cods_plano_de_acao . $result->cod_plano_de_acao . ',';
 
         }
 
-        $cods_plano_de_acao = trim($cods_plano_de_acao,',');
+        $cods_plano_de_acao = trim($cods_plano_de_acao, ',');
 
         $cods_plano_de_acao = explode(',', $cods_plano_de_acao);
 
-        if(!in_array($this->cod_plano_de_acao, $cods_plano_de_acao)) {
+        if (!in_array($this->cod_plano_de_acao, $cods_plano_de_acao)) {
 
             $this->cod_plano_de_acao = null;
 
@@ -618,13 +622,13 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $this->planosAcao = $planosAcao;
 
-        if(!is_null($this->planosAcao)) {
+        if (!is_null($this->planosAcao)) {
 
             $contPlanoAcaoInterno = 0;
 
-            foreach($this->planosAcao as $resultPlanosAcao) {
+            foreach ($this->planosAcao as $resultPlanosAcao) {
 
-                if($contPlanoAcaoInterno == 0) {
+                if ($contPlanoAcaoInterno == 0) {
 
                     $this->cod_plano_de_acao_identificado = $resultPlanosAcao->cod_plano_de_acao;
 
@@ -641,13 +645,13 @@ class ShowObjetivoEstrategicoLivewire extends Component
         }
 
         $planoAcao = PlanoAcao::orderBy('num_nivel_hierarquico_apresentacao')
-        ->with('tipoExecucao','servidorResponsavel','servidorSubstituto','indicadores','indicadores.evolucaoIndicador')
-        ->where('cod_organizacao',$this->cod_organizacao)
-        ->where('cod_objetivo_estrategico',$this->cod_objetivo_estrategico)
-        ->whereYear('dte_inicio','<=',$anoSelecionado)
-        ->whereYear('dte_fim','>=',$anoSelecionado);
+            ->with('tipoExecucao', 'servidorResponsavel', 'servidorSubstituto', 'indicadores', 'indicadores.evolucaoIndicador')
+            ->where('cod_organizacao', $this->cod_organizacao)
+            ->where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico)
+            ->whereYear('dte_inicio', '<=', $anoSelecionado)
+            ->whereYear('dte_fim', '>=', $anoSelecionado);
 
-        if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
+        if (isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
 
             $planoAcao = $planoAcao->find($this->cod_plano_de_acao);
 
@@ -659,9 +663,9 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $this->planoAcao = $planoAcao;
 
-        if($planoAcao) {
+        if ($planoAcao) {
 
-            if($planoAcao->indicadores->count() > 0) {
+            if ($planoAcao->indicadores->count() > 0) {
 
                 $this->abrirIndicador = true;
 
@@ -669,17 +673,17 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         }
 
-        if(!is_null($planoAcao) && !is_null($planoAcao->indicadores)) {
+        if (!is_null($planoAcao) && !is_null($planoAcao->indicadores)) {
 
-            if(is_null($this->cod_indicador_selecionado)) {
+            if (is_null($this->cod_indicador_selecionado)) {
 
                 $contIndicador = 1;
 
-                if(!is_null($planoAcao)) {
+                if (!is_null($planoAcao)) {
 
-                    foreach($planoAcao->indicadores as $indicador) {
+                    foreach ($planoAcao->indicadores as $indicador) {
 
-                        if($contIndicador == 1) {
+                        if ($contIndicador == 1) {
 
                             $this->cod_indicador = $indicador->cod_indicador;
 
@@ -697,24 +701,24 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
             }
 
-            if(isset($this->cod_indicador) && !is_null($this->cod_indicador) && $this->cod_indicador != '') {
+            if (isset($this->cod_indicador) && !is_null($this->cod_indicador) && $this->cod_indicador != '') {
 
-                $indicador = Indicador::with('linhaBase','metaAno','evolucaoIndicador','evolucaoIndicador.arquivos')
-                ->orderBy('dsc_indicador');
+                $indicador = Indicador::with('linhaBase', 'metaAno', 'evolucaoIndicador', 'evolucaoIndicador.arquivos')
+                    ->orderBy('dsc_indicador');
 
-                if(isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
+                if (isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
 
-                    $indicador = $indicador->where('cod_plano_de_acao',$this->cod_plano_de_acao);
+                    $indicador = $indicador->where('cod_plano_de_acao', $this->cod_plano_de_acao);
 
                 }
 
             }
 
-            if(!is_null($this->cod_indicador)) {
+            if (!is_null($this->cod_indicador)) {
 
                 $indicador = $indicador->find($this->cod_indicador);
 
-                if($indicador) {
+                if ($indicador) {
 
                     $this->indicador = $indicador;
 
@@ -726,31 +730,31 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                 $num_linha_base = '';
 
-                if($indicador) {
+                if ($indicador) {
 
-                    foreach($indicador->linhaBase as $linhaBase) {
+                    foreach ($indicador->linhaBase as $linhaBase) {
 
                         $num_linha_base = $linhaBase->num_linha_base;
-    
+
                     }
 
                 }
-                
+
                 $this->linhaBase = $num_linha_base;
 
                 $dataChartMetaPrevista = '';
                 $dataChartMetaRealizada = '';
                 $dataChartLinhaBase = '';
 
-                if(!is_null($planoAcao)) {
+                if (!is_null($planoAcao)) {
 
-                    if($indicador) {
+                    if ($indicador) {
 
-                        if($indicador->evolucaoIndicador->count() > 0) {
+                        if ($indicador->evolucaoIndicador->count() > 0) {
 
-                            foreach($indicador->metaAno as $metaAno) {
+                            foreach ($indicador->metaAno as $metaAno) {
 
-                                if($metaAno->num_ano == $this->ano) {
+                                if ($metaAno->num_ano == $this->ano) {
 
                                     $this->metaAno = $metaAno->meta;
 
@@ -764,45 +768,43 @@ class ShowObjetivoEstrategicoLivewire extends Component
                             $anoVigente = date('Y');
 
                             $time = strtotime(date('Y-m-d'));
-                            $mesAnterior = (date("n", strtotime("-1 month", $time)))*1;
+                            $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
 
-                            foreach($indicador->evolucaoIndicador as $evolucaoIndicador) {
+                            foreach ($indicador->evolucaoIndicador as $evolucaoIndicador) {
 
-                                if($evolucaoIndicador->num_ano == $this->ano) {
+                                if ($evolucaoIndicador->num_ano == $this->ano) {
 
-                                    $dataChartLinhaBase = $dataChartLinhaBase.$num_linha_base.',';
+                                    $dataChartLinhaBase = $dataChartLinhaBase . $num_linha_base . ',';
 
-                                    if($indicador->bln_acumulado === 'Sim') {
+                                    if ($indicador->bln_acumulado === 'Sim') {
 
                                         $somaPrevisto = $somaPrevisto + $evolucaoIndicador->vlr_previsto;
 
-                                        if(isset($evolucaoIndicador->bln_atualizado) && !is_null($evolucaoIndicador->bln_atualizado && $evolucaoIndicador->bln_atualizado != '')) {
+                                        if ($anoVigente != $this->anoSelecionado) {
 
                                             $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
 
-                                            $dataChartMetaRealizada = $dataChartMetaRealizada.$somaRealizado.',';
+                                            $dataChartMetaRealizada = $dataChartMetaRealizada . $somaRealizado . ',';
 
                                         } else {
 
-                                            if($anoVigente != $this->anoSelecionado) {
+                                            if ($evolucaoIndicador->num_mes <= $mesAnterior) {
 
                                                 $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
 
-                                                $dataChartMetaRealizada = $dataChartMetaRealizada.$somaRealizado.',';
+                                                $dataChartMetaRealizada = $dataChartMetaRealizada . $somaRealizado . ',';
 
                                             }
 
                                         }
 
-                                        $dataChartMetaPrevista = $dataChartMetaPrevista.$somaPrevisto.',';
-
-
+                                        $dataChartMetaPrevista = $dataChartMetaPrevista . $somaPrevisto . ',';
 
                                     } else {
 
-                                        $dataChartMetaPrevista = $dataChartMetaPrevista.$evolucaoIndicador->vlr_previsto.',';
+                                        $dataChartMetaPrevista = $dataChartMetaPrevista . $evolucaoIndicador->vlr_previsto . ',';
 
-                                        $dataChartMetaRealizada = $dataChartMetaRealizada.$evolucaoIndicador->vlr_realizado.',';
+                                        $dataChartMetaRealizada = $dataChartMetaRealizada . $evolucaoIndicador->vlr_realizado . ',';
 
                                     }
 
@@ -810,9 +812,9 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                             }
 
-                            $this->dataChartMetaPrevista = trim($dataChartMetaPrevista,',');
-                            $this->dataChartMetaRealizada = trim($dataChartMetaRealizada,',');
-                            $this->dataChartLinhaBase = trim($dataChartLinhaBase,',');
+                            $this->dataChartMetaPrevista = trim($dataChartMetaPrevista, ',');
+                            $this->dataChartMetaRealizada = trim($dataChartMetaRealizada, ',');
+                            $this->dataChartLinhaBase = trim($dataChartLinhaBase, ',');
 
                         }
 
@@ -830,59 +832,63 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $this->grau_satisfacao = $this->grauSatisfacao();
 
-        return view('livewire.show-objetivo-estrategico-livewire',['ano' => $this->ano,'cod_organizacao' => $this->cod_organizacao]);
+        return view('livewire.show-objetivo-estrategico-livewire', ['ano' => $this->ano, 'cod_organizacao' => $this->cod_organizacao]);
     }
 
-    protected function calcularAcumuladoPlanoDeAcao($cod_plano_de_acao = '',$anoSelecionado = '') {
+    protected function calcularAcumuladoPlanoDeAcao($cod_plano_de_acao = '', $anoSelecionado = '')
+    {
 
         $calcular = new CalculoLivewire;
 
-        $result = $calcular->calcularAcumuladoPlanoDeAcao($cod_plano_de_acao,$anoSelecionado);
+        $result = $calcular->calcularAcumuladoPlanoDeAcao($cod_plano_de_acao, $anoSelecionado);
 
         return $result;
 
     }
 
-    protected function calcularAcumuladoIndicador($cod_indicador = '',$anoSelecionado = '') {
+    protected function calcularAcumuladoIndicador($cod_indicador = '', $anoSelecionado = '')
+    {
 
         $calcular = new CalculoLivewire;
 
-        $result = $calcular->calcularAcumuladoIndicador($cod_indicador,$anoSelecionado);
+        $result = $calcular->calcularAcumuladoIndicador($cod_indicador, $anoSelecionado);
 
         return $result;
 
     }
 
-    protected function obterResultadoComValorRealizadoEValorPrevisto($dsc_tipo = '',$vlr_realizado = '',$vlr_previsto = '') {
+    protected function obterResultadoComValorRealizadoEValorPrevisto($dsc_tipo = '', $vlr_realizado = '', $vlr_previsto = '')
+    {
 
         // Possíveis variáveis para o emitir o resultado:
         // $tipoCalculo,$cod_perspectiva,$cod_objetivo_estrategico,$cod_plano_de_acao,$cod_indicador,$mes
 
         $obterResultadoComValorRealizadoEValorPrevisto = new CalculoLivewire;
 
-        $result = $obterResultadoComValorRealizadoEValorPrevisto->obterResultadoComValorRealizadoEValorPrevisto($dsc_tipo,$vlr_realizado,$vlr_previsto);
+        $result = $obterResultadoComValorRealizadoEValorPrevisto->obterResultadoComValorRealizadoEValorPrevisto($dsc_tipo, $vlr_realizado, $vlr_previsto);
 
         return $result;
 
     }
 
-    protected function getGrauSatisfacao($percentual = 0) {
+    protected function getGrauSatisfacao($percentual = 0)
+    {
 
         $resultado = [];
 
         $resultado['grau_de_satisfacao'] = 'gray';
 
-        $consultarGrauSatisfacao = GrauSatisfacao::where('vlr_maximo','>=',$percentual)
-        ->where('vlr_minimo','<=',$percentual)
-        ->first();
+        $consultarGrauSatisfacao = GrauSatisfacao::where('vlr_maximo', '>=', $percentual)
+            ->where('vlr_minimo', '<=', $percentual)
+            ->first();
 
-        if(!is_null($consultarGrauSatisfacao)) {
+        if (!is_null($consultarGrauSatisfacao)) {
 
-            if($percentual < 0) {
+            if ($percentual < 0) {
 
                 $resultado['grau_de_satisfacao'] = 'red';
 
-            } elseif($percentual > 100) {
+            } elseif ($percentual > 100) {
 
                 $resultado['grau_de_satisfacao'] = 'green';
 
@@ -894,11 +900,11 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         } else {
 
-            if($percentual < 0) {
+            if ($percentual < 0) {
 
                 $resultado['grau_de_satisfacao'] = 'red';
 
-            } elseif($percentual > 100) {
+            } elseif ($percentual > 100) {
 
                 $resultado['grau_de_satisfacao'] = 'green';
 
@@ -912,9 +918,9 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $resultado['color'] = 'white';
 
-        if(!is_null($consultarGrauSatisfacao)) {
+        if (!is_null($consultarGrauSatisfacao)) {
 
-            if($consultarGrauSatisfacao->cor === 'yellow') {
+            if ($consultarGrauSatisfacao->cor === 'yellow') {
 
                 $resultado['color'] = 'black';
 
@@ -930,57 +936,58 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     }
 
-    protected function hierarquiaUnidade($cod_organizacao) {
+    protected function hierarquiaUnidade($cod_organizacao)
+    {
 
         $organizacao = Organization::with('hierarquia')
-        ->where('cod_organizacao',$cod_organizacao)
-        ->get();
+            ->where('cod_organizacao', $cod_organizacao)
+            ->get();
 
         $hierarquiaSuperior = null;
 
-        foreach($organizacao as $result1) {
+        foreach ($organizacao as $result1) {
 
-            if($result1->hierarquia) {
+            if ($result1->hierarquia) {
 
-                foreach($result1->hierarquia as $result2) {
+                foreach ($result1->hierarquia as $result2) {
 
-                    $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result2->sgl_organizacao;
+                    $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result2->sgl_organizacao;
 
                     $organizacao2 = Organization::with('hierarquia')
-                    ->where('cod_organizacao',$result2->cod_organizacao)
-                    ->get();
+                        ->where('cod_organizacao', $result2->cod_organizacao)
+                        ->get();
 
-                    foreach($organizacao2 as $result3) {
+                    foreach ($organizacao2 as $result3) {
 
-                        if($result3->hierarquia) {
+                        if ($result3->hierarquia) {
 
-                            foreach($result3->hierarquia as $result4) {
+                            foreach ($result3->hierarquia as $result4) {
 
-                                $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result4->sgl_organizacao;
+                                $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result4->sgl_organizacao;
 
                                 $organizacao3 = Organization::with('hierarquia')
-                                ->where('cod_organizacao',$result4->cod_organizacao)
-                                ->get();
+                                    ->where('cod_organizacao', $result4->cod_organizacao)
+                                    ->get();
 
-                                foreach($organizacao3 as $result5) {
+                                foreach ($organizacao3 as $result5) {
 
-                                    if($result5->hierarquia) {
+                                    if ($result5->hierarquia) {
 
-                                        foreach($result5->hierarquia as $result6) {
+                                        foreach ($result5->hierarquia as $result6) {
 
-                                            $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result6->sgl_organizacao;
+                                            $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result6->sgl_organizacao;
 
                                             $organizacao4 = Organization::with('hierarquia')
-                                            ->where('cod_organizacao',$result6->cod_organizacao)
-                                            ->get();
+                                                ->where('cod_organizacao', $result6->cod_organizacao)
+                                                ->get();
 
-                                            foreach($organizacao4 as $result7) {
+                                            foreach ($organizacao4 as $result7) {
 
-                                                if($result7->hierarquia) {
+                                                if ($result7->hierarquia) {
 
-                                                    foreach($result7->hierarquia as $result8) {
+                                                    foreach ($result7->hierarquia as $result8) {
 
-                                                        $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result8->sgl_organizacao;
+                                                        $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result8->sgl_organizacao;
 
                                                     }
 
@@ -1010,75 +1017,76 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     }
 
-    protected function codOrganizacaoPorHieraquia($cod_organizacao) {
+    protected function codOrganizacaoPorHieraquia($cod_organizacao)
+    {
 
         return $cod_organizacao;
 
         $organizacao = Organization::with('hierarquia')
-        ->where('cod_organizacao',$cod_organizacao)
-        ->get();
+            ->where('cod_organizacao', $cod_organizacao)
+            ->get();
 
         $hierarquiaSuperior = [];
 
-        array_push($hierarquiaSuperior,$cod_organizacao);
+        array_push($hierarquiaSuperior, $cod_organizacao);
 
-        foreach($organizacao as $result1) {
+        foreach ($organizacao as $result1) {
 
-            if($result1->hierarquia) {
+            if ($result1->hierarquia) {
 
-                foreach($result1->hierarquia as $result2) {
+                foreach ($result1->hierarquia as $result2) {
 
-                    if(!in_array($result2->cod_organizacao, $hierarquiaSuperior)) {
+                    if (!in_array($result2->cod_organizacao, $hierarquiaSuperior)) {
 
-                        array_push($hierarquiaSuperior,$result2->cod_organizacao);
+                        array_push($hierarquiaSuperior, $result2->cod_organizacao);
 
                     }
 
                     $organizacao2 = Organization::with('hierarquia')
-                    ->where('cod_organizacao',$result2->cod_organizacao)
-                    ->get();
+                        ->where('cod_organizacao', $result2->cod_organizacao)
+                        ->get();
 
-                    foreach($organizacao2 as $result3) {
+                    foreach ($organizacao2 as $result3) {
 
-                        if($result3->hierarquia) {
+                        if ($result3->hierarquia) {
 
-                            foreach($result3->hierarquia as $result4) {
+                            foreach ($result3->hierarquia as $result4) {
 
-                                if(!in_array($result4->cod_organizacao, $hierarquiaSuperior)) {
+                                if (!in_array($result4->cod_organizacao, $hierarquiaSuperior)) {
 
-                                    array_push($hierarquiaSuperior,$result4->cod_organizacao);
+                                    array_push($hierarquiaSuperior, $result4->cod_organizacao);
 
                                 }
 
                                 $organizacao3 = Organization::with('hierarquia')
-                                ->where('cod_organizacao',$result4->cod_organizacao)
-                                ->get();
+                                    ->where('cod_organizacao', $result4->cod_organizacao)
+                                    ->get();
 
-                                foreach($organizacao3 as $result5) {
+                                foreach ($organizacao3 as $result5) {
 
-                                    if($result5->hierarquia) {
+                                    if ($result5->hierarquia) {
 
-                                        foreach($result5->hierarquia as $result6) {
+                                        foreach ($result5->hierarquia as $result6) {
 
-                                            if(!in_array($result6->sgl_organizacao, $hierarquiaSuperior)) {
+                                            if (!in_array($result6->sgl_organizacao, $hierarquiaSuperior)) {
 
-                                                array_push($hierarquiaSuperior,$result6->sgl_organizacao);
+                                                array_push($hierarquiaSuperior, $result6->sgl_organizacao);
 
                                             }
 
                                             $organizacao4 = Organization::with('hierarquia')
-                                            ->where('cod_organizacao',$result6->cod_organizacao)
-                                            ->get();
+                                                ->where('cod_organizacao', $result6->cod_organizacao)
+                                                ->get();
 
-                                            foreach($organizacao4 as $result7) {
+                                            foreach ($organizacao4 as $result7) {
 
-                                                if($result7->hierarquia) {
+                                                if ($result7->hierarquia) {
 
-                                                    foreach($result7->hierarquia as $result8) {
+                                                    foreach ($result7->hierarquia as $result8) {
 
-                                                        if(!in_array($result8->sgl_organizacao, $hierarquiaSuperior)) {
+                                                        if (!in_array($result8->sgl_organizacao, $hierarquiaSuperior)) {
 
-                                                            array_push($hierarquiaSuperior,$result8->sgl_organizacao);
+                                                            array_push($hierarquiaSuperior, $result8->sgl_organizacao);
 
                                                         }
 
@@ -1110,24 +1118,25 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     }
 
-    public function grauSatisfacao() {
+    public function grauSatisfacao()
+    {
 
         $consultarGrauSatisfacao = GrauSatisfacao::orderBy('vlr_minimo')
-        ->get();
+            ->get();
 
         $montagemGrauSatisfacao = '';
 
-        foreach($consultarGrauSatisfacao as $grauSatisfacao) {
+        foreach ($consultarGrauSatisfacao as $grauSatisfacao) {
 
             $color = 'white';
 
-            if($grauSatisfacao->cor === 'yellow') {
+            if ($grauSatisfacao->cor === 'yellow') {
 
                 $color = 'black';
 
             }
 
-            $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-'.$color.' bg-'.$grauSatisfacao->cor.'-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">'.$grauSatisfacao->dsc_grau_satisfcao.' de '.converteValor('MYSQL','PTBR',$grauSatisfacao->vlr_minimo).'% a '.converteValor('MYSQL','PTBR',$grauSatisfacao->vlr_maximo).'%</div>';
+            $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-' . $color . ' bg-' . $grauSatisfacao->cor . '-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">' . $grauSatisfacao->dsc_grau_satisfcao . ' de ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_minimo) . '% a ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_maximo) . '%</div>';
 
         }
 

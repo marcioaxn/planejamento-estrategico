@@ -17,7 +17,7 @@ class UsuarioNaoAtivo {
      */
     public function handle($request, Closure $next) {
         if (!Auth::guest() && Auth::user()->ativo == 0) {
-            return redirect()->action('UsersController@usuarioNaoAtivo');
+            return redirect('/user/inativo');
         }
 
         return $next($request);

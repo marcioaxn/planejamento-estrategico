@@ -7,7 +7,7 @@
             <div class="pt-0 pb-1 pl-3 pr-3 bg-white rounded-md border-2 border-gray-300 border-opacity-25 text-gray-600 text-lg items-center font-semibold text-lg " style="text-align: left!Important;">
                 Plano de Ação
             </div>
-            
+
         </div>
 
         <div class="w-full md:w-1/1 pt-0 pb-0">
@@ -165,7 +165,7 @@
         </div>
 
         <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
-            Servidor(a) Responsável: 
+            Servidor(a) Responsável:
             <strong>
                 @foreach($planoAcao->servidorResponsavel as $responsavel)
 
@@ -190,7 +190,7 @@
         </div>
 
         <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
-            Servidor(a) Substituto(a): 
+            Servidor(a) Substituto(a):
             <strong>
                 @foreach($planoAcao->servidorSubstituto as $subtituto)
 
@@ -228,6 +228,10 @@
             <strong><?php $planoAcao->indicadores->count() > 1 ? print('Indicadores') : print('Indicador'); ?>: </strong>
 
             <br />
+
+            <div wire:offline>
+                You are now offline.
+            </div>
 
             <div class="mt-1 mb-1 pt-1" wire:loading>
                 <p><i class='fa fa-circle-notch fa-spin text-blue-600'></i> Carregando...</p>
@@ -385,7 +389,7 @@
             <i class="fas fa-equals text-lg"></i> <strong>{!! tipoPolaridade($this->indicador->dsc_tipo) !!}</strong> será para esse indicador que tem a meta prevista de <strong>{{ formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida,'MYSQL','PTBR',$this->metaAno) }}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print('%') : print(''); ?></strong> para o ano de {!! $this->anoSelecionado !!}.
 
             @endif
-            
+
         </div>
 
         <div class="w-full md:w-1/1 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
@@ -441,7 +445,7 @@
                     <div class="w-full md:w-1/1 px-3 mb-6 md:mb-0 pt-3">
 
                         <div class="border-b border-gray-200 shadow rounded-md">
-                        
+
                         <div class="flex flex-col">
                     <div class="overflow-x-auto">
     <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
@@ -706,9 +710,9 @@
 
                                                 <td class="text-sm text-gray-900 px-6 py-4 font-light whitespace-nowrap text-right">
 
-                                                    <i class="fas fa-file-pdf text-base text-red-600" wire:click.prevent="abrirModalIncluirPdf('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"></i>
+                                                    <span class="cursor-pointer" title="Incluir PDF para o mês de {!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}" wire:click.prevent="abrirModalIncluirPdf('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"><i class="fa-solid fa-file-pdf text-base text-red-600 "></i></span>
                                                     &nbsp;&nbsp;
-                                                    <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"><i class="fas fa-edit text-base text-green-600"></i></a>
+                                                    <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')" title="Editar a informação do mês de {!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}"><i class="fas fa-edit text-base text-green-600"></i></a>
 
                                                 </td>
 
@@ -805,13 +809,13 @@
                                   type: 'line',
                                   data: {
                                     labels: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
-                                    datasets: [{ 
+                                    datasets: [{
                                         data: [<?php print($this->dataChartMetaPrevista) ?>],
                                         label: "Meta Prevista",
                                         backgroundColor: "#3e95cd",
                                         borderColor: "#3e95cd",
                                         fill: false
-                                    }, { 
+                                    }, {
                                         data: [<?php print($this->dataChartMetaRealizada) ?>],
                                         label: "Meta Realizada",
                                         backgroundColor: "#9A3412",
@@ -870,7 +874,7 @@
                     <div class="overflow-x-auto">
     <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
       <div class="overflow-x-auto">
-                        
+
                         <table class="min-w-full">
                                 <thead class="border-b">
 
@@ -1054,7 +1058,7 @@
                                     @endif
 
                                     @endforeach
-                                    
+
                                     </tbody>
 
                             </table>

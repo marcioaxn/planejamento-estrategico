@@ -13,7 +13,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravelcollective/html": "^6.2",
-        "livewire/livewire": "^2.5"
+        "livewire/livewire": "^2.6"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
