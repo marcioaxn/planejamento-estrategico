@@ -4,7 +4,7 @@
 
 Esse sistema é fruto do conhecimento adquirido em mais de 17 anos de experiência, como profissional que atuei no
 acompanhamento das atividades administrativas de alguns planejamentos estratégicos ou como desenvolvedor (full stack em
-um dos projetos) na manutenção/criação de sistemas corporativos de apoio gestão em planejamento estratégico.
+um dos projetos) na manutenção/criação de sistemas corporativos de apoio à gestão em planejamento estratégico.
 
 O sistema foi desenvolvido em PHP, por meio da framework Laravel, utlizando a stack Livewire. O banco de dados utilizada
 na criação e desenvolvimento foi o PostgreSQL e o Tailwind CSS como framework de estilização dos componentes HTML.
@@ -28,30 +28,47 @@ Esta versão do sistema conta com o seguinte:
 <tr>
 <th>Item (framework, stack, CSS, banco de dados)</th>
 <th>Versão</th>
+<th>Link</th>
 </tr>
 <tr>
 <td>PHP</td>
 <td>7.4.3</td>
+<td>https://www.php.net/</td>
+</tr>
+<tr>
+<td>Composer</td>
+<td>2.3.5</td>
+<td>https://getcomposer.org/</td>
 </tr>
 <tr>
 <td>laravel/framework</td>
 <td>8.54</td>
+<td>https://laravel.com/docs/8.x</td>
 </tr>
 <tr>
 <td>laravel/jetstream</td>
 <td>2.4</td>
+<td>https://jetstream.laravel.com/2.x/introduction.html</td>
 </tr>
 <tr>
 <td>livewire</td>
 <td>2.6</td>
+<td>https://laravel-livewire.com/</td>
 </tr>
 <tr>
 <td>TailwindCSS</td>
 <td>3.0.24</td>
+<td>https://tailwindcss.com/</td>
 </tr>
 <tr>
 <td>PostgreSQL</td>
 <td>10.20</td>
+<td>https://www.postgresql.org/</td>
+</tr>
+<tr>
+<td>Chart.js</td>
+<td>3.7.0</td>
+<td>https://www.chartjs.org/</td>
 </tr>
 </table>
 
@@ -66,19 +83,18 @@ Os passos a seguir foram executados no Ubuntu 20.04:
 1. Nesse passo inicial iremos tratar das configurações do banco de dados e embora a framework Laravel nos possibilite
    trabalhar com alguns diferentes bancos de dados o escolhido nesse sistema foi o PostgreSQL. Então, no PostgreSQL crie
    o database com o nome de sua preferência e dentro desse database você deverá criar dois schemas. O
-   primeiro com o nome de <code>governanca</code>, mas você pode alterar esse nome, para isso entre no arquivo
-   config/database.php. Esse schema será utilizado para recepcionar as tabelas utilizadas pela framework Laravel. O
+   primeiro com o nome de <code>governanca</code>, mas você pode alterar esse nome, para isso entre no arquivo <code>
+   config/database.php</code>. Esse schema será utilizado para recepcionar as tabelas utilizadas pela framework Laravel. O
    segundo schema a ser criado é o <code>pei</code>, esse schema será utilizado para recepcionar as tabelas utilizadas
    especificamente para o Planejamento Estratégico. Importante ressaltar que nesse ambiente onde fiz a instalação do
    sistema eu era no PostgreSQL o usuário com todas as permissões para criação do database, schemas e tables, no
    entanto, em um ambiente corporativo, provavelmente, será um DBA que irá executar esses procedimentos. Nesse caso.
-   será importante você já tenha em mente o que precisará solicitar ao DBA. Lembre-se de anotar o nome de usuário (
-   username) e a senha (password) do PostgreSQL, pois eles serão necessários para o arquivo de configuração da framework
+   será importante você já tenha em mente o que precisará solicitar ao DBA. Lembre-se de anotar o nome de usuário (username) e a senha (password) do PostgreSQL criados para esse sistema, pois eles serão necessários para o arquivo de configuração da framework
    Laravel <code>.env</code>.
 2. O próximo passo será executar o clone do repositório do GitHub contendo o sistema. Utilizando o terminal do Ubuntu e no diretório <code>/var/www/html</code> ou onde você
    costuma hospedar as aplicações WEB execute o clone do sistema com o seguinte comando:
    <code>git clone https://github.com/marcioaxn/planejamento-estrategico.git</code>
-3.
+3. O passo seguinte será 
 
 ## Laravel Sponsors
 
