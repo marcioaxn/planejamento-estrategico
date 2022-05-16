@@ -57,12 +57,15 @@ Esta versão do sistema conta com o seguinte:
 
 ## Procedimento de instalação do sistema
 
-O sistema foi instalado e testado em uma ditribuição Linux (Ubuntu 20.04) e no Windows 10. Os dois com o Apache2, PHP e
+O sistema foi instalado e testado em uma ditribuição Linux (Ubuntu 20.04) e no Windows 10. Os dois sistemas operaionais
+com o Apache2, PHP e
 o PostgreSQL instalados.
 
 Os passos a seguir foram executados no Ubuntu 20.04:
 
-1. No PostgreSQL crie o database com o nome de sua preferência e dentro desse database você criará dois schemas. O
+1. Nesse passo inicial iremos tratar das configurações do banco de dados e embora a framework Laravel nos possibilite
+   trabalhar com alguns diferentes bancos de dados o escolhido nesse sistema foi o PostgreSQL. Então, no PostgreSQL crie
+   o database com o nome de sua preferência e dentro desse database você deverá criar dois schemas. O
    primeiro com o nome de <code>governanca</code>, mas você pode alterar esse nome, para isso entre no arquivo
    config/database.php. Esse schema será utilizado para recepcionar as tabelas utilizadas pela framework Laravel. O
    segundo schema a ser criado é o <code>pei</code>, esse schema será utilizado para recepcionar as tabelas utilizadas
@@ -72,7 +75,8 @@ Os passos a seguir foram executados no Ubuntu 20.04:
    será importante você já tenha em mente o que precisará solicitar ao DBA. Lembre-se de anotar o nome de usuário (
    username) e a senha (password) do PostgreSQL, pois eles serão necessários para o arquivo de configuração da framework
    Laravel <code>.env</code>.
-2. Próximo passo, será o clone do repositório do GitHub contendo o sistema. No diretório /var/www/html ou onde você costuma hospedar as aplicações execute o clone do sistema:
+2. O próximo passo será executar o clone do repositório do GitHub contendo o sistema. Utilizando o terminal do Ubuntu e no diretório <code>/var/www/html</code> ou onde você
+   costuma hospedar as aplicações WEB execute o clone do sistema com o seguinte comando:
    <code>git clone https://github.com/marcioaxn/planejamento-estrategico.git</code>
 3.
 
