@@ -2,20 +2,28 @@
 
 ## Sistema de Gestão e Acompanhamento do Planejamento Estratégico Corporativo
 
-Esse sistema é fruto de conhecimento adquirido em mais de 15 anos, como profissional que atuou no acompanhamento das atividades de alguns planejamentos estratégicos ou como desenvolvedor (full stack em um dos projetos) na manutenção de sistemas corporativos de gestão em planejamentos estratégicos. Ele foi desenvolvido em PHP, por meio da framework Laravel, utlizando a stack Livewire. A camada de banco de dados utilizada na criação e desenvolvimento foi o PostgreSQL. Tailwind como framework de estilização dos componentes HTML. Esta versão do sistema conta com o seguinte:
+Esse sistema é fruto do conhecimento adquirido em mais de 17 anos de experiência, como profissional que atuei no acompanhamento das atividades administrativas de alguns planejamentos estratégicos ou como desenvolvedor (full stack em um dos projetos) na manutenção/criação de sistemas corporativos de apoio gestão em planejamento estratégico.
+
+O sistema foi desenvolvido em PHP, por meio da framework Laravel, utlizando a stack Livewire. O banco de dados utilizada na criação e desenvolvimento foi o PostgreSQL e o Tailwind CSS como framework de estilização dos componentes HTML.
+
+Esta versão do sistema conta com o seguinte:
 
 - Mapa estratégico, na página inicial, que se monta conforme é feito o cadastro das perspectivas e objetivos estratégicos;
-- Sem restrição de acesso para navegar no Mapa estratégico, exceto para efetuar gestão sobre a administração do sistema ou os indicadores de monitoramento do plano de ação, os quais precisam de permissão;
-- Menu de administração do sistema com os seguintes itens para a administração:<br /> 1. Unidades da Organização;<br />2. Usuários;<br />3. Planejamento Estratégico Integrado;<br />4. Missão, Visão e Valores;<br />5. Perspectiva;<br />6. Objetivo Estratégico;<br />7. Plano de Ação;<br />8. Indicadores; e<br />9. Grau de Satisfação;
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Navegação sem restrição de acesso pelo Mapa estratégico, exceto para efetuar gestão sobre a administração do sistema ou nos indicadores de monitoramento do plano de ação, os quais precisam de login no sistema e permissão adequada;
+- Menu de administração do sistema com os seguintes itens para a administração:<br />1. Unidades da Organização;<br />2. Usuários;<br />3. Planejamento Estratégico Integrado;<br />4. Missão, Visão e Valores;<br />5. Perspectiva;<br />6. Objetivo Estratégico;<br />7. Plano de Ação;<br />8. Indicadores; e<br />9. Grau de Satisfação;
+- Página de login;
+- Página onde o usuário cadastrado faz a gestão sobre o seu perfil;
+- Página de recuperação de senha;
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+Em algumas migrations, listadas a seguir, foram incluídos inserts, os quais, normalmente, estariam em seeds, para facilitar a navegação inicial pelo sistema após a instalação:
+- users;
+- tab_organizacoes;
+- tab_nivel_hierarquico;
+- tab_tipo_execucao;
+- tab_perfil_acesso;
+
+## Instalação em ambiente linux (Ubuntu 20.4)
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
@@ -53,7 +61,6 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+## Licença de uso
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# governanca-pr
+Esse sistema é um software de código aberto.
