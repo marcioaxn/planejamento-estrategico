@@ -26,7 +26,7 @@ Esta versão do sistema conta com o seguinte:
 
 <table>
 <tr>
-<th>Item</th>
+<th>Item (framework, stack, CSS, banco de dados)</th>
 <th>Versão</th>
 </tr>
 <tr>
