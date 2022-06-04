@@ -175,7 +175,7 @@
 
                 <?php
 
-                if(Auth::user()->id === $responsavel->id) {
+                if(Auth::user()->id === $responsavel->id && Auth::user()->ativo == 1) {
 
                     $this->liberarAcessoParaAtualizar = true;
 

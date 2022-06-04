@@ -156,6 +156,31 @@ class UsuariosLivewire extends Component
                 }
                 // Fim do IF para verificar se houve alteração no email de usuário
 
+                // Início do IF para verificar se houve alteração no perfil de usuário
+                if ($consultaUsuario->adm != $this->adm) {
+
+                    $alteracao['adm'] = ($this->adm)*1;
+
+                    $consultaUsuario->adm == 1 ? $perfilTabela = "Super administrador(a)" : $perfilTabela = "Gestor(a)";
+                    $this->adm == 1 ? $perfilForm = "Super administrador(a)" : $perfilForm = "Gestor(a)";
+
+                    $audit = Audit::create(array(
+                        'table' => 'users',
+                        'table_id' => $this->user_id,
+                        'column_name' => 'adm',
+                        'data_type' => 'smallint',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'user_id' => Auth::user()->id,
+                        'acao' => 'Editou',
+                        'antes' => $perfilTabela,
+                        'depois' => $perfilForm
+                    ));
+
+                    $modificacoes .= 'Alterou o(a) <b>Perfil</b> de <span style="color:#CD3333;">( ' . $perfilTabela . ' )</span> para <span style="color:#28a745;">( ' . $perfilForm . ' )</span>;<br>';
+
+                }
+                // Fim do IF para verificar se houve alteração no perfil de usuário
+
                 // Início do IF para verificar se houve alteração na ativação do usuário
 
                 $this->ativo == false ? $this->ativo = 0 : $this->ativo = 1;
@@ -363,18 +388,6 @@ class UsuariosLivewire extends Component
         $this->users = User::orderBy('name')
             ->with('servidorResponsavel', 'servidorResponsavel.unidade', 'servidorSubstituto', 'servidorSubstituto.unidade')
             ->get();
-
-//        foreach ($this->users as $user) {
-//
-//            foreach($user->servidorResponsavel as $responsavel) {
-//                dd($responsavel);
-//            }
-//
-//        }
-
-
-
-        // dd($this->users);
 
         return view('livewire.usuarios-livewire');
     }
