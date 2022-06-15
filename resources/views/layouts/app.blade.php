@@ -28,6 +28,8 @@
 
     <script src="{{ asset('js/jquery.mask.js') }}" type="text/javascript"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     @livewireStyles
 
     <style type="text/css">

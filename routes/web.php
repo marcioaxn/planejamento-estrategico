@@ -16,7 +16,8 @@ use App\Http\Livewire\{
     IndicadoresLivewire,
     GrauSatisfacaoLivewire,
     ShowObjetivoEstrategicoLivewire,
-    UsuariosLivewire
+    UsuariosLivewire,
+    DashboardLivewire
 };
 
 
@@ -36,6 +37,8 @@ Route::get('/', function () {
 
     return redirect()->action(ShowDashboard::class, ['ano' => $ano, 'cod_organizacao' => $cod_organizacao]);
 })->name('pei.principal');
+
+Route::get('{ano?}/dashboard',DashboardLivewire::class)->name('dashboard');
 
 // Route::PATCH('{ano}',[PrincipalController::class, 'index']);
 // Route::get('{ano}',[PrincipalController::class, 'index']);
