@@ -24,6 +24,44 @@ set_time_limit(900000000);
 class CalculoLivewire extends Component
 {
 
+    public function calcularPercentualUnidade($cod_organizacao = '',$ano = '',$anoVigente = '',$mesSelecionado = '')
+    {
+        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+
+            // Início da consulta para pegar os planos de ações vinculados ao $cod_organizacao
+
+            $consultarPlanosAcoesPorCodOrganizacao = PlanoAcao::where('cod_organizacao',$cod_organizacao)
+            ->whereYear('dte_inicio','>=',$ano)
+            ->get();
+
+            // Início do IF para verificar se houve retorno da consulta $consultarPlanosAcoesPorCodOrganizacao
+
+            if($consultarPlanosAcoesPorCodOrganizacao) {
+
+                foreach($consultarPlanosAcoesPorCodOrganizacao as $planoAcao) {
+
+                    // Início da consulta para pegar os indicadores ligados ao plano de ação
+
+                    $consultarIndicadoresPorCodPlanoAcao = Indicador::where('cod_plano_de_acao',$planoAcao->cod_plano_de_acao)
+                    ->get();
+
+                    return $consultarIndicadoresPorCodPlanoAcao;
+
+                    // Fim da consulta para pegar os indicadores ligados ao plano de ação
+
+                }
+
+            }
+
+            // Fim do IF para verificar se houve retorno da consulta $consultarPlanosAcoesPorCodOrganizacao
+
+            return $consultarPlanosAcoesPorCodOrganizacao;
+
+            // Fim da consulta para pegar os planos de ações vinculados ao $cod_organizacao
+
+        }
+    }
+
     public function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '',$anoSelecionado = '') {
 
         $resultado = [];

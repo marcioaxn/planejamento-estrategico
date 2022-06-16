@@ -52,10 +52,6 @@
 
                 <div class="w-full col-span-3 ">
 
-                    <p>Ano selecionado: {!! $this->ano !!}</p>
-                    <p>Ano vigente: {!! $this->anoVigente !!}</p>
-                    <p>{!! $_SERVER['REQUEST_URI'] !!}</p>
-
                     Gráfico de coluna das áreas
 
                     @php // Os gráficos a seguir são feitos utilizando uma biblioteca Javascript da Apex Charts => https://github.com/apexcharts/apexcharts.js @endphp

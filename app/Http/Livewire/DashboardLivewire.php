@@ -179,6 +179,12 @@ class DashboardLivewire extends Component
     public function render()
     {
 
+        $calculoLivewire = new CalculoLivewire;
+
+        $calcularPercentualUnidade = $calculoLivewire->calcularPercentualUnidade('3834910f-66f7-46d8-9104-2904d59e1241',2022,2022,1);
+
+        dd($calcularPercentualUnidade);
+
         for($contMes=1;$contMes<=12;$contMes++) {
 
             $this->meses[$contMes] = mesNumeralParaExtenso($contMes);
