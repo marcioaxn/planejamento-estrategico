@@ -179,7 +179,7 @@
 
                         var options = {
                             series: [{
-                                data: [92]
+                                data: [{!! $this->percentualAlcancadoNoMes !!}]
                             }],
                             chart: {
                                 height: 350,
@@ -377,7 +377,7 @@
 
                         var options = {
                             series: [{
-                                data: [98]
+                                data: [{!! $this->percentualAlcancadoNoPeriodo !!}]
                             }],
                             chart: {
                                 height: 350,
@@ -483,7 +483,7 @@
                             type: "radialBar"
                         },
                         colors: colors,
-                        series: [16],
+                        series: [{!! $this->percentualAlcancadoNoAno !!}],
                         plotOptions: {
                             radialBar: {
                                 hollow: {

@@ -16,6 +16,7 @@ use App\Models\GrauSatisfacao;
 use Illuminate\Support\Facades\DB;
 use App\Http\Livewire\IndicadoresLivewire;
 use App\Http\Livewire\GrauSatisfacaoLivewire;
+use App\Http\Livewire\EvolucaoIndicadorLivewire;
 
 ini_set('memory_limit', '7096M');
 ini_set('max_execution_time', 9900);
@@ -24,7 +25,10 @@ set_time_limit(900000000);
 class CalculoLivewire extends Component
 {
 
-    public function calcularPercentualUnidade($cod_organizacao = '',$ano = '',$anoVigente = '',$mesSelecionado = '')
+    // Início do cálculo para encontrar o percentual alcançado por uma determinada unidade
+    // considerando os planos de ações num ano, num mês e se o resultado será acumulado no ano ou por um período que compreende o início do ano até o mês selecionado
+
+    public function calcularPercentualUnidade($cod_organizacao = '',$ano = '',$anoVigente = '',$mesSelecionado = '',$acumuladoAno = false,$acumuladoPeriodo = false)
     {
         if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
@@ -38,6 +42,11 @@ class CalculoLivewire extends Component
 
             if($consultarPlanosAcoesPorCodOrganizacao) {
 
+                // Início do loop da consulta dos Planos de Ações
+
+                $contPlanoAcao = 0;
+                $totalPercentual = 0;
+
                 foreach($consultarPlanosAcoesPorCodOrganizacao as $planoAcao) {
 
                     // Início da consulta para pegar os indicadores ligados ao plano de ação
@@ -45,22 +54,64 @@ class CalculoLivewire extends Component
                     $consultarIndicadoresPorCodPlanoAcao = Indicador::where('cod_plano_de_acao',$planoAcao->cod_plano_de_acao)
                     ->get();
 
-                    return $consultarIndicadoresPorCodPlanoAcao;
+                    // Início do IF para verificar se houve retorno da consulta $consultarIndicadoresPorCodPlanoAcao
+
+                    if($consultarIndicadoresPorCodPlanoAcao) {
+
+                        // Início do loop da consulta $consultarIndicadoresPorCodPlanoAcao
+
+                        foreach($consultarIndicadoresPorCodPlanoAcao as $indicador) {
+
+                            // dd($indicador->cod_indicador,$ano,$mesSelecionado,$acumuladoAno,$acumuladoPeriodo);
+
+                            // Início da instância do componente EvolucaoIndicadorLivewire
+
+                            $evolucaoIndicadorLivewire = new EvolucaoIndicadorLivewire;
+
+                            // Fim da instância do componente EvolucaoIndicadorLivewire
+
+                            $calcularPercentualExecutado = $evolucaoIndicadorLivewire->calcularPercentualExecutado($indicador->cod_indicador,$ano,$mesSelecionado,$acumuladoAno,$acumuladoPeriodo);
+
+                            $prc_alcancado = $this->prc_alcancado($indicador->dsc_tipo,$calcularPercentualExecutado->vlr_realizado,$calcularPercentualExecutado->vlr_previsto);
+
+                            $totalPercentual = $totalPercentual + $prc_alcancado;
+
+                        }
+
+                        // Fim do loop da consulta $consultarIndicadoresPorCodPlanoAcao
+
+                    }
+
+                    // Fim do IF para verificar se houve retorno da consulta $consultarIndicadoresPorCodPlanoAcao
+
+                    $contPlanoAcao++;
 
                     // Fim da consulta para pegar os indicadores ligados ao plano de ação
 
                 }
 
+                // Fim do loop da consulta dos Planos de Ações
+
             }
 
             // Fim do IF para verificar se houve retorno da consulta $consultarPlanosAcoesPorCodOrganizacao
 
-            return $consultarPlanosAcoesPorCodOrganizacao;
+            $calculo = 0;
+
+            if($contPlanoAcao > 0) {
+
+                $calculo = ($totalPercentual/$contPlanoAcao);
+
+            }
+
+            return $calculo;
 
             // Fim da consulta para pegar os planos de ações vinculados ao $cod_organizacao
 
         }
     }
+    
+    // Fim do cálculo para encontrar o percentual alcançado por uma determinada unidade
 
     public function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '',$anoSelecionado = '') {
 

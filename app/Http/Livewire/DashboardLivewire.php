@@ -62,6 +62,10 @@ class DashboardLivewire extends Component
     public $mesAnterior = null;
     public $mesSelecionado = null;
 
+    public $percentualAlcancadoNoMes = 0;
+    public $percentualAlcancadoNoPeriodo = 0;
+    public $percentualAlcancadoNoAno = 0;
+
     public function mount(SessionManager $session, Request $request, $ano, $cod_organizacao = '')
     {
 
@@ -109,6 +113,7 @@ class DashboardLivewire extends Component
 
                 $this->cod_organizacao = $consultarCodOrganizacaoPadrao->cod_organizacao;
             }
+
         }
 
         $organizacoes = [];
@@ -166,6 +171,8 @@ class DashboardLivewire extends Component
         }
 
         $this->organization = $organizacoes;
+
+        return $this->cod_organizacao;
     }
 
     public function foo()
@@ -179,11 +186,49 @@ class DashboardLivewire extends Component
     public function render()
     {
 
+        $this->cod_organizacao = $this->cod_organizacao;
+
+        if (is_null($this->cod_organizacao) || $this->cod_organizacao === '') {
+            $this->alterarOrganizacao('');
+
+            
+        } else {
+
+            $this->cod_organizacao = $this->alterarOrganizacao();
+
+        }
+
+        // Início para verificar se existe conteúdo na variável $this->mesSelecionado
+
+        if(isset($this->mesSelecionado) && !is_null($this->mesSelecionado) && $this->mesSelecionado != '') {
+
+            $this->mesSelecionado = $this->mesSelecionado;
+
+        } else {
+
+            $this->mesSelecionado = date("n");
+
+        }
+
+        // Fim para verificar se existe conteúdo na variável $this->mesSelecionado
+
         $calculoLivewire = new CalculoLivewire;
 
-        $calcularPercentualUnidade = $calculoLivewire->calcularPercentualUnidade('3834910f-66f7-46d8-9104-2904d59e1241',2022,2022,1);
+        // $calcularPercentualUnidadeNoMes = $calculoLivewire->calcularPercentualUnidade('3834910f-66f7-46d8-9104-2904d59e1241',2022,2022,2);
 
-        dd($calcularPercentualUnidade);
+        $calcularPercentualUnidadeNoMes = $calculoLivewire->calcularPercentualUnidade($this->cod_organizacao,$this->ano,date('Y'),$this->mesSelecionado,false,false);
+
+        $this->percentualAlcancadoNoMes = round($calcularPercentualUnidadeNoMes);
+
+        $calcularPercentualUnidadeNoPeriodo = $calculoLivewire->calcularPercentualUnidade($this->cod_organizacao,$this->ano,date('Y'),$this->mesSelecionado,false,true);
+
+        $this->percentualAlcancadoNoPeriodo = round($calcularPercentualUnidadeNoPeriodo/$this->mesSelecionado);
+
+        $calcularPercentualUnidadeNoAno = $calculoLivewire->calcularPercentualUnidade($this->cod_organizacao,$this->ano,date('Y'),$this->mesSelecionado,true,false);
+
+        $this->percentualAlcancadoNoAno = round($calcularPercentualUnidadeNoAno/12);
+
+        // dd($this->cod_organizacao,$this->mesSelecionado,$this->percentualAlcancadoNoMes,$this->percentualAlcancadoNoPeriodo,$this->percentualAlcancadoNoAno);
 
         for($contMes=1;$contMes<=12;$contMes++) {
 
@@ -199,89 +244,61 @@ class DashboardLivewire extends Component
 
         }
 
-        if (is_null($this->cod_organizacao) || $this->cod_organizacao === '') {
-            $this->alterarOrganizacao('');
+        return view('livewire.dashboard-livewire');
+    }
 
-            $dadosGraficoCylinder = '{
-              "category": "2018 Q1",
-              "value1": 30,
-              "value2": 70
-              }, {
-                  "category": "2018 Q2",
-                  "value1": 15,
-                  "value2": 85
-                  }, {
-                      "category": "2018 Q3",
-                      "value1": 40,
-                      "value2": 60
-                      }, {
-                          "category": "2018 Q4",
-                          "value1": 55,
-                          "value2": 45
-                      }';
+    protected function hierarquiaUnidade($cod_organizacao)
+    {
 
-                      $this->novosDadosGraficoCylinder = $dadosGraficoCylinder;
-                  }
+        $organizacao = Organization::with('hierarquia')
+        ->where('cod_organizacao', $cod_organizacao)
+        ->get();
 
+        $hierarquiaSuperior = null;
 
+        foreach ($organizacao as $result1) {
 
-                  return view('livewire.dashboard-livewire');
-              }
+            if ($result1->hierarquia) {
 
-              protected function hierarquiaUnidade($cod_organizacao)
-              {
+                foreach ($result1->hierarquia as $result2) {
 
-                $organizacao = Organization::with('hierarquia')
-                ->where('cod_organizacao', $cod_organizacao)
-                ->get();
+                    $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result2->sgl_organizacao;
 
-                $hierarquiaSuperior = null;
+                    $organizacao2 = Organization::with('hierarquia')
+                    ->where('cod_organizacao', $result2->cod_organizacao)
+                    ->get();
 
-                foreach ($organizacao as $result1) {
+                    foreach ($organizacao2 as $result3) {
 
-                    if ($result1->hierarquia) {
+                        if ($result3->hierarquia) {
 
-                        foreach ($result1->hierarquia as $result2) {
+                            foreach ($result3->hierarquia as $result4) {
 
-                            $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result2->sgl_organizacao;
+                                $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result4->sgl_organizacao;
 
-                            $organizacao2 = Organization::with('hierarquia')
-                            ->where('cod_organizacao', $result2->cod_organizacao)
-                            ->get();
+                                $organizacao3 = Organization::with('hierarquia')
+                                ->where('cod_organizacao', $result4->cod_organizacao)
+                                ->get();
 
-                            foreach ($organizacao2 as $result3) {
+                                foreach ($organizacao3 as $result5) {
 
-                                if ($result3->hierarquia) {
+                                    if ($result5->hierarquia) {
 
-                                    foreach ($result3->hierarquia as $result4) {
+                                        foreach ($result5->hierarquia as $result6) {
 
-                                        $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result4->sgl_organizacao;
+                                            $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result6->sgl_organizacao;
 
-                                        $organizacao3 = Organization::with('hierarquia')
-                                        ->where('cod_organizacao', $result4->cod_organizacao)
-                                        ->get();
+                                            $organizacao4 = Organization::with('hierarquia')
+                                            ->where('cod_organizacao', $result6->cod_organizacao)
+                                            ->get();
 
-                                        foreach ($organizacao3 as $result5) {
+                                            foreach ($organizacao4 as $result7) {
 
-                                            if ($result5->hierarquia) {
+                                                if ($result7->hierarquia) {
 
-                                                foreach ($result5->hierarquia as $result6) {
+                                                    foreach ($result7->hierarquia as $result8) {
 
-                                                    $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result6->sgl_organizacao;
-
-                                                    $organizacao4 = Organization::with('hierarquia')
-                                                    ->where('cod_organizacao', $result6->cod_organizacao)
-                                                    ->get();
-
-                                                    foreach ($organizacao4 as $result7) {
-
-                                                        if ($result7->hierarquia) {
-
-                                                            foreach ($result7->hierarquia as $result8) {
-
-                                                                $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result8->sgl_organizacao;
-                                                            }
-                                                        }
+                                                        $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result8->sgl_organizacao;
                                                     }
                                                 }
                                             }
@@ -292,34 +309,36 @@ class DashboardLivewire extends Component
                         }
                     }
                 }
+            }
+        }
 
-                return $hierarquiaSuperior;
+        return $hierarquiaSuperior;
+    }
+
+    public function grauSatisfacao()
+    {
+
+        $consultarGrauSatisfacao = GrauSatisfacao::orderBy('vlr_minimo')
+        ->get();
+
+        $montagemGrauSatisfacao = '';
+
+        foreach ($consultarGrauSatisfacao as $grauSatisfacao) {
+
+            $color = 'white';
+
+            if ($grauSatisfacao->cor === 'yellow') {
+
+                $color = 'white';
             }
 
-            public function grauSatisfacao()
-            {
-
-                $consultarGrauSatisfacao = GrauSatisfacao::orderBy('vlr_minimo')
-                ->get();
-
-                $montagemGrauSatisfacao = '';
-
-                foreach ($consultarGrauSatisfacao as $grauSatisfacao) {
-
-                    $color = 'white';
-
-                    if ($grauSatisfacao->cor === 'yellow') {
-
-                        $color = 'white';
-                    }
-
-                    $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 mb-2 font-semibold rounded-md border-1 text-' . $color . ' bg-' . $grauSatisfacao->cor . '-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">' . $grauSatisfacao->dsc_grau_satisfcao . ' de ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_minimo) . '% a ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_maximo) . '%</div>';
-                }
+            $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 mb-2 font-semibold rounded-md border-1 text-' . $color . ' bg-' . $grauSatisfacao->cor . '-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">' . $grauSatisfacao->dsc_grau_satisfcao . ' de ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_minimo) . '% a ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_maximo) . '%</div>';
+        }
 
                                     // $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-gray-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">Sem meta prevista para o período</div>';
 
                                     // $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-pink-800 text-sm antialiased sm:subpixel-antialiased md:antialiased">Não houve o preenchimento</div>';
 
-                return $montagemGrauSatisfacao;
-            }
-        }
+        return $montagemGrauSatisfacao;
+    }
+}
