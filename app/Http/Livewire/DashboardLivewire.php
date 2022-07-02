@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Livewire\CalculoLivewire;
+use App\Http\Livewire\ShowOrganization;
 use Illuminate\Support\Facades\Auth;
 
 ini_set('memory_limit', '7096M');
@@ -66,6 +67,14 @@ class DashboardLivewire extends Component
     public $percentualAlcancadoNoPeriodo = 0;
     public $percentualAlcancadoNoAno = 0;
 
+    public $percentualAlcancadoNoMesUnidadeSelecionada = [];
+    public $percentualAlcancadoNoPeriodoUnidadeSelecionada = [];
+    public $percentualAlcancadoNoAnoUnidadeSelecionada = [];
+
+    public $percentualAlcancadoNoMesUnidadePrimeiroNivel = [];
+    public $percentualAlcancadoNoPeriodoUnidadePrimeiroNivel = [];
+    public $percentualAlcancadoNoAnoUnidadePrimeiroNivel = [];
+
     public function mount(SessionManager $session, Request $request, $ano, $cod_organizacao = '')
     {
 
@@ -78,7 +87,7 @@ class DashboardLivewire extends Component
 
         if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
-            $this->cod_organizacao = $cod_organizacao;
+            $this->cod_organizacao = Session('cod_organizacao');
         } else {
 
             $this->cod_organizacao = null;
@@ -183,20 +192,12 @@ class DashboardLivewire extends Component
         $this->emit('refreshChart', ['seriesData' => $dadosGraficoCylinder]);
     }
 
-    public function render()
+    public function refreshChart($cod_organizacao = '')
     {
 
-        $this->cod_organizacao = $this->cod_organizacao;
-
-        if (is_null($this->cod_organizacao) || $this->cod_organizacao === '') {
-            $this->alterarOrganizacao('');
-
-            
-        } else {
-
-            $this->cod_organizacao = $this->alterarOrganizacao();
-
-        }
+        $cods_organizacao_primeiro_nivel = [];
+        
+        $cods_e_percentuais_organizacao_primeiro_nivel = [];
 
         // Início para verificar se existe conteúdo na variável $this->mesSelecionado
 
@@ -206,29 +207,136 @@ class DashboardLivewire extends Component
 
         } else {
 
-            $this->mesSelecionado = date("n");
+            if(date("n") != 1) {
+
+                $date = strtotime(date("Y-m-d"));
+                $this->mesSelecionado = date("n", strtotime("-1 month", $date));
+
+            } else {
+
+                $this->mesSelecionado = null;
+
+            }
 
         }
 
         // Fim para verificar se existe conteúdo na variável $this->mesSelecionado
+        // --- x --- x --- x ---
+
+        // Início da instância da Classe CalculoLivewire
 
         $calculoLivewire = new CalculoLivewire;
 
-        // $calcularPercentualUnidadeNoMes = $calculoLivewire->calcularPercentualUnidade('3834910f-66f7-46d8-9104-2904d59e1241',2022,2022,2);
+        // Fim da instância da Classe CalculoLivewire
+        // --- x --- x --- x ---
 
-        $calcularPercentualUnidadeNoMes = $calculoLivewire->calcularPercentualUnidade($this->cod_organizacao,$this->ano,date('Y'),$this->mesSelecionado,false,false);
+        // Início da instância da Classe ShowOrganization
 
-        $this->percentualAlcancadoNoMes = round($calcularPercentualUnidadeNoMes);
+        $organizationClass = new ShowOrganization;
 
-        $calcularPercentualUnidadeNoPeriodo = $calculoLivewire->calcularPercentualUnidade($this->cod_organizacao,$this->ano,date('Y'),$this->mesSelecionado,false,true);
+        // Fim da instância da Classe ShowOrganization
+        // --- x --- x --- x ---
 
-        $this->percentualAlcancadoNoPeriodo = round($calcularPercentualUnidadeNoPeriodo/$this->mesSelecionado);
+        // Início do retorno dos dados da organização
 
-        $calcularPercentualUnidadeNoAno = $calculoLivewire->calcularPercentualUnidade($this->cod_organizacao,$this->ano,date('Y'),$this->mesSelecionado,true,false);
+        $getDadosCodOrganizacao = $organizationClass->getOrganizacao($cod_organizacao);
 
-        $this->percentualAlcancadoNoAno = round($calcularPercentualUnidadeNoAno/12);
+        // Fim do retorno dos dados da organização
+        // --- x --- x --- x ---
 
-        // dd($this->cod_organizacao,$this->mesSelecionado,$this->percentualAlcancadoNoMes,$this->percentualAlcancadoNoPeriodo,$this->percentualAlcancadoNoAno);
+        $calcularPercentualMesSelecionadoCodsOrganizacao = $calculoLivewire->calcularPercentualMesSelecionadoCodsOrganizacao($cod_organizacao,$this->ano,($this->mesSelecionado)*1,true);
+
+        $this->percentualAlcancadoNoMesUnidadeSelecionada = ['unidade' => $getDadosCodOrganizacao, 'percentualAlcancado' => $calcularPercentualMesSelecionadoCodsOrganizacao];
+
+        $calcularPercentualPeriodoCodsOrganizacao = $calculoLivewire->calcularPercentualMesSelecionadoCodsOrganizacao($cod_organizacao,$this->ano,$this->mesSelecionado);
+
+        $this->percentualAlcancadoNoPeriodoUnidadeSelecionada = ['unidade' => $getDadosCodOrganizacao, 'percentualAlcancado' => $calcularPercentualPeriodoCodsOrganizacao];
+
+        $calcularPercentualNoAnoCodsOrganizacao = $calculoLivewire->calcularPercentualMesSelecionadoCodsOrganizacao($cod_organizacao,$this->ano,12);
+
+        $this->percentualAlcancadoNoAnoUnidadeSelecionada = ['unidade' => $getDadosCodOrganizacao, 'percentualAlcancado' => $calcularPercentualNoAnoCodsOrganizacao];
+
+        // dd($this->percentualAlcancadoNoMesUnidadeSelecionada,$this->percentualAlcancadoNoPeriodoUnidadeSelecionada,$this->percentualAlcancadoNoAnoUnidadeSelecionada);
+
+        // dd($this->percentualAlcancadoNoAnoUnidadeSelecionada['percentualAlcancado']['percentual_alcancado']);
+
+        // Início da consulta para encontrar o percentual alcançado pela unidade base
+
+        $consultarOrganizacoesAgregadasPrimeiroNivel = Organization::where('rel_cod_organizacao',$cod_organizacao)
+        ->where('cod_organizacao','!=',$cod_organizacao)
+        ->get();
+
+        $calcularPercentualUnidadeNoMes = $calculoLivewire->calcularPercentualMesSelecionado($this->cod_organizacao,$this->ano,1);
+
+        // Fim da consulta para encontrar o percentual alcançado pela unidade base
+        // --- x --- x --- x ---
+
+        // Início da consulta para encontrar o percentual alcançado pelas unidades do primeiro nível
+
+        $contUnidades = 0;
+
+        foreach($consultarOrganizacoesAgregadasPrimeiroNivel as $organizacao) {
+
+            array_push($cods_organizacao_primeiro_nivel,$organizacao->cod_organizacao);
+
+            // Início do retorno dos dados da organização
+
+            $getDadosCodOrganizacao = $organizationClass->getOrganizacao($organizacao->cod_organizacao);
+
+            // Fim do retorno dos dados da organização
+            // --- x --- x --- x ---
+
+            $calcularPercentualMesSelecionadoPrimeiroNivel = $calculoLivewire->calcularPercentualMesSelecionadoCodsOrganizacao($organizacao->cod_organizacao,$this->ano,($this->mesSelecionado)*1,true);
+
+            $this->percentualAlcancadoNoMesUnidadePrimeiroNivel[$contUnidades] = ['unidade' => $getDadosCodOrganizacao, 'percentualAlcancado' => $calcularPercentualMesSelecionadoPrimeiroNivel];
+
+            $calcularPercentualPeriodoPrimeiroNivel = $calculoLivewire->calcularPercentualMesSelecionadoCodsOrganizacao($organizacao->cod_organizacao,$this->ano,$this->mesSelecionado);
+
+            $this->percentualAlcancadoNoPeriodoUnidadePrimeiroNivel[$contUnidades] = ['unidade' => $getDadosCodOrganizacao, 'percentualAlcancado' => $calcularPercentualPeriodoPrimeiroNivel];
+
+            $calcularPercentualNoAnoPrimeiroNivel = $calculoLivewire->calcularPercentualMesSelecionadoCodsOrganizacao($organizacao->cod_organizacao,$this->ano,12);
+
+            $this->percentualAlcancadoNoAnoUnidadePrimeiroNivel[$contUnidades] = ['unidade' => $getDadosCodOrganizacao, 'percentualAlcancado' => $calcularPercentualNoAnoPrimeiroNivel];
+
+            $contUnidades++;
+
+        }
+
+        // Fim da consulta para encontrar o percentual alcançado pelas unidades do primeiro nível
+        // --- x --- x --- x ---
+
+        // dd($this->percentualAlcancadoNoMesUnidadePrimeiroNivel);
+
+    }
+
+    public function render()
+    {
+
+        $this->cod_organizacao = $this->cod_organizacao;
+
+        if (is_null($this->cod_organizacao) || $this->cod_organizacao === '') {
+            $this->alterarOrganizacao('');
+
+            $this->cod_organizacao = $this->alterarOrganizacao();
+
+            Session::forget('cod_organizacao');
+
+            Session::put('cod_organizacao', $this->cod_organizacao);
+
+            $this->refreshChart(Session('cod_organizacao'));
+
+            
+        } else {
+
+            $this->cod_organizacao = $this->cod_organizacao;
+
+            Session::forget('cod_organizacao');
+
+            Session::put('cod_organizacao', $this->cod_organizacao);
+
+            $this->refreshChart(Session('cod_organizacao'));
+
+        }
 
         for($contMes=1;$contMes<=12;$contMes++) {
 

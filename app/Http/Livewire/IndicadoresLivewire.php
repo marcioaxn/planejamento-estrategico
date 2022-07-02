@@ -492,6 +492,43 @@ class IndicadoresLivewire extends Component
     public $iconAbrirFechar = 'fas fa-plus text-xs';
     public $iconFechar = 'fas fa-minus text-xs';
 
+    public function getIndicadorPorCodPlanoDeAcao($cod_plano_de_acao = '', $anoSelecionado = '')
+    {
+
+        // Esta função tem o objetivo de consultar e retornar o(s) indicador(es) pelo $cod_plano_de_acao
+        // --- x --- x --- x ---
+
+        // Início da declaração da variável de consulta ao indicador
+        $indicador = [];
+        // Fim da declaração da variável de consulta ao indicador
+        // --- x --- x --- x ---
+
+        // Início do IF para verificar se a variável $cods_organizacao contem algum conteúdo
+        if(isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '') {
+
+            $indicador = Indicador::orderBy('dsc_indicador')
+            ->where('cod_plano_de_acao',$cod_plano_de_acao)
+            ->with('metaAno');
+
+            if(isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+
+                $indicador = $indicador->whereHas('metaAno', function ($query) use($anoSelecionado) {
+                    $query->where('num_ano',$anoSelecionado);
+                });
+
+            }
+
+            $indicador = $indicador->get();
+
+        }
+        // Fim do IF para verificar se a variável $cods_organizacao contem algum conteúdo
+        // --- x --- x --- x ---
+
+        // Retorno com o resultado da função
+        return $indicador;
+
+    }
+
     public function obterIndicadoresPorCodIndicadorEAnoSelecionado($cod_indicador = '',$anoSelecionado = '') {
 
         $result = false;

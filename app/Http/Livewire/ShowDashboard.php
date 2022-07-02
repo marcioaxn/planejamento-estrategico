@@ -113,37 +113,33 @@ class ShowDashboard extends Component
         $cod_organizacao = $this->cod_organizacao;
 
         $this->pei = Pei::where('num_ano_inicio_pei', '<=', $ano)
-            ->where('num_ano_fim_pei', '>=', $ano)
-            ->first();
+        ->where('num_ano_fim_pei', '>=', $ano)
+        ->first();
 
         $nom_organizacao = $this->nom_organizacao;
 
         if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
-            // $this->cod_organizacao = $cod_organizacao;
+
 
         } else {
 
             $consultarOrganizacaoDeVisualizacao = Organization::select('cod_organizacao')
-                ->whereColumn('cod_organizacao', 'rel_cod_organizacao')
-                ->first();
+            ->whereColumn('cod_organizacao', 'rel_cod_organizacao')
+            ->first();
 
             $this->cod_organizacao = $consultarOrganizacaoDeVisualizacao->cod_organizacao;
 
         }
 
-        // $resultCalculo = $this->calculoPorArea('5f6d7967-d3ba-4abd-9b42-e596cd029821');
-
-        // dd($resultCalculo);
-
         $organizacoes = [];
 
         $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
-            ->get();
+        ->get();
 
         $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
-            ->orderBy('nom_organizacao')
-            ->get();
+        ->orderBy('nom_organizacao')
+        ->get();
 
         foreach ($organization as $result) {
 
@@ -218,9 +214,9 @@ class ShowDashboard extends Component
             $this->missaoVisaoValores = $missaoVisaoValores->first();
 
             $this->perspectiva = Perspectiva::where('cod_pei', $this->pei->cod_pei)
-                ->with('objetivosEstrategicos')
-                ->orderBy('num_nivel_hierarquico_apresentacao', 'desc')
-                ->get();
+            ->with('objetivosEstrategicos')
+            ->orderBy('num_nivel_hierarquico_apresentacao', 'desc')
+            ->get();
 
             $this->grau_satisfacao = $this->grauSatisfacao();
 
@@ -239,8 +235,8 @@ class ShowDashboard extends Component
     {
 
         $organizacao = Organization::with('hierarquia')
-            ->where('cod_organizacao', $cod_organizacao)
-            ->get();
+        ->where('cod_organizacao', $cod_organizacao)
+        ->get();
 
         $hierarquiaSuperior = null;
 
@@ -253,8 +249,8 @@ class ShowDashboard extends Component
                     $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result2->sgl_organizacao;
 
                     $organizacao2 = Organization::with('hierarquia')
-                        ->where('cod_organizacao', $result2->cod_organizacao)
-                        ->get();
+                    ->where('cod_organizacao', $result2->cod_organizacao)
+                    ->get();
 
                     foreach ($organizacao2 as $result3) {
 
@@ -265,8 +261,8 @@ class ShowDashboard extends Component
                                 $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result4->sgl_organizacao;
 
                                 $organizacao3 = Organization::with('hierarquia')
-                                    ->where('cod_organizacao', $result4->cod_organizacao)
-                                    ->get();
+                                ->where('cod_organizacao', $result4->cod_organizacao)
+                                ->get();
 
                                 foreach ($organizacao3 as $result5) {
 
@@ -277,8 +273,8 @@ class ShowDashboard extends Component
                                             $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result6->sgl_organizacao;
 
                                             $organizacao4 = Organization::with('hierarquia')
-                                                ->where('cod_organizacao', $result6->cod_organizacao)
-                                                ->get();
+                                            ->where('cod_organizacao', $result6->cod_organizacao)
+                                            ->get();
 
                                             foreach ($organizacao4 as $result7) {
 
@@ -320,7 +316,7 @@ class ShowDashboard extends Component
     {
 
         $consultarGrauSatisfacao = GrauSatisfacao::orderBy('vlr_minimo')
-            ->get();
+        ->get();
 
         $montagemGrauSatisfacao = '';
 

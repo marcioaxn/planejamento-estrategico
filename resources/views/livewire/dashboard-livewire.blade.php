@@ -173,18 +173,141 @@
 
                     <script>
 
+                        var corPorExtenso = '';
+                        var cor = '';
+
+                        corPorExtenso = '{!! $this->percentualAlcancadoNoMesUnidadeSelecionada['percentualAlcancado']['grau_de_satisfacao'] !!}';
+
+                        if(corPorExtenso == 'red') {
+
+                            cor = '#dc2626';
+
+                        } else if(corPorExtenso == 'yellow') {
+
+                            cor = '#fde047';
+
+                        } else {
+
+                            cor = '#65a30d';
+
+                        }
+
                         var colors = [
-                        '#f59e0b'
+                        cor
                         ]
 
                         var options = {
                             series: [{
-                                data: [{!! $this->percentualAlcancadoNoMes !!}]
+                                data: [{!! $this->percentualAlcancadoNoMesUnidadeSelecionada['percentualAlcancado']['percentual_alcancado'] !!}]
                             }],
                             chart: {
                                 height: 350,
                                 type: 'bar',
-                                events: {
+                                animations: {
+                                  enabled: false
+                              },
+                              events: {
+                                click: function(chart, w, e) {
+                                    console.log(chart, w, e)
+                                }
+                            }
+                        },
+                        grid: {
+                            show: false,
+                            xaxis: {
+                                lines: {
+                                    show: false
+                                }
+                            },  
+                            yaxis: {
+                                lines: { 
+                                    show: false
+                                }
+                            },
+                        },
+                        colors: colors,
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '45%',
+                                distributed: true,
+                                borderRadius:12,
+                                dataLabels: {
+                                    position: 'top',
+                                }
+                            }
+                        },
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function (val) {
+                                return val + "%";
+                            },
+                            offsetY: -20,
+                            style: {
+                                fontSize: '12px',
+                                colors: ["#000000"]
+                            }
+                        },
+                        fill: {
+                            type: 'gradient',
+                        },
+                        legend: {
+                            show: false
+                        },
+                        yaxis: {
+                            show: false,
+                            min: 0,
+                            max: 110,
+                        },
+                        xaxis: {
+                            categories: ["{!! $this->percentualAlcancadoNoMesUnidadeSelecionada['unidade']['sgl_organizacao'] !!}"],
+                            labels: {
+                                style: {
+                                    fontSize: '12px'
+                                }
+                            }
+                        }
+                    };
+
+                    var chart = new ApexCharts(document.querySelector("#chartA3"), options);
+                    chart.render();
+
+                    document.addEventListener('livewire:load', () => {
+                        @this.on('refreshChart', (chartData) => {
+
+                            var corPorExtenso = '';
+                            var cor = '';
+
+                            corPorExtenso = @this.percentualAlcancadoNoMesUnidadeSelecionada['percentualAlcancado']['grau_de_satisfacao'];
+
+                            if(corPorExtenso == 'red') {
+
+                                cor = '#dc2626';
+
+                            } else if(corPorExtenso == 'yellow') {
+
+                                cor = '#fde047';
+
+                            } else {
+
+                                cor = '#65a30d';
+
+                            }
+
+                            var colors = [
+                            cor
+                            ]
+
+                            var options = {
+                                series: [{
+                                    data: [@this.percentualAlcancadoNoMesUnidadeSelecionada['percentualAlcancado']['percentual_alcancado']]
+                                }],
+                                chart: {
+                                    height: 350,
+                                    type: 'bar',
+                                    animations: {
+                                      enabled: false
+                                  },
+                                  events: {
                                     click: function(chart, w, e) {
                                         console.log(chart, w, e)
                                     }
@@ -237,7 +360,7 @@
                                 max: 110,
                             },
                             xaxis: {
-                                categories: ["Secretaria-Geral SG"],
+                                categories: [@this.percentualAlcancadoNoMesUnidadeSelecionada['unidade']['sgl_organizacao']],
                                 labels: {
                                     style: {
                                         fontSize: '12px'
@@ -249,548 +372,838 @@
                         var chart = new ApexCharts(document.querySelector("#chartA3"), options);
                         chart.render();
 
-                    </script>
+                    })
+})
+</script>
 
-                    @php // Fim do gráfico de colunas contendo o percentual da unidade ativa ou selecionada referente ao mês anterior ou ao selecionado. @endphp
+@php // Fim do gráfico de colunas contendo o percentual da unidade ativa ou selecionada referente ao mês anterior ou ao selecionado. @endphp
 
-                </div>
+</div>
 
-            </div>
+</div>
 
-            <div class="grid grid-cols-1 md:grid-cols-6 px-3 py-3 gap-4 ">
+<div class="grid grid-cols-1 md:grid-cols-6 px-3 py-3 gap-4 ">
 
-                <div class="w-full ">
-                    &nbsp;
-                </div>
+    <div class="w-full ">
+        &nbsp;
+    </div>
 
-                <div class="w-full col-span-3 ">
+    <div class="w-full col-span-3 ">
 
-                    Gráfico de coluna das áreas
+        Gráfico de coluna das áreas
 
-                    @php // Início do gráfico de colunas contendo o percentual de cada unidade da organização referente ao acumulado entre o mês anterior ao ao selecionado. @endphp
+        @php // Início do gráfico de colunas contendo o percentual de cada unidade da organização referente ao acumulado entre o mês anterior ao ao selecionado. @endphp
 
-                    @php // Este será mostrado sempre @endphp
+        @php // Este será mostrado sempre @endphp
 
-                    <div id="chartA4"></div>
+        <div id="chartA4"></div>
 
-                    <script>
+        <script>
 
-                        var colors = [
-                        '#65a30d',
-                        '#f59e0b',
-                        '#65a30d',
-                        '#65a30d',
-                        '#65a30d'
-                        ]
+            var corPorExtenso = '';
+            var cor = '';
 
-                        var options = {
-                            series: [{
-                                data: [100, 90, 100, 100, 100]
-                            }],
-                            chart: {
-                                height: 350,
-                                type: 'bar',
-                                events: {
-                                    click: function(chart, w, e) {
-                                        console.log(chart, w, e)
-                                    }
-                                }
-                            },
-                            grid: {
-                                show: false,
-                                xaxis: {
-                                    lines: {
-                                        show: false
-                                    }
-                                },  
-                                yaxis: {
-                                    lines: { 
-                                        show: false
-                                    }
-                                },
-                            },
-                            colors: colors,
-                            plotOptions: {
-                                bar: {
-                                    columnWidth: '45%',
-                                    distributed: true,
-                                    borderRadius:12,
-                                    dataLabels: {
-                                        position: 'top',
-                                    }
-                                }
-                            },
-                            dataLabels: {
-                                enabled: true,
-                                formatter: function (val) {
-                                    return val + "%";
-                                },
-                                offsetY: -20,
-                                style: {
-                                    fontSize: '12px',
-                                    colors: ["#000000","#000000","#000000","#000000","#000000"]
-                                }
-                            },
-                            fill: {
-                                type: 'gradient',
-                            },
-                            legend: {
-                                show: false
-                            },
-                            yaxis: {
-                                show: false,
-                                min: 0,
-                                max: 110,
-                            },
-                            xaxis: {
-                                categories: ["CISET","IN","SA","SAJ","SEME"],
-                                labels: {
-                                    style: {
-                                        fontSize: '12px'
-                                    }
-                                }
-                            }
-                        };
+            <?php
+            if(isset($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) && !is_null($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) && $this->percentualAlcancadoNoMesUnidadePrimeiroNivel != "" && is_array($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) && count($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) > 0) {
 
-                        var chart = new ApexCharts(document.querySelector("#chartA4"), options);
-                        chart.render();
+                $cores = null;
 
-                    </script>
+                foreach($this->percentualAlcancadoNoMesUnidadePrimeiroNivel as $unidadePrimeiroNivel) {
 
-                    @php // Fim do gráfico de colunas contendo o percentual de cada unidade da organização referente ao acumulado entre o mês anterior ao ao selecionado. @endphp
+                    if($unidadePrimeiroNivel['percentualAlcancado']['grau_de_satisfacao'] == 'red') {
 
-                </div>
+                        $cores .= "'#dc2626',";
 
-                <div class="w-full col-span-2 ">
+                    } else if($unidadePrimeiroNivel['percentualAlcancado']['grau_de_satisfacao'] == 'yellow') {
 
-                    Gráfico de coluna da Unidade
+                        $cores .= "'#fde047',";
 
-                    @php // Início do gráfico de colunas contendo o percentual da unidade ativa ou selecionada referente ao acumulado entre o mês anterior ao ao selecionado. @endphp
+                    } else {
 
-                    <div id="chartA5"></div>
+                        $cores .= "'#65a30d',";
 
-                    <script>
+                    }
 
-                        var colors = [
-                        '#65a30d'
-                        ]
+                }
 
-                        var options = {
-                            series: [{
-                                data: [{!! $this->percentualAlcancadoNoPeriodo !!}]
-                            }],
-                            chart: {
-                                height: 350,
-                                type: 'bar',
-                                events: {
-                                    click: function(chart, w, e) {
-                                        console.log(chart, w, e)
-                                    }
-                                }
-                            },
-                            grid: {
-                                show: false,
-                                xaxis: {
-                                    lines: {
-                                        show: false
-                                    }
-                                },  
-                                yaxis: {
-                                    lines: { 
-                                        show: false
-                                    }
-                                },
-                            },
-                            colors: colors,
-                            plotOptions: {
-                                bar: {
-                                    columnWidth: '45%',
-                                    distributed: true,
-                                    borderRadius:12,
-                                    dataLabels: {
-                                        position: 'top',
-                                    }
-                                }
-                            },
-                            dataLabels: {
-                                enabled: true,
-                                formatter: function (val) {
-                                    return val + "%";
-                                },
-                                offsetY: -20,
-                                style: {
-                                    fontSize: '12px',
-                                    colors: ["#000000"]
-                                }
-                            },
-                            fill: {
-                                type: 'gradient',
-                            },
-                            legend: {
-                                show: false
-                            },
-                            yaxis: {
-                                show: false,
-                                min: 0,
-                                max: 110,
-                            },
-                            xaxis: {
-                                categories: ["Secretaria-Geral SG"],
-                                labels: {
-                                    style: {
-                                        fontSize: '12px'
-                                    }
-                                }
-                            }
-                        };
+                $cores = trim($cores,",");
 
-                        var chart = new ApexCharts(document.querySelector("#chartA5"), options);
-                        chart.render();
+            }
+            ?>
 
-                    </script>
+            var colors = [
+            <?php print($cores); ?>
+            ]
 
-                    @php // Fim do gráfico de colunas contendo o percentual da unidade ativa ou selecionada referente ao acumulado entre o mês anterior ao ao selecionado. @endphp
+            var options = {
+                series: [{
+                    data: [
 
-                </div>
+                    <?php
+                    if(isset($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) && !is_null($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) && $this->percentualAlcancadoNoMesUnidadePrimeiroNivel != "" && is_array($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) && count($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) > 0) {
 
-            </div>
+                        $data = null;
 
-        </div>
+                        foreach($this->percentualAlcancadoNoMesUnidadePrimeiroNivel as $unidadePrimeiroNivel) {
 
-        <div class="w-full ">
+                            $data .= $unidadePrimeiroNivel['percentualAlcancado']['percentual_alcancado'].',';
 
-            <div class="w-full md:w-1/1 px-3 pt-3">
+                        }
 
-                Resultado Anual Acumulado
+                        $data = trim($data,",");
 
-                @php // Início dos gráficos de radial bar contendo o percentual da unidade ativa ou selecionada e das unidades a ela vinculadas referente ao acumulado do ano. @endphp
+                        print($data);
 
-            </div>
+                    }
+                    ?>
 
-            <div class="flex w-full md:w-1/1 px-2 pt-3 justify-center">
-
-                <div class="items-center" id="chartB6"></div>
-
-                <script>
-
-                    var colors = [
-                    '#dc2626'
                     ]
+                }],
+                chart: {
+                    height: 350,
+                    type: 'bar',
+                    events: {
+                        click: function(chart, w, e) {
+                            console.log(chart, w, e)
+                        }
+                    }
+                },
+                grid: {
+                    show: false,
+                    xaxis: {
+                        lines: {
+                            show: false
+                        }
+                    },  
+                    yaxis: {
+                        lines: { 
+                            show: false
+                        }
+                    },
+                },
+                colors: colors,
+                plotOptions: {
+                    bar: {
+                        columnWidth: '45%',
+                        distributed: true,
+                        borderRadius:12,
+                        dataLabels: {
+                            position: 'top',
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val + "%";
+                    },
+                    offsetY: -20,
+                    style: {
+                        fontSize: '12px',
+                        colors: ["#000000","#000000","#000000","#000000","#000000"]
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                },
+                legend: {
+                    show: false
+                },
+                yaxis: {
+                    show: false,
+                    min: 0,
+                    max: 110,
+                },
+                xaxis: {
+                    categories: [
 
-                    var options = {
-                        chart: {
-                            height: 199,
-                            type: "radialBar"
-                        },
-                        colors: colors,
-                        series: [{!! $this->percentualAlcancadoNoAno !!}],
-                        plotOptions: {
-                            radialBar: {
-                                hollow: {
-                                    margin: 15,
-                                    size: "59%"
-                                },
+                    <?php
+                    if(isset($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) && !is_null($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) && $this->percentualAlcancadoNoMesUnidadePrimeiroNivel != "" && is_array($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) && count($this->percentualAlcancadoNoMesUnidadePrimeiroNivel) > 0) {
 
-                                dataLabels: {
-                                    showOn: "always",
-                                    name: {
-                                        offsetY: -9,
-                                        show: true,
-                                        color: "#888",
-                                        fontSize: "14px"
-                                    },
-                                    value: {
-                                        color: "#111",
-                                        fontSize: "17px",
-                                        show: true,
-                                        offsetY: 0
-                                    }
-                                }
-                            }
-                        },
-                        fill: {
-                            type: 'solid'
-                        },
-                        labels: ["SG"]
-                    };
+                        $categorie = null;
 
-                    var chart = new ApexCharts(document.querySelector("#chartB6"), options)
+                        foreach($this->percentualAlcancadoNoMesUnidadePrimeiroNivel as $unidadePrimeiroNivel) {
 
-                    chart.render();
+                            $categorie .= '"'.$unidadePrimeiroNivel['unidade']['sgl_organizacao'].'",';
 
-                </script>
+                        }
 
-            </div>
+                        $categorie = trim($categorie,",");
 
-            <div class="flex flex-wrap justify-center ">
+                        print($categorie);
 
-                <div class="w-24 items-center" id="chartB1"></div>
+                    }
+                    ?>
 
-                <script>
+                    ],
+                    labels: {
+                        style: {
+                            fontSize: '12px'
+                        }
+                    }
+                }
+            };
 
-                    var colors = [
-                    '#dc2626'
-                    ]
+            var chart = new ApexCharts(document.querySelector("#chartA4"), options);
+            chart.render();
 
-                    var options = {
-                        chart: {
-                            height: 133,
-                            type: "radialBar"
-                        },
-                        colors: colors,
-                        series: [18],
-                        plotOptions: {
-                            radialBar: {
-                                hollow: {
-                                    margin: 15,
-                                    size: "66%"
-                                },
+        </script>
 
-                                dataLabels: {
-                                    showOn: "always",
-                                    name: {
-                                        offsetY: -9,
-                                        show: true,
-                                        color: "#888",
-                                        fontSize: "11px"
-                                    },
-                                    value: {
-                                        color: "#111",
-                                        fontSize: "14px",
-                                        show: true,
-                                        offsetY: 0
-                                    }
-                                }
-                            }
-                        },
-
-                        stroke: {
-                            lineCap: "round"
-                        },
-                        labels: ["CISET"]
-                    };
-
-                    var chart = new ApexCharts(document.querySelector("#chartB1"), options)
-
-                    chart.render();
-
-                </script>
-
-                <div class="w-24 items-center" id="chartB2"></div>
-
-                <script>
-
-                    var colors = [
-                    '#dc2626'
-                    ]
-
-                    var options = {
-                        chart: {
-                            height: 133,
-                            type: "radialBar"
-                        },
-                        colors: colors,
-                        series: [17],
-                        plotOptions: {
-                            radialBar: {
-                                hollow: {
-                                    margin: 15,
-                                    size: "66%"
-                                },
-
-                                dataLabels: {
-                                    showOn: "always",
-                                    name: {
-                                        offsetY: -9,
-                                        show: true,
-                                        color: "#888",
-                                        fontSize: "11px"
-                                    },
-                                    value: {
-                                        color: "#111",
-                                        fontSize: "14px",
-                                        show: true,
-                                        offsetY: 0
-                                    }
-                                }
-                            }
-                        },
-
-                        stroke: {
-                            lineCap: "round"
-                        },
-                        labels: ["IN"]
-                    };
-
-                    var chart = new ApexCharts(document.querySelector("#chartB2"), options)
-
-                    chart.render();
-
-                </script>
-
-                <div class="w-24 items-center" id="chartB3"></div>
-
-                <script>
-
-                    var colors = [
-                    '#dc2626'
-                    ]
-
-                    var options = {
-                        chart: {
-                            height: 133,
-                            type: "radialBar"
-                        },
-                        colors: colors,
-                        series: [15],
-                        plotOptions: {
-                            radialBar: {
-                                hollow: {
-                                    margin: 15,
-                                    size: "66%"
-                                },
-
-                                dataLabels: {
-                                    showOn: "always",
-                                    name: {
-                                        offsetY: -9,
-                                        show: true,
-                                        color: "#888",
-                                        fontSize: "11px"
-                                    },
-                                    value: {
-                                        color: "#111",
-                                        fontSize: "14px",
-                                        show: true,
-                                        offsetY: 0
-                                    }
-                                }
-                            }
-                        },
-
-                        stroke: {
-                            lineCap: "round"
-                        },
-                        labels: ["SA"]
-                    };
-
-                    var chart = new ApexCharts(document.querySelector("#chartB3"), options)
-
-                    chart.render();
-
-                </script>
-
-                <div class="w-24 items-center" id="chartB4"></div>
-
-                <script>
-
-                    var colors = [
-                    '#dc2626'
-                    ]
-
-                    var options = {
-                        chart: {
-                            height: 133,
-                            type: "radialBar"
-                        },
-                        colors: colors,
-                        series: [2],
-                        plotOptions: {
-                            radialBar: {
-                                hollow: {
-                                    margin: 15,
-                                    size: "66%"
-                                },
-
-                                dataLabels: {
-                                    showOn: "always",
-                                    name: {
-                                        offsetY: -9,
-                                        show: true,
-                                        color: "#888",
-                                        fontSize: "11px"
-                                    },
-                                    value: {
-                                        color: "#111",
-                                        fontSize: "14px",
-                                        show: true,
-                                        offsetY: 0
-                                    }
-                                }
-                            }
-                        },
-
-                        stroke: {
-                            lineCap: "round"
-                        },
-                        labels: ["SAJ"]
-                    };
-
-                    var chart = new ApexCharts(document.querySelector("#chartB4"), options)
-
-                    chart.render();
-
-                </script>
-
-                <div class="w-24 items-center" id="chartB5"></div>
-
-                <script>
-
-                    var colors = [
-                    '#dc2626'
-                    ]
-
-                    var options = {
-                        chart: {
-                            height: 133,
-                            type: "radialBar"
-                        },
-                        colors: colors,
-                        series: [30],
-                        plotOptions: {
-                            radialBar: {
-                                hollow: {
-                                    margin: 15,
-                                    size: "66%"
-                                },
-
-                                dataLabels: {
-                                    showOn: "always",
-                                    name: {
-                                        offsetY: -9,
-                                        show: true,
-                                        color: "#888",
-                                        fontSize: "11px"
-                                    },
-                                    value: {
-                                        color: "#111",
-                                        fontSize: "14px",
-                                        show: true,
-                                        offsetY: 0
-                                    }
-                                }
-                            }
-                        },
-
-                        stroke: {
-                            lineCap: "round"
-                        },
-                        labels: ["SEME"]
-                    };
-
-                    var chart = new ApexCharts(document.querySelector("#chartB5"), options)
-
-                    chart.render();
-
-                </script>
-
-                @php // Fim dos gráficos de radial bar contendo o percentual da unidade ativa ou selecionada e das unidades a ela vinculadas referente ao acumulado do ano. @endphp
-
-            </div>
-
-        </div>
+        @php // Fim do gráfico de colunas contendo o percentual de cada unidade da organização referente ao acumulado entre o mês anterior ao ao selecionado. @endphp
 
     </div>
+
+    <div class="w-full col-span-2 ">
+
+        Gráfico de coluna da Unidade Período
+
+        @php // Início do gráfico de colunas contendo o percentual da unidade ativa ou selecionada referente ao acumulado entre o mês anterior ao ao selecionado. @endphp
+
+        <div id="chartA5"></div>
+
+        <script>
+
+            var corPorExtenso = '';
+            var cor = '';
+
+            corPorExtenso = '{!! $this->percentualAlcancadoNoPeriodoUnidadeSelecionada['percentualAlcancado']['grau_de_satisfacao'] !!}';
+
+            if(corPorExtenso == 'red') {
+
+                cor = '#dc2626';
+
+            } else if(corPorExtenso == 'yellow') {
+
+                cor = '#fde047';
+
+            } else {
+
+                cor = '#65a30d';
+
+            }
+
+            var colors = [
+            cor
+            ]
+
+            var options = {
+                series: [{
+                    data: [{!! $this->percentualAlcancadoNoPeriodoUnidadeSelecionada['percentualAlcancado']['percentual_alcancado'] !!}]
+                }],
+                chart: {
+                    height: 350,
+                    type: 'bar',
+                    animations: {
+                      enabled: false
+                  },
+                  events: {
+                    click: function(chart, w, e) {
+                        console.log(chart, w, e)
+                    }
+                }
+            },
+            grid: {
+                show: false,
+                xaxis: {
+                    lines: {
+                        show: false
+                    }
+                },  
+                yaxis: {
+                    lines: { 
+                        show: false
+                    }
+                },
+            },
+            colors: colors,
+            plotOptions: {
+                bar: {
+                    columnWidth: '45%',
+                    distributed: true,
+                    borderRadius:12,
+                    dataLabels: {
+                        position: 'top',
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val + "%";
+                },
+                offsetY: -20,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#000000"]
+                }
+            },
+            fill: {
+                type: 'gradient',
+            },
+            legend: {
+                show: false
+            },
+            yaxis: {
+                show: false,
+                min: 0,
+                max: 110,
+            },
+            xaxis: {
+                categories: ["{!! $this->percentualAlcancadoNoPeriodoUnidadeSelecionada['unidade']['sgl_organizacao'] !!}"],
+                labels: {
+                    style: {
+                        fontSize: '12px'
+                    }
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chartA5"), options);
+        chart.render();
+
+        document.addEventListener('livewire:load', () => {
+            @this.on('refreshChart', (chartData) => {
+
+                var corPorExtenso = '';
+                var cor = '';
+
+                corPorExtenso = @this.percentualAlcancadoNoPeriodoUnidadeSelecionada['percentualAlcancado']['grau_de_satisfacao'];
+
+                if(corPorExtenso == 'red') {
+
+                    cor = '#dc2626';
+
+                } else if(corPorExtenso == 'yellow') {
+
+                    cor = '#fde047';
+
+                } else {
+
+                    cor = '#65a30d';
+
+                }
+
+                var colors = [
+                cor
+                ]
+
+                var options = {
+                    series: [{
+                        data: [@this.percentualAlcancadoNoPeriodoUnidadeSelecionada['percentualAlcancado']['percentual_alcancado']]
+                    }],
+                    chart: {
+                        height: 350,
+                        type: 'bar',
+                        animations: {
+                          enabled: false
+                      },
+                      events: {
+                        click: function(chart, w, e) {
+                            console.log(chart, w, e)
+                        }
+                    }
+                },
+                grid: {
+                    show: false,
+                    xaxis: {
+                        lines: {
+                            show: false
+                        }
+                    },  
+                    yaxis: {
+                        lines: { 
+                            show: false
+                        }
+                    },
+                },
+                colors: colors,
+                plotOptions: {
+                    bar: {
+                        columnWidth: '45%',
+                        distributed: true,
+                        borderRadius:12,
+                        dataLabels: {
+                            position: 'top',
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val + "%";
+                    },
+                    offsetY: -20,
+                    style: {
+                        fontSize: '12px',
+                        colors: ["#000000"]
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                },
+                legend: {
+                    show: false
+                },
+                yaxis: {
+                    show: false,
+                    min: 0,
+                    max: 110,
+                },
+                xaxis: {
+                    categories: [@this.percentualAlcancadoNoPeriodoUnidadeSelecionada['unidade']['sgl_organizacao']],
+                    labels: {
+                        style: {
+                            fontSize: '12px'
+                        }
+                    }
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chartA5"), options);
+            chart.render();
+
+        })
+        })
+
+    </script>
+
+    @php // Fim do gráfico de colunas contendo o percentual da unidade ativa ou selecionada referente ao acumulado entre o mês anterior ao ao selecionado. @endphp
+
+</div>
+
+</div>
+
+</div>
+
+<div class="w-full ">
+
+    <div class="w-full md:w-1/1 px-3 pt-3">
+
+        Resultado Anual Acumulado
+
+        @php // Início dos gráficos de radial bar contendo o percentual da unidade ativa ou selecionada e das unidades a ela vinculadas referente ao acumulado do ano. @endphp
+
+    </div>
+
+    <div class="flex w-full md:w-1/1 px-2 pt-3 justify-center">
+
+        <div class="items-center" id="chartB6"></div>
+
+        <script>
+
+            var corPorExtenso = '';
+            var cor = '';
+
+            corPorExtenso = '{!! $this->percentualAlcancadoNoAnoUnidadeSelecionada['percentualAlcancado']['grau_de_satisfacao'] !!}';
+
+            if(corPorExtenso == 'red') {
+
+                cor = '#dc2626';
+
+            } else if(corPorExtenso == 'yellow') {
+
+                cor = '#fde047';
+
+            } else {
+
+                cor = '#65a30d';
+
+            }
+
+            var colors = [
+            cor
+            ]
+
+            var options = {
+                chart: {
+                    height: 199,
+                    type: "radialBar",
+                    animations: {
+                      enabled: false
+                  }
+              },
+              colors: colors,
+              series: [{!! $this->percentualAlcancadoNoAnoUnidadeSelecionada['percentualAlcancado']['percentual_alcancado'] !!}],
+              plotOptions: {
+                radialBar: {
+                    hollow: {
+                        margin: 15,
+                        size: "59%"
+                    },
+
+                    dataLabels: {
+                        showOn: "always",
+                        name: {
+                            offsetY: -9,
+                            show: true,
+                            color: "#888",
+                            fontSize: "14px"
+                        },
+                        value: {
+                            color: "#111",
+                            fontSize: "17px",
+                            show: true,
+                            offsetY: 0
+                        }
+                    }
+                }
+            },
+            fill: {
+                type: 'solid'
+            },
+            labels: ["{!! $this->percentualAlcancadoNoAnoUnidadeSelecionada['unidade']['sgl_organizacao'] !!}"]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chartB6"), options)
+
+        chart.render();
+
+        document.addEventListener('livewire:load', () => {
+            @this.on('refreshChart', (chartData) => {
+
+                var corPorExtenso = '';
+                var cor = '';
+
+                corPorExtenso = @this.percentualAlcancadoNoAnoUnidadeSelecionada['percentualAlcancado']['grau_de_satisfacao'];
+
+                if(corPorExtenso == 'red') {
+
+                    cor = '#dc2626';
+
+                } else if(corPorExtenso == 'yellow') {
+
+                    cor = '#fde047';
+
+                } else {
+
+                    cor = '#65a30d';
+
+                }
+
+                var colors = [
+                cor
+                ]
+
+                var options = {
+                    chart: {
+                        height: 199,
+                        type: "radialBar",
+                        animations: {
+                          enabled: false
+                      }
+                  },
+                  colors: colors,
+                  series: [@this.percentualAlcancadoNoAnoUnidadeSelecionada['percentualAlcancado']['percentual_alcancado']],
+                  plotOptions: {
+                    radialBar: {
+                        hollow: {
+                            margin: 15,
+                            size: "59%"
+                        },
+
+                        dataLabels: {
+                            showOn: "always",
+                            name: {
+                                offsetY: -9,
+                                show: true,
+                                color: "#888",
+                                fontSize: "14px"
+                            },
+                            value: {
+                                color: "#111",
+                                fontSize: "17px",
+                                show: true,
+                                offsetY: 0
+                            }
+                        }
+                    }
+                },
+                fill: {
+                    type: 'solid'
+                },
+                labels: [@this.percentualAlcancadoNoAnoUnidadeSelecionada['unidade']['sgl_organizacao']]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chartB6"), options)
+
+            chart.render();
+
+        })
+        })
+
+    </script>
+
+</div>
+
+<div class="flex flex-wrap justify-center ">
+
+    <div class="w-24 items-center" id="chartB1"></div>
+
+    <script>
+
+        var colors = [
+        '#dc2626'
+        ]
+
+        var options = {
+            chart: {
+                height: 133,
+                type: "radialBar"
+            },
+            colors: colors,
+            series: [18],
+            plotOptions: {
+                radialBar: {
+                    hollow: {
+                        margin: 15,
+                        size: "66%"
+                    },
+
+                    dataLabels: {
+                        showOn: "always",
+                        name: {
+                            offsetY: -9,
+                            show: true,
+                            color: "#888",
+                            fontSize: "11px"
+                        },
+                        value: {
+                            color: "#111",
+                            fontSize: "14px",
+                            show: true,
+                            offsetY: 0
+                        }
+                    }
+                }
+            },
+
+            stroke: {
+                lineCap: "round"
+            },
+            labels: ["CISET"]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chartB1"), options)
+
+        chart.render();
+
+    </script>
+
+    <div class="w-24 items-center" id="chartB2"></div>
+
+    <script>
+
+        var colors = [
+        '#dc2626'
+        ]
+
+        var options = {
+            chart: {
+                height: 133,
+                type: "radialBar"
+            },
+            colors: colors,
+            series: [17],
+            plotOptions: {
+                radialBar: {
+                    hollow: {
+                        margin: 15,
+                        size: "66%"
+                    },
+
+                    dataLabels: {
+                        showOn: "always",
+                        name: {
+                            offsetY: -9,
+                            show: true,
+                            color: "#888",
+                            fontSize: "11px"
+                        },
+                        value: {
+                            color: "#111",
+                            fontSize: "14px",
+                            show: true,
+                            offsetY: 0
+                        }
+                    }
+                }
+            },
+
+            stroke: {
+                lineCap: "round"
+            },
+            labels: ["IN"]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chartB2"), options)
+
+        chart.render();
+
+    </script>
+
+    <div class="w-24 items-center" id="chartB3"></div>
+
+    <script>
+
+        var colors = [
+        '#dc2626'
+        ]
+
+        var options = {
+            chart: {
+                height: 133,
+                type: "radialBar"
+            },
+            colors: colors,
+            series: [15],
+            plotOptions: {
+                radialBar: {
+                    hollow: {
+                        margin: 15,
+                        size: "66%"
+                    },
+
+                    dataLabels: {
+                        showOn: "always",
+                        name: {
+                            offsetY: -9,
+                            show: true,
+                            color: "#888",
+                            fontSize: "11px"
+                        },
+                        value: {
+                            color: "#111",
+                            fontSize: "14px",
+                            show: true,
+                            offsetY: 0
+                        }
+                    }
+                }
+            },
+
+            stroke: {
+                lineCap: "round"
+            },
+            labels: ["SA"]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chartB3"), options)
+
+        chart.render();
+
+    </script>
+
+    <div class="w-24 items-center" id="chartB4"></div>
+
+    <script>
+
+        var colors = [
+        '#dc2626'
+        ]
+
+        var options = {
+            chart: {
+                height: 133,
+                type: "radialBar"
+            },
+            colors: colors,
+            series: [2],
+            plotOptions: {
+                radialBar: {
+                    hollow: {
+                        margin: 15,
+                        size: "66%"
+                    },
+
+                    dataLabels: {
+                        showOn: "always",
+                        name: {
+                            offsetY: -9,
+                            show: true,
+                            color: "#888",
+                            fontSize: "11px"
+                        },
+                        value: {
+                            color: "#111",
+                            fontSize: "14px",
+                            show: true,
+                            offsetY: 0
+                        }
+                    }
+                }
+            },
+
+            stroke: {
+                lineCap: "round"
+            },
+            labels: ["SAJ"]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chartB4"), options)
+
+        chart.render();
+
+    </script>
+
+    <div class="w-24 items-center" id="chartB5"></div>
+
+    <script>
+
+        var colors = [
+        '#dc2626'
+        ]
+
+        var options = {
+            chart: {
+                height: 133,
+                type: "radialBar"
+            },
+            colors: colors,
+            series: [30],
+            plotOptions: {
+                radialBar: {
+                    hollow: {
+                        margin: 15,
+                        size: "66%"
+                    },
+
+                    dataLabels: {
+                        showOn: "always",
+                        name: {
+                            offsetY: -9,
+                            show: true,
+                            color: "#888",
+                            fontSize: "11px"
+                        },
+                        value: {
+                            color: "#111",
+                            fontSize: "14px",
+                            show: true,
+                            offsetY: 0
+                        }
+                    }
+                }
+            },
+
+            stroke: {
+                lineCap: "round"
+            },
+            labels: ["SEME"]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chartB5"), options)
+
+        chart.render();
+
+    </script>
+
+    @php // Fim dos gráficos de radial bar contendo o percentual da unidade ativa ou selecionada e das unidades a ela vinculadas referente ao acumulado do ano. @endphp
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

@@ -261,6 +261,167 @@ class ShowOrganization extends Component
 
     }
 
+    public function getOrganizacao($cod_organizacao = '')
+    {
+
+        // Esta função tem o objetivo de consultar e retornar os dados da organização de um determinado $cod_organizacao
+        // --- x --- x --- x ---
+
+        // Início da declaração da variável de consulta a organizacao
+        $organizacao = [];
+        // Fim da declaração da variável de consulta a organizacao
+        // --- x --- x --- x ---
+
+        // Início do IF para verificar se a variável $cods_organizacao contem algum conteúdo
+        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+
+            $organizacao = Organization::find($cod_organizacao);
+
+        }
+        // Fim do IF para verificar se a variável $cods_organizacao contem algum conteúdo
+        // --- x --- x --- x ---
+
+        // Retorno com o resultado da função
+        return $organizacao;
+
+    }
+
+    public function hierarquiaInferiorCodOrganizacao($cod_organizacao = '')
+    {
+
+        // Início da declaração de variáveis da função
+
+        // Array que receberá o cod_organizacao
+        $cods_organizacao = [];
+        // --- x --- x --- x ---
+
+        // Variáveis com o nome da consulta ao modelo Organization
+        $consultarOrganizacoesAgregadasPrimeiroNivel = [];
+        $consultarOrganizacoesAgregadasSegundoNivel = [];
+        $consultarOrganizacoesAgregadasTerceiroNivel = [];
+        $consultarOrganizacoesAgregadasQuartoNivel = [];
+        $consultarOrganizacoesAgregadasQuintoNivel = [];
+        $consultarOrganizacoesAgregadasSextoNivel = [];
+
+        // Fim da declaração de variáveis da função
+        // --- x --- x --- x ---
+
+        // Passagem da variável $cod_organizacao para o array $cods_organizacao
+        array_push($cods_organizacao,$cod_organizacao);
+        // --- x --- x --- x ---
+
+        // Início da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao primeiro nível abaixo
+
+        $consultarOrganizacoesAgregadasPrimeiroNivel = Organization::whereIn('rel_cod_organizacao',$cods_organizacao)
+        ->get();
+
+        foreach($consultarOrganizacoesAgregadasPrimeiroNivel as $organizacao) {
+
+            if(!in_array($organizacao->cod_organizacao, $cods_organizacao)) {
+
+                array_push($cods_organizacao,$organizacao->cod_organizacao);
+
+            }
+
+        }
+
+        // Fim da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao primeiro nível abaixo
+        // --- x --- x --- x ---
+
+        // Início da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Segundo nível abaixo
+
+        $consultarOrganizacoesAgregadasSegundoNivel = Organization::whereIn('rel_cod_organizacao',$cods_organizacao)
+        ->get();
+
+        foreach($consultarOrganizacoesAgregadasSegundoNivel as $organizacao) {
+
+            if(!in_array($organizacao->cod_organizacao, $cods_organizacao)) {
+
+                array_push($cods_organizacao,$organizacao->cod_organizacao);
+
+            }
+
+        }
+
+        // Fim da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Segundo nível abaixo
+        // --- x --- x --- x ---
+
+        // Início da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Terceiro nível abaixo
+
+        $consultarOrganizacoesAgregadasTerceiroNivel = Organization::whereIn('rel_cod_organizacao',$cods_organizacao)
+        ->get();
+
+        foreach($consultarOrganizacoesAgregadasTerceiroNivel as $organizacao) {
+
+            if(!in_array($organizacao->cod_organizacao, $cods_organizacao)) {
+
+                array_push($cods_organizacao,$organizacao->cod_organizacao);
+
+            }
+
+        }
+
+        // Fim da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Terceiro nível abaixo
+        // --- x --- x --- x ---
+
+        // Início da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Quarto nível abaixo
+
+        $consultarOrganizacoesAgregadasQuartoNivel = Organization::whereIn('rel_cod_organizacao',$cods_organizacao)
+        ->get();
+
+        foreach($consultarOrganizacoesAgregadasQuartoNivel as $organizacao) {
+
+            if(!in_array($organizacao->cod_organizacao, $cods_organizacao)) {
+
+                array_push($cods_organizacao,$organizacao->cod_organizacao);
+
+            }
+
+        }
+
+        // Fim da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Quarto nível abaixo
+        // --- x --- x --- x ---
+
+        // Início da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Quinto nível abaixo
+
+        $consultarOrganizacoesAgregadasQuintoNivel = Organization::whereIn('rel_cod_organizacao',$cods_organizacao)
+        ->get();
+
+        foreach($consultarOrganizacoesAgregadasQuintoNivel as $organizacao) {
+
+            if(!in_array($organizacao->cod_organizacao, $cods_organizacao)) {
+
+                array_push($cods_organizacao,$organizacao->cod_organizacao);
+
+            }
+
+        }
+
+        // Fim da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Quinto nível abaixo
+        // --- x --- x --- x ---
+
+        // Início da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Sexto nível abaixo
+
+        $consultarOrganizacoesAgregadasSextoNivel = Organization::whereIn('rel_cod_organizacao',$cods_organizacao)
+        ->get();
+
+        foreach($consultarOrganizacoesAgregadasSextoNivel as $organizacao) {
+
+            if(!in_array($organizacao->cod_organizacao, $cods_organizacao)) {
+
+                array_push($cods_organizacao,$organizacao->cod_organizacao);
+
+            }
+
+        }
+
+        // Fim da consulta para encontrar o cod_organizacao hierarquicamente relacionado ao Sexto nível abaixo
+        // --- x --- x --- x ---
+
+        return $cods_organizacao;
+
+    }
+
     public function render()
     {
 

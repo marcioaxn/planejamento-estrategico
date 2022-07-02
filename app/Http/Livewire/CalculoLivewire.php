@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Livewire\IndicadoresLivewire;
 use App\Http\Livewire\GrauSatisfacaoLivewire;
 use App\Http\Livewire\EvolucaoIndicadorLivewire;
+use App\Http\Livewire\ShowOrganization;
+use App\Http\Livewire\PlanoAcaoLivewire;
+use App\Http\Livewire\MetaPorAnoLivewire;
 
 ini_set('memory_limit', '7096M');
 ini_set('max_execution_time', 9900);
@@ -25,93 +28,398 @@ set_time_limit(900000000);
 class CalculoLivewire extends Component
 {
 
-    // Início do cálculo para encontrar o percentual alcançado por uma determinada unidade
-    // considerando os planos de ações num ano, num mês e se o resultado será acumulado no ano ou por um período que compreende o início do ano até o mês selecionado
+    // Início do cálculo para encontrar o percentual alcançado por um determinado grupo de cod_organizacao
 
-    public function calcularPercentualUnidade($cod_organizacao = '',$ano = '',$anoVigente = '',$mesSelecionado = '',$acumuladoAno = false,$acumuladoPeriodo = false)
-    {
+    public function calcularPercentualMesSelecionadoCodsOrganizacao($cod_organizacao = '',$anoSelecionado = '', $mesSelecionado = '', $calcularSomenteOMes = false) {
+
+        // O objetivo dessa função é calcular o (percentual alcançado) de um grupo de unidades da organização sendo que a função irá receber um cod_organizacao e a partir desse código irá encontrar as unidades que estão nos níveis abaixo hierarquicamente. A função também receberá o ano e o mês para realizar a consulta
+
+        // Início da declaração das variáveis da função
+        $resultado = [];
+        $prc_alcancado = 0;
+        // Fim da declaração das variáveis da função
+        // --- x --- x --- x ---
+
+        // Início da instância do Componente Livewire da Organizacao
+        $organization = new ShowOrganization;
+        // Fim da instância do Componente Livewire da Organizacao
+        // --- x --- x --- x ---
+
+        // Início da instância do Componente Livewire da PlanoAcaoLivewire
+        $planoAcao = new PlanoAcaoLivewire;
+        // Fim da instância do Componente Livewire da PlanoAcaoLivewire
+        // --- x --- x --- x ---
+
+        // Início da instância do Componente Livewire da IndicadoresLivewire
+        $indicadorClass = new IndicadoresLivewire;
+        // Fim da instância do Componente Livewire da IndicadoresLivewire
+        // --- x --- x --- x ---
+
+        // Início da instância do Componente Livewire da MetaPorAnoLivewire
+        $metaAno = new MetaPorAnoLivewire;
+        // Fim da instância do Componente Livewire da MetaPorAnoLivewire
+        // --- x --- x --- x ---
+
         if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
-            // Início da consulta para pegar os planos de ações vinculados ao $cod_organizacao
+            // Início da parte para retornar o(s) cod(s)_organizacao relacionados ao cod_organizacao selecionado
+            $getCodsOrganization = $organization->hierarquiaInferiorCodOrganizacao($cod_organizacao);
+            // Fim da parte para retornar o(s) cod(s)_organizacao relacionados ao cod_organizacao selecionado
+            // --- x --- x --- x ---
 
-            $consultarPlanosAcoesPorCodOrganizacao = PlanoAcao::where('cod_organizacao',$cod_organizacao)
-            ->whereYear('dte_inicio','>=',$ano)
-            ->get();
+            // Início da parte para retornar o(s) plano(s) de ação(ões) relacionados ao 
+            // cod(s)_organizacao e por ano
+            $getPlanoDeAcao = $planoAcao->getPlanoDeAcaoPorCodsOrganizacao($getCodsOrganization,$anoSelecionado);
+            // Fim da parte para retornar o(s) plano(s) de ação(ões) relacionados ao 
+            // cod(s)_organizacao e por ano
+            // --- x --- x --- x ---
 
-            // Início do IF para verificar se houve retorno da consulta $consultarPlanosAcoesPorCodOrganizacao
+            $resultadoGeralCalculo = 0;
 
-            if($consultarPlanosAcoesPorCodOrganizacao) {
+            $contPlanoAcao = 0;
 
-                // Início do loop da consulta dos Planos de Ações
+            foreach($getPlanoDeAcao as $planoAcao) {
 
-                $contPlanoAcao = 0;
-                $totalPercentual = 0;
+                $resultadoCalculo = 0;
 
-                foreach($consultarPlanosAcoesPorCodOrganizacao as $planoAcao) {
+                $cod_plano_de_acao = $planoAcao->cod_plano_de_acao;
 
-                    // Início da consulta para pegar os indicadores ligados ao plano de ação
+                if(isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
 
-                    $consultarIndicadoresPorCodPlanoAcao = Indicador::where('cod_plano_de_acao',$planoAcao->cod_plano_de_acao)
-                    ->get();
+                    $indicadores = $indicadorClass->getIndicadorPorCodPlanoDeAcao($cod_plano_de_acao, $anoSelecionado);
 
-                    // Início do IF para verificar se houve retorno da consulta $consultarIndicadoresPorCodPlanoAcao
+                    $totalResultado = 0;
 
-                    if($consultarIndicadoresPorCodPlanoAcao) {
+                    foreach($indicadores as $indicador) {
 
-                        // Início do loop da consulta $consultarIndicadoresPorCodPlanoAcao
+                        $metaPorAno = $metaAno->getMetaPorAnoPorCodIndicadorEAno($indicador->cod_indicador, $anoSelecionado);
 
-                        foreach($consultarIndicadoresPorCodPlanoAcao as $indicador) {
+                        $anoVigente = date('Y');
 
-                            // dd($indicador->cod_indicador,$ano,$mesSelecionado,$acumuladoAno,$acumuladoPeriodo);
+                        $mesAnterior = $mesSelecionado;
 
-                            // Início da instância do componente EvolucaoIndicadorLivewire
+                        $totalRealizado = 0;
+                        $totalPrevisto = 0;
+                        $totalPrevistoAnual = 0;
 
-                            $evolucaoIndicadorLivewire = new EvolucaoIndicadorLivewire;
+                        if(!is_null($indicador)) {
 
-                            // Fim da instância do componente EvolucaoIndicadorLivewire
+                            $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador',$indicador->cod_indicador)
+                            ->where('num_ano',$anoSelecionado)
+                            ->orderBy('num_mes')
+                            ->get();
 
-                            $calcularPercentualExecutado = $evolucaoIndicadorLivewire->calcularPercentualExecutado($indicador->cod_indicador,$ano,$mesSelecionado,$acumuladoAno,$acumuladoPeriodo);
+                            $consultarMetaAno = MetaAno::where('cod_indicador',$indicador->cod_indicador)
+                            ->where('num_ano',$anoSelecionado)
+                            ->first();
 
-                            $prc_alcancado = $this->prc_alcancado($indicador->dsc_tipo,$calcularPercentualExecutado->vlr_realizado,$calcularPercentualExecutado->vlr_previsto);
+                            foreach($evolucaoIndicador as $evolucaoIndicador) {
 
-                            $totalPercentual = $totalPercentual + $prc_alcancado;
+                                if($anoSelecionado == $anoVigente) {
+
+                                    if($evolucaoIndicador->num_mes <= $mesAnterior) {
+
+                                        if($indicador->bln_acumulado === 'Sim') {
+
+                                            if(!$calcularSomenteOMes) {
+
+                                                $totalPrevistoAnual = $totalPrevistoAnual + $evolucaoIndicador->vlr_previsto;
+
+                                                $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                            } else {
+
+                                                if($evolucaoIndicador->num_mes == $mesAnterior) {
+
+                                                    $totalPrevistoAnual = $evolucaoIndicador->vlr_previsto;
+
+                                                    $totalRealizado = $evolucaoIndicador->vlr_realizado;
+
+                                                }
+
+                                            }
+                                            
+
+                                        } else {
+
+                                            $totalPrevistoAnual = $evolucaoIndicador->vlr_previsto;
+
+                                            $totalRealizado = $evolucaoIndicador->vlr_realizado;
+
+                                        }
+
+                                    }
+
+                                } else {
+
+                                    if($indicador->bln_acumulado === 'Sim') {
+
+                                        if(!$calcularSomenteOMes) {
+
+                                            $totalPrevistoAnual = $totalPrevistoAnual + $evolucaoIndicador->vlr_previsto;
+
+                                            $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                        } else {
+
+                                            if($evolucaoIndicador->num_mes == $mesAnterior) {
+
+                                                $totalPrevistoAnual = $evolucaoIndicador->vlr_previsto;
+
+                                                $totalRealizado = $evolucaoIndicador->vlr_realizado;
+
+                                            }
+
+                                        }
+                                        
+
+                                    } else {
+
+                                        $totalPrevistoAnual = $evolucaoIndicador->vlr_previsto;
+
+                                        $totalRealizado = $evolucaoIndicador->vlr_realizado;
+
+                                    }
+
+                                }
+
+                            }
 
                         }
 
-                        // Fim do loop da consulta $consultarIndicadoresPorCodPlanoAcao
+                        $totalResultado = $totalResultado+$this->prc_alcancado($indicador->dsc_tipo,$totalRealizado,$totalPrevistoAnual);
 
                     }
 
-                    // Fim do IF para verificar se houve retorno da consulta $consultarIndicadoresPorCodPlanoAcao
+                    if($indicadores->count() > 0) {
 
-                    $contPlanoAcao++;
+                        $resultadoCalculo = ($totalResultado)/$indicadores->count();
 
-                    // Fim da consulta para pegar os indicadores ligados ao plano de ação
+                        $resultadoGeralCalculo = $resultadoGeralCalculo + $resultadoCalculo;
+
+                    }
 
                 }
 
-                // Fim do loop da consulta dos Planos de Ações
+            }
+
+            if($getPlanoDeAcao->count() > 0) {
+
+                $prc_alcancado = round($resultadoGeralCalculo/$getPlanoDeAcao->count());
+
+            } else {
+
+                $prc_alcancado = 0;
 
             }
 
-            // Fim do IF para verificar se houve retorno da consulta $consultarPlanosAcoesPorCodOrganizacao
+            $grauSatisfacao = new GrauSatisfacaoLivewire;
 
-            $calculo = 0;
+            $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
 
-            if($contPlanoAcao > 0) {
+            $resultado['quantidadePlanosDeAcao'] = $getPlanoDeAcao->count();
+            $resultado['percentual_alcancado'] = $prc_alcancado;
 
-                $calculo = ($totalPercentual/$contPlanoAcao);
+            if($getPlanoDeAcao->count() > 0) {
+
+                $resultado['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
+
+            } else {
+
+                $resultado['grau_de_satisfacao'] = 'gray';
 
             }
 
-            return $calculo;
 
-            // Fim da consulta para pegar os planos de ações vinculados ao $cod_organizacao
+            $resultado['color'] = $getgrauSatisfacao['color'];
+
+        } else {
+
+            $resultado['quantidadePlanosDeAcao'] = 0;
+            $resultado['percentual_alcancado'] = 0;
+
+            $resultado['grau_de_satisfacao'] = 'red';
+            $resultado['color'] = 'white';
 
         }
+
+        return $resultado;
+
     }
-    
-    // Fim do cálculo para encontrar o percentual alcançado por uma determinada unidade
+
+    // Fim do cálculo para encontrar o percentual alcançado por um determinado grupo de cod_organizacao
+    // --- x --- x --- x ---
+
+    // Início do cálculo para encontrar o percentual alcançado por uma determinada unidade utilizando o conteúdo da função calcularAcumuladoObjetivoEstrategico, mas, agora, sem considerar o objetivo estratégico e sim a unidade organizacional
+
+    public function calcularPercentualMesSelecionado($cod_organizacao = '',$anoSelecionado = '', $mesSelecionado = '') {
+
+        $resultado = [];
+
+        $prc_alcancado = 0;
+
+        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+
+            if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+
+                $planosAcao = PlanoAcao::whereIn('cod_organizacao',[$cod_organizacao])
+                ->whereYear('dte_inicio','<=',$anoSelecionado)
+                ->whereYear('dte_fim','>=',$anoSelecionado)
+                ->get();
+
+                $resultadoGeralCalculo = 0;
+
+                $contPlanoAcao = 0;
+
+                foreach($planosAcao as $planoAcao) {
+
+                    $resultadoCalculo = 0;
+
+                    $cod_plano_de_acao = $planoAcao->cod_plano_de_acao;
+
+                    if(isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+
+                        $planoAcao = PlanoAcao::find($cod_plano_de_acao);
+
+                        $indicadores = Indicador::where('cod_plano_de_acao',$cod_plano_de_acao)
+                        ->with('metaAno');
+
+                        $indicadores = $indicadores->whereHas('metaAno', function ($query) use($anoSelecionado) {
+                            $query->where('num_ano',$anoSelecionado);
+                        });
+
+                        $indicadores = $indicadores->get();
+
+                        $totalResultado = 0;
+
+                        foreach($indicadores as $indicador) {
+
+                            $anoVigente = date('Y');
+
+                            $mesAnterior = $mesSelecionado;
+
+                            $totalRealizado = 0;
+                            $totalPrevisto = 0;
+                            $totalPrevistoAnual = 0;
+
+                            if(!is_null($indicador)) {
+
+                                $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador',$indicador->cod_indicador)
+                                ->where('num_ano',$anoSelecionado)
+                                ->orderBy('num_mes')
+                                ->get();
+
+                                $consultarMetaAno = MetaAno::where('cod_indicador',$indicador->cod_indicador)
+                                ->where('num_ano',$anoSelecionado)
+                                ->first();
+
+                                foreach($evolucaoIndicador as $evolucaoIndicador) {
+
+                                    if($anoSelecionado == $anoVigente) {
+
+                                        if($evolucaoIndicador->num_mes <= $mesAnterior) {
+
+                                            if($indicador->bln_acumulado === 'Sim') {
+
+                                                $totalPrevistoAnual = $totalPrevistoAnual + $evolucaoIndicador->vlr_previsto;
+
+                                                $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                            } else {
+
+                                                $totalPrevistoAnual = $evolucaoIndicador->vlr_previsto;
+
+                                                $totalRealizado = $evolucaoIndicador->vlr_realizado;
+
+                                            }
+
+                                        }
+
+                                    } else {
+
+                                        if($indicador->bln_acumulado === 'Sim') {
+
+                                            $totalPrevistoAnual = $totalPrevistoAnual + $evolucaoIndicador->vlr_previsto;
+
+                                            $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                        } else {
+
+                                            $totalPrevistoAnual = $evolucaoIndicador->vlr_previsto;
+
+                                            $totalRealizado = $evolucaoIndicador->vlr_realizado;
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                            $totalResultado = $totalResultado+$this->prc_alcancado($indicador->dsc_tipo,$totalRealizado,$totalPrevistoAnual);
+
+                        }
+
+                        if($indicadores->count() > 0) {
+
+                            $resultadoCalculo = ($totalResultado)/$indicadores->count();
+
+                            $resultadoGeralCalculo = $resultadoGeralCalculo + $resultadoCalculo;
+
+                        }
+
+                    }
+
+                }
+
+                if($planosAcao->count() > 0) {
+
+                    $prc_alcancado = $resultadoGeralCalculo/$planosAcao->count();
+
+                } else {
+
+                    $prc_alcancado = 0;
+
+                }
+
+                $grauSatisfacao = new GrauSatisfacaoLivewire;
+
+                $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
+
+                $resultado['quantidadePlanosDeAcao'] = $planosAcao->count();
+                $resultado['percentual_alcancado'] = $prc_alcancado;
+
+                if($planosAcao->count() > 0) {
+
+                    $resultado['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
+
+                } else {
+
+                    $resultado['grau_de_satisfacao'] = 'gray';
+
+                }
+
+                
+                $resultado['color'] = $getgrauSatisfacao['color'];
+
+            } else {
+
+                $resultado['quantidadePlanosDeAcao'] = 0;
+                $resultado['percentual_alcancado'] = 0;
+
+                $resultado['grau_de_satisfacao'] = 'red';
+                $resultado['color'] = 'white';
+
+            }
+
+        }
+
+        return $resultado;
+
+    }
+
+    // Fim do cálculo para encontrar o percentual alcançado por uma determinada unidade utilizando o conteúdo da função calcularAcumuladoObjetivoEstrategico, mas, agora, sem considerar o objetivo estratégico e sim a unidade organizacional
 
     public function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '',$anoSelecionado = '') {
 
@@ -186,8 +494,6 @@ class CalculoLivewire extends Component
                     }
 
                 }
-
-                $objetivoEstrategico = ObjetivoEstrategico::find($cod_objetivo_estrategico);
 
                 $planosAcao = PlanoAcao::where('cod_objetivo_estrategico',$cod_objetivo_estrategico)
                 ->whereIn('cod_organizacao',$organizacoes)

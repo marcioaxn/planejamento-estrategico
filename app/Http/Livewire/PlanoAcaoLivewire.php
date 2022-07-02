@@ -69,6 +69,66 @@ class PlanoAcaoLivewire extends Component
 
     public $maxWidth = 'xl';
 
+    public function getPlanoDeAcaoPorCodsOrganizacao($cods_organizacao = '', $ano = '')
+    {
+
+        // Esta função tem o objetivo de consultar e retornar o(s) plano(s) de ação(ções)
+        // por um determinado cod_organizacao ou por um array de cod_organizacao e pelo ano
+        // --- x --- x --- x ---
+
+
+        // Início da declaração da variável de consulta ao plano de ação
+        $planosAcao = [];
+        // Fim da declaração da variável de consulta ao plano de ação
+        // --- x --- x --- x ---
+
+        
+        // Início da consulta ao plano de ação
+        $planosAcao = PlanoAcao::orderBy('num_nivel_hierarquico_apresentacao')
+        ->orderBy('dsc_plano_de_acao');
+
+        // Início do IF para verificar se a variável $cods_organizacao contem algum conteúdo
+        if(isset($cods_organizacao) && !is_null($cods_organizacao) && $cods_organizacao != '') {
+
+
+            // Início do IF para verificar se a variável $cods_organizacao é do tipo array e se o array é maior que zero
+            if(is_array($cods_organizacao) && count($cods_organizacao) > 0) {
+
+                $planosAcao = $planosAcao->whereIn('cod_organizacao',$cods_organizacao);
+
+            } else {
+
+                // Esta é a exceção caso a variável $cods_organizacao não seja do tipo array e se o array é não maior que zero
+
+                $planosAcao = $planosAcao->where('cod_organizacao',$cods_organizacao);
+
+            }
+            // Fim do IF para verificar se a variável $cods_organizacao é do tipo array e se o array é maior que zero
+            // --- x --- x --- x ---
+
+        }
+        // Fim do IF para verificar se a variável $cods_organizacao contem algum conteúdo
+        // --- x --- x --- x ---
+
+        // Início do IF para verificar se a variável $ano contem algum conteúdo
+        if(isset($ano) && !is_null($ano) && $ano != '') {
+
+            $planosAcao = $planosAcao->whereYear('dte_inicio','<=',$ano)
+            ->whereYear('dte_fim','>=',$ano);
+
+        }
+        // Fim do IF para verificar se a variável $ano contem algum conteúdo
+        // --- x --- x --- x ---
+
+        $planosAcao = $planosAcao->get();
+        // Fim da consulta ao plano de ação
+        // --- x --- x --- x ---
+
+        // Retorno com o resultado da função
+        return $planosAcao;
+
+    }
+
     protected function pesquisarCodigo($cod_objetivo_estrategico = '') {
 
         $this->num_nivel_hierarquico_apresentacao = '';
