@@ -2752,6 +2752,8 @@ class IndicadoresLivewire extends Component
 
                 }
 
+                // dd($this->mesInicioDoPlanoDeAcaoSelecionado,$this->anoInicioDoPlanoDeAcaoSelecionado);
+
                 if($this->dsc_unidade_medida == 'Porcentagem') {
 
                     // Início da parte de verificação se a soma já atingiu a meta proposta do Ano 1 com a unidade de medida porcentagem

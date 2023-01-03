@@ -411,21 +411,36 @@
 
                                 if($ano >= $this->anoInicioDoPlanoDeAcaoSelecionado && $ano <= $this->anoConclusaoDoPlanoDeAcaoSelecionado) {
 
-                                    if($mes <= $this->mesInicioDoPlanoDeAcaoSelecionado && $mes <= $this->mesConclusaoDoPlanoDeAcaoSelecionado) {
+                                    if($ano == $this->anoInicioDoPlanoDeAcaoSelecionado) {
 
-                                        $this->$column_name_input_class_mes = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right';
+                                        if($mes >= $this->mesInicioDoPlanoDeAcaoSelecionado) {
 
+                                            $this->$column_name_input_class_mes = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right';
 
-                                    } else {
-
-                                        if($this->anoConclusaoDoPlanoDeAcaoSelecionado == $ano) {
+                                        } else {
 
                                             $this->$column_name_input_class_mes = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right ler-somente';
 
                                         }
 
-                                    }
+                                    } else {
 
+                                        if($mes <= $this->mesConclusaoDoPlanoDeAcaoSelecionado) {
+
+                                            $this->$column_name_input_class_mes = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right';
+    
+    
+                                        } else {
+    
+                                            if($this->anoConclusaoDoPlanoDeAcaoSelecionado == $ano) {
+    
+                                                $this->$column_name_input_class_mes = 'w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-0 pt-2 pl-2 h-9 text-right ler-somente';
+    
+                                            }
+    
+                                        }
+
+                                    }
                                 }
 
                                 ?>

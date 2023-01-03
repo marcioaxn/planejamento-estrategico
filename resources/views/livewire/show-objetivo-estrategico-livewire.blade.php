@@ -704,7 +704,7 @@
 
                                             @if($evolucaoIndicador->num_ano == $this->ano)
 
-                                            @if($this->ano == date('Y'))
+                                            @if(1 == 1)
 
                                             @if($evolucaoIndicador->num_mes <= $this->mesAnterior)
 

@@ -16,7 +16,7 @@ class Audit extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $table = 'public.tab_audit';
+    protected $table = 'tab_audit';
     protected $dates = array('deleted_at');
     protected $guarded = array();
     

@@ -16,7 +16,7 @@ class Acoes extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $table = 'public.acoes';
+    protected $table = 'acoes';
     protected $dates = array('deleted_at');
     protected $guarded = array();
     

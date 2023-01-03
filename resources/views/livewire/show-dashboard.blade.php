@@ -42,7 +42,7 @@
         <div class="w-full md:w-1/1 px-3 pt-1 md:mb-0 pt-2">
 
             <div class="flex items-center justify-center text-center h-18 sm:h-16 md:h-28 lg:h-20 xl:h-14 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-white rounded-md text-gray-700 text-base shadow ">
-                Valores: {{ $this->missaoVisaoValores->dsc_missao }}
+                Valores: {{ $this->missaoVisaoValores->dsc_valores }}
             </div>
 
         </div>
