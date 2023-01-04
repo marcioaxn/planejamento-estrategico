@@ -41,20 +41,30 @@
 
     </div>
 
-    <div class="flex flex-wrap w-full text-base md:text-sm pt-1 pb-3 pl-3 pr-3 rounded-md border-1 border-gray-100">
+    <div class="flex flex-wrap w-full text-base md:text-sm pt-1 pb-3 pl-3 pr-3 rounded-md border-1 border-gray-100" style="font-size: 0.91rem!Important;">
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-1 pb-2 pl-1">
-            Perspectiva: <strong>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}. {!! $this->perspectiva->dsc_perspectiva !!}</strong>
+        <div class="w-full md:w-1/12 border-b-2 border-gray-100 pt-1 pb-2 pl-1">
+            Perspectiva:
         </div>
 
-        <div class="w-full md:w-1/6 text-right border-b-2 border-gray-100 pt-1 pb-1 pl-1">
+        <div class="w-full md:w-11/12 border-b-2 border-gray-100 pt-1 pb-2 pl-1">
+            <strong>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}. {!! $this->perspectiva->dsc_perspectiva !!}</strong>
+        </div>
+
+        <div class="w-full md:w-1/1 mb-1" style="background-color: #DCDCC9 !Important; font-size: 0.1rem!Important; height:0.079rem!Important;">
+
+            &nbsp;
+
+        </div>
+
+        <div class="w-full md:w-1/12 border-b-2 border-gray-100 pt-1 pb-2 pl-1">
             Objetivo Estratégico:
         </div>
 
         <style type="text/css">select { text-align-last:left; }</style>
 
-        <div class="w-full md:w-4/6 border-b-2 border-gray-100 text-left pl-1">
-            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full text-left pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 h-7 text-blue-500 rounded-md text-left cursor-pointer', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrlCodObjetivoEstrategico(this.value);"]) !!}
+        <div class="w-full md:w-11/12 border-b-2 border-gray-100 text-left pl-0">
+            {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, ['class' => 'w-full text-left pl-1 border-0 border-white border-opacity-25 font-semibold text-sm sm:text-base focus:border-indigo-300 focus:ring focus:ring-gray-50 focus:ring-opacity-50 h-7 text-black rounded-md text-left cursor-pointer', 'autocomplete' => 'off', 'required' => 'required', 'wire:model' => 'cod_objetivo_estrategico','onchange' => "javascript: alterarUrlCodObjetivoEstrategico(this.value);"]) !!}
         </div>
 
         <script>
@@ -78,9 +88,15 @@
 
         @if(!is_null($this->planoAcao) && $this->planosAcao->count() > 0)
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-3 pb-1 pl-1">Plano de Ação:</div>
+        <div class="w-full md:w-1/1 mb-1" style="background-color: #DCDCC9 !Important; font-size: 0.1rem!Important; height:0.075rem!Important;">
 
-        <div class="w-full md:w-5/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
+            &nbsp;
+
+        </div>
+
+        <div class="w-full md:w-1/12 border-b-2 border-gray-100 pt-3 pb-1 pl-1">Plano de Ação:</div>
+
+        <div class="w-full md:w-11/12 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
 
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-12 2xl:grid-cols-12 gap-2 mt-0">
 
@@ -214,18 +230,16 @@
             </strong>
         </div>
 
-        <div class="w-full md:w-1/1 mb-3">
+        <div class="w-full md:w-1/1 mb-2" style="background-color: #DCDCC9 !Important; font-size: 0.071rem!Important; height: 0.061rem!Important;">
 
-            <!-- <img src="{!! asset('img/img35.jpg') !!}" style="width: 100%; height: 33px;"> -->
-
-            <hr>
+            &nbsp;
 
         </div>
 
         @if($this->indicador)
 
-        <div class="w-full md:w-1/6 border-b-2 border-gray-100 pt-2 pb-1 pl-1">
-            <strong><?php $planoAcao->indicadores->count() > 1 ? print('Indicadores') : print('Indicador'); ?>: </strong>
+        <div class="w-full md:w-1/12 border-b-2 border-gray-100 pt-2 pb-1 pl-1">
+            <?php $planoAcao->indicadores->count() > 1 ? print('Indicadores (' . $planoAcao->indicadores->count() . ')') : print('Indicador (' . $planoAcao->indicadores->count() . ')'); ?>
 
             <br />
 
@@ -238,9 +252,9 @@
             </div>
         </div>
 
-        <div class="w-full md:w-5/6 border-b-2 border-gray-100 pt-0 pb-2 pl-1">
+        <div class="w-full md:w-11/12 border-b-2 border-gray-100 pt-0 pb-2 pl-1">
 
-            <div class="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-2 mt-0">
+            <div class="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2 mt-0">
 
                 <?php $contIndicador = 1; ?>
 

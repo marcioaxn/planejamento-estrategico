@@ -1817,6 +1817,16 @@ class IndicadoresLivewire extends Component
 
                             if($consultar) {
 
+                                if(isset($this->$column_name_mes) && !is_null($this->$column_name_mes) && $this->$column_name_mes != '') {
+
+                                    $this->$column_name_mes = $this->$column_name_mes;
+
+                                } else {
+
+                                    $this->$column_name_mes = NULL;
+
+                                }
+
                                 // Início para verificar se houve modificação da Meta Prevista Mensal
 
                                 $consultar->vlr_previsto = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida,'MYSQL','PTBR',$consultar->vlr_previsto);

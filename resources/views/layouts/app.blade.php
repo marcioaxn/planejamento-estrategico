@@ -8,8 +8,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Início ICON Brasil -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/brasao.png') }}" />
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/brasao.png') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicon-32x32.png') }}" />
     <!-- Fim ICON Brasil -->
 
     <!-- Fonts -->

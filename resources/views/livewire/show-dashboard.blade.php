@@ -26,7 +26,7 @@
         <div class="w-full md:w-1/2 px-3 md:px-1 md:pl-3 pt-1 md:mb-0 pt-2">
 
             <div class="flex items-center justify-center text-center h-18 sm:h-16 md:h-28 lg:h-20 xl:h-14 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-white rounded-md text-gray-700 text-base shadow ">
-                Missão: {{ $this->missaoVisaoValores->dsc_missao }}
+                <span class="text-slate-400">Missão:</span>&nbsp;<strong>{{ $this->missaoVisaoValores->dsc_missao }}</strong>
             </div>
 
         </div>
@@ -34,7 +34,7 @@
         <div class="w-full md:w-1/2 px-3 md:px-1 md:pr-3 pt-1 md:mb-0 pt-2">
 
             <div class="flex items-center justify-center text-center h-18 sm:h-16 md:h-28 lg:h-20 xl:h-14 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-white rounded-md text-gray-700 text-base shadow ">
-                Visão: {{ $this->missaoVisaoValores->dsc_visao }}
+                <span class="text-slate-400">Visão:</span>&nbsp;<strong>{{ $this->missaoVisaoValores->dsc_visao }}</strong>
             </div>
 
         </div>
@@ -42,7 +42,7 @@
         <div class="w-full md:w-1/1 px-3 pt-1 md:mb-0 pt-2">
 
             <div class="flex items-center justify-center text-center h-18 sm:h-16 md:h-28 lg:h-20 xl:h-14 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-white rounded-md text-gray-700 text-base shadow ">
-                Valores: {{ $this->missaoVisaoValores->dsc_valores }}
+            <span class="text-slate-400">Valores:</span>&nbsp;<strong>{{ $this->missaoVisaoValores->dsc_valores }}</strong>
             </div>
 
         </div>
@@ -176,7 +176,7 @@
             </div>
 
             @else
-            <div class="pt-3 pb-3 pl-3">
+            <div class="pt-3 pb-3 pl-3 text-slate-400">
                 Não tem objetivo estratégico cadastrado para essa perspectiva
             </div>
             @endif
@@ -190,6 +190,8 @@
         </div>
 
         @if($resultPerspectiva->num_nivel_hierarquico_apresentacao >= 2 && $resultPerspectiva->num_nivel_hierarquico_apresentacao <= $this->perspectiva->count())
+
+        <diiv>
 
             <div class="grid place-items-left" style="margin: 0px!Important; padding: 0px!Important;">
                 <div class="arrow-up"></div>
@@ -206,7 +208,7 @@
 
         </div>
 
-        <div class="px-3 py-2 pt-2 pl-2 pr-2">
+        <div class="px-3 py-2 pl-2 pr-2">
 
             <div>
 
