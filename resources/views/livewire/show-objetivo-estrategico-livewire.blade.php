@@ -1147,7 +1147,7 @@
             </x-slot>
 
             <x-slot name="footer">
-                <x-jet-button wire:click.prevent="$toggle('showModalInformacao')" wire:loading.attr="disabled">
+                <x-jet-button wire:loading.attr="disabled" wire:click.prevent="$toggle('showModalInformacao')">
                     {{ __('Closer') }}
                 </x-jet-button>
             </x-slot>

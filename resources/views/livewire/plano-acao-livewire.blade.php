@@ -282,7 +282,7 @@
 
                                     ?>
 
-                                    <button type="button" wire:click.prevent="audit('{{ $corpoModalAudit }}')"><i class="fas fa-eye text-gray-600"></i></button>
+                                    <button type="button" wire:click.prevent="audit('{!! $result->cod_plano_de_acao !!}')"><i class="fas fa-eye text-gray-600"></i></button>
                                     &nbsp;
                                     &nbsp;
                                     @endif

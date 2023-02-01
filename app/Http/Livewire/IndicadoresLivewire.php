@@ -1398,7 +1398,6 @@ class IndicadoresLivewire extends Component
                         }
 
                         // Fim do trecho para a Linha de Base
-
                         // --- x --- x --- x --- x --- x --- x ---
 
                         // Início do trecho para Salvar a Linha de base
@@ -1406,7 +1405,6 @@ class IndicadoresLivewire extends Component
                         $saveLinhaBase->save();
 
                         // Fim do trecho para Salvar a Linha de base
-
                         // --- x --- x --- x --- x --- x --- x ---
 
                         // Início do trecho para a Meta Prevista Anual
@@ -1430,6 +1428,7 @@ class IndicadoresLivewire extends Component
                                 $saveMetaAno->save();
 
                                 // Fim do trecho para Salvar a Meta Prevista Anual
+                                // --- x --- x --- x --- x --- x --- x ---
 
                                 $modificacoes = $modificacoes . "<span class='mt-4 pt-4'>Inseriu o valor de <span class='text-green-800'><strong>".$this->$column_name."</strong></span> para a <strong>Meta Prevista Anual de ".$anos."</strong></span><br>";
 
@@ -1468,12 +1467,14 @@ class IndicadoresLivewire extends Component
                                     $saveMetaMensal->save();
 
                                     // Fim do trecho para Salvar a Meta Prevista Mensal
+                                    // --- x --- x --- x --- x --- x --- x ---
 
                                 }
 
                             }
 
                             // Fim do trecho para gravar a Meta Prevista Mensal
+                            // --- x --- x --- x --- x --- x --- x ---
 
                         }
 
@@ -1485,12 +1486,14 @@ class IndicadoresLivewire extends Component
                         ));
 
                         // Fim do trecho para a Meta Prevista Anual
+                        // --- x --- x --- x --- x --- x --- x ---
 
                         $this->showModalResultadoEdicao = true;
 
                         $this->mensagemResultadoEdicao = $modificacoes;
 
                         // Fim do trecho para inserir um novo indicador
+                        // --- x --- x --- x --- x --- x --- x ---
 
                     } else {
 
@@ -1535,7 +1538,6 @@ class IndicadoresLivewire extends Component
                         }
 
                         // Fim da parte para igualar a formatação do campo de valor
-
                         // --- x --- x --- x --- x --- x --- x ---
 
                         // Início da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados básicos do indicador
@@ -1621,7 +1623,6 @@ class IndicadoresLivewire extends Component
                         }
 
                         // Fim da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados básicos do indicador
-
                         // --- x --- x --- x --- x --- x --- x ---
 
                     }
@@ -1691,7 +1692,6 @@ class IndicadoresLivewire extends Component
                     }
 
                     // Fim da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Linha de Base do indicador
-
                     // --- x --- x --- x --- x --- x --- x ---
 
                     // Início da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Meta Prevista Anual do indicador
@@ -1759,6 +1759,7 @@ class IndicadoresLivewire extends Component
                             }
 
                             // Fim para verificar se houve modificação da Meta Prevista Anual
+                            // --- x --- x --- x --- x --- x --- x ---
 
                         } else {
 
@@ -1787,6 +1788,7 @@ class IndicadoresLivewire extends Component
                                 ));
 
                                 // Fim do trecho para Salvar a nova Meta Prevista Anual
+                                // --- x --- x --- x --- x --- x --- x ---
 
                                 $modificacoesMetaAno = $modificacoesMetaAno . "<span class='mt-4 pt-4'>Inseriu o valor de <span class='text-green-800'><strong>".$this->$column_name."</strong></span> para a <strong>Meta Prevista Anual de ".$anoLoop."</strong></span><br>";
 
@@ -1797,7 +1799,6 @@ class IndicadoresLivewire extends Component
                     }
 
                     // Fim da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Meta Prevista Anual do indicador
-
                     // --- x --- x --- x --- x --- x --- x ---
 
                     // Início da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Meta Prevista Mensal (evolucao_indicador) do indicador
@@ -1817,6 +1818,7 @@ class IndicadoresLivewire extends Component
 
                             if($consultar) {
 
+                                // Início do IF para verificar se o $this->$column_name_mes, que corresponde ao value do input da meta prevista por é diferente de nulo ou vazio. Caso seja nulo ou vazio será passado nulo (NULL) para este value.
                                 if(isset($this->$column_name_mes) && !is_null($this->$column_name_mes) && $this->$column_name_mes != '') {
 
                                     $this->$column_name_mes = $this->$column_name_mes;
@@ -1826,6 +1828,8 @@ class IndicadoresLivewire extends Component
                                     $this->$column_name_mes = NULL;
 
                                 }
+                                // Fim do IF para verificar se o $this->$column_name_mes, que corresponde ao value do input da meta prevista por é diferente de nulo ou vazio. Caso seja nulo ou vazio será passado nulo (NULL) para este value.
+                                // --- x --- x --- x --- x --- x --- x ---
 
                                 // Início para verificar se houve modificação da Meta Prevista Mensal
 
@@ -1868,6 +1872,7 @@ class IndicadoresLivewire extends Component
                                 }
 
                                 // Fim para verificar se houve modificação da Meta Prevista Mensal
+                                // --- x --- x --- x --- x --- x --- x ---
 
                             } else {
 
@@ -1900,6 +1905,7 @@ class IndicadoresLivewire extends Component
                                     ));
 
                                     // Fim do trecho para Salvar a nova Meta Prevista Mensal
+                                    // --- x --- x --- x --- x --- x --- x ---
 
                                 }
 
@@ -1910,7 +1916,6 @@ class IndicadoresLivewire extends Component
                     }
 
                     // Fim da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Meta Prevista Mensal (evolucao_indicador) do indicador
-
                     // --- x --- x --- x --- x --- x --- x ---
 
                     if(isset($modificacoes) && !is_null($modificacoes) && $modificacoes != '' || isset($modificacoesLinhaBase) && !is_null($modificacoesLinhaBase) && $modificacoesLinhaBase != '' || isset($modificacoesMetaAno) && !is_null($modificacoesMetaAno) && $modificacoesMetaAno != '' || isset($modificacoesMetaMes) && !is_null($modificacoesMetaMes) && $modificacoesMetaMes != '') {
@@ -1937,10 +1942,12 @@ class IndicadoresLivewire extends Component
                     }
 
                     // Fim do trecho para editar um indicador
+                    // --- x --- x --- x --- x --- x --- x ---
 
                 }
 
                 // Fim do trecho para gravação
+                // --- x --- x --- x --- x --- x --- x ---
 
                 $this->zerarVariaveis();
 

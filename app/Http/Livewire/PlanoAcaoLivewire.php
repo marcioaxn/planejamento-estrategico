@@ -817,9 +817,28 @@ class PlanoAcaoLivewire extends Component
 
     }
 
-    public function audit($texto = '') {
+    public function audit($cod_plano_de_acao = '') {
 
-        $this->mensagemDelete = $texto;
+        $result = PlanoAcao::with('servidorResponsavel','servidorSubstituto')
+        ->find($cod_plano_de_acao);
+
+        $corpoModalAudit = '';
+
+        $corpoModalAudit .= '<p class="text-gray-500 pl-2">Em: <strong>'.$result->tipoExecucao->dsc_tipo_execucao.' '.$result->num_nivel_hierarquico_apresentacao.'. '.$result->dsc_plano_de_acao.'</strong></p><br><table class="divide-gray-300 min-w-full border-collapse" style="font-size: 0.8rem!Important;"><thead><tr class=""><td class="px-2 py-2 border border-gray-200">#</td><td class="px-2 py-2 border border-gray-200">Ação</td><td class="px-2 py-2 border border-gray-200">Quem?</td><td class="px-2 py-2 border border-gray-200">Quando?</td></tr></thead><tbody>';
+
+        $contAcao = 1;
+
+        foreach($result->acoesRealizadas as $resultadoAcao) {
+
+            $corpoModalAudit .= '<tr><td class="px-2 py-2 border border-gray-200">'.$contAcao.'</td><td class="px-2 py-2 border border-gray-200">'.$resultadoAcao->acao.'</td><td class="px-2 py-2 border border-gray-200">'.$resultadoAcao->usuario->name.'</td><td class="px-2 py-2 border border-gray-200">'.formatarDataComCarbonForHumans($resultadoAcao->created_at).' em '.formatarTimeStampComCarbonParaBR($resultadoAcao->created_at).'</td></tr>';
+
+            $contAcao = $contAcao + 1;
+
+        }
+
+        $corpoModalAudit .= '</tbody></table>';
+
+        $this->mensagemDelete = $corpoModalAudit;
 
         $this->showModalAudit = true;
 
