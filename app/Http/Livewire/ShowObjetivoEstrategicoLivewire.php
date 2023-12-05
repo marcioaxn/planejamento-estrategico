@@ -313,17 +313,19 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                     $alteracao['vlr_realizado'] = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'PTBR', 'MYSQL', $this->vlr_realizado);
 
-                    $audit = Audit::create(array(
-                        'table' => 'tab_evolucao_indicador',
-                        'table_id' => $this->cod_evolucao_indicador,
-                        'column_name' => 'vlr_realizado',
-                        'data_type' => 'numeric',
-                        'ip' => $_SERVER['REMOTE_ADDR'],
-                        'user_id' => Auth::user()->id,
-                        'acao' => 'Editou',
-                        'antes' => formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'MYSQL', 'PTBR', $consultarEvolucaoIndicador->vlr_realizado),
-                        'depois' => $this->vlr_realizado
-                    ));
+                    $audit = Audit::create(
+                        array(
+                            'table' => 'tab_evolucao_indicador',
+                            'table_id' => $this->cod_evolucao_indicador,
+                            'column_name' => 'vlr_realizado',
+                            'data_type' => 'numeric',
+                            'ip' => $_SERVER['REMOTE_ADDR'],
+                            'user_id' => Auth::user()->id,
+                            'acao' => 'Editou',
+                            'antes' => formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'MYSQL', 'PTBR', $consultarEvolucaoIndicador->vlr_realizado),
+                            'depois' => $this->vlr_realizado
+                        )
+                    );
 
                     $modificacoes = $modificacoes . "Alterou o valor realizado de <span class='text-green-800'><strong>" . formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'MYSQL', 'PTBR', $consultarEvolucaoIndicador->vlr_realizado) . "</strong></span> para <span class='text-green-800'><strong>" . $this->vlr_realizado . "</strong></span> no mês de " . mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes) . "/" . $consultarEvolucaoIndicador->num_ano . "<br /><br />";
 
@@ -347,17 +349,19 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                     $alteracao['txt_avaliacao'] = $this->txt_avaliacao;
 
-                    $audit = Audit::create(array(
-                        'table' => 'tab_evolucao_indicador',
-                        'table_id' => $this->cod_evolucao_indicador,
-                        'column_name' => 'txt_avaliacao',
-                        'data_type' => 'numeric',
-                        'ip' => $_SERVER['REMOTE_ADDR'],
-                        'user_id' => Auth::user()->id,
-                        'acao' => 'Editou',
-                        'antes' => $consultarEvolucaoIndicador->txt_avaliacao,
-                        'depois' => $this->txt_avaliacao
-                    ));
+                    $audit = Audit::create(
+                        array(
+                            'table' => 'tab_evolucao_indicador',
+                            'table_id' => $this->cod_evolucao_indicador,
+                            'column_name' => 'txt_avaliacao',
+                            'data_type' => 'numeric',
+                            'ip' => $_SERVER['REMOTE_ADDR'],
+                            'user_id' => Auth::user()->id,
+                            'acao' => 'Editou',
+                            'antes' => $consultarEvolucaoIndicador->txt_avaliacao,
+                            'depois' => $this->txt_avaliacao
+                        )
+                    );
 
                     $modificacoes = $modificacoes . "Alterou a Avaliação Qualitativa do mês de " . mesNumeralParaExtenso($consultarEvolucaoIndicador->num_mes) . "/" . $consultarEvolucaoIndicador->num_ano . "<br /><br />De <span class='text-red-600'>" . nl2br($consultarEvolucaoIndicador->txt_avaliacao) . "</span><br /><br />Para <span class='text-green-600'>" . nl2br($this->txt_avaliacao) . "</span><br /><br />";
 
@@ -373,12 +377,14 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
             $consultarEvolucaoIndicador->update($alteracao);
 
-            $acao = Acoes::create(array(
-                'table' => 'tab_evolucao_indicador',
-                'table_id' => $this->cod_evolucao_indicador,
-                'user_id' => Auth::user()->id,
-                'acao' => $modificacoes
-            ));
+            $acao = Acoes::create(
+                array(
+                    'table' => 'tab_evolucao_indicador',
+                    'table_id' => $this->cod_evolucao_indicador,
+                    'user_id' => Auth::user()->id,
+                    'acao' => $modificacoes
+                )
+            );
 
             $this->showModalInformacao = true;
             $this->mensagemInformacao = $modificacoes;
@@ -773,6 +779,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                             foreach ($indicador->evolucaoIndicador as $evolucaoIndicador) {
 
+                                // dd("Aqui 8", $indicador->evolucaoIndicador, $evolucaoIndicador);
+
                                 if ($evolucaoIndicador->num_ano == $this->ano) {
 
                                     $dataChartLinhaBase = $dataChartLinhaBase . $num_linha_base . ',';
@@ -803,9 +811,21 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                                     } else {
 
-                                        $dataChartMetaPrevista = $dataChartMetaPrevista . $evolucaoIndicador->vlr_previsto . ',';
+                                        if (isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto) && $evolucaoIndicador->vlr_previsto != '') {
 
-                                        $dataChartMetaRealizada = $dataChartMetaRealizada . $evolucaoIndicador->vlr_realizado . ',';
+                                            $dataChartMetaPrevista = $dataChartMetaPrevista . $evolucaoIndicador->vlr_previsto . ',';
+
+                                        } else {
+                                            $dataChartMetaPrevista = $dataChartMetaPrevista . 0 . ',';
+                                        }
+
+                                        if (isset($evolucaoIndicador->vlr_realizado) && !is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado != '') {
+
+                                            $dataChartMetaRealizada = $dataChartMetaRealizada . $evolucaoIndicador->vlr_realizado . ',';
+
+                                        } else {
+                                            $dataChartMetaRealizada = $dataChartMetaRealizada . 0 . ',';
+                                        }
 
                                     }
 

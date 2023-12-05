@@ -35,7 +35,6 @@ function nomeTemaLimpo($tema = "")
     }
 
     return $temaLimpo;
-
 }
 
 function iconTema($tema = "")
@@ -73,7 +72,6 @@ function iconTema($tema = "")
     }
 
     return $icon;
-
 }
 
 function lerCurl($url = '')
@@ -98,7 +96,6 @@ function lerCurl($url = '')
     curl_close($curl);
 
     return json_decode($response);
-
 }
 
 function formatarDataComCarbonParaBR($data = '')
@@ -209,7 +206,6 @@ function converterTimeStamp($de, $para, $data = "0000-00-00")
 
                 return NULL;
             }
-
         } elseif ($de == "PTBR" && $para == "EN") {
             $dataVetor = explode("/", $data);
 
@@ -222,7 +218,6 @@ function converterTimeStamp($de, $para, $data = "0000-00-00")
 
                 return NULL;
             }
-
         } else
             return $data;
     }
@@ -240,19 +235,14 @@ function tirarTimeStamp($data)
         if (count($parte) > 0) {
 
             return $dataVetor[0] . "-" . $dataVetor[1] . "-" . $parte[0];
-
         } else {
 
             return $dataVetor[0] . "-" . $dataVetor[1] . "-" . $dataVetor[2];
-
         }
-
     } else {
 
         return $data;
-
     }
-
 }
 
 function converterTimeStampParaNormal($de, $para, $data = "0000-00-00")
@@ -271,7 +261,6 @@ function converterTimeStampParaNormal($de, $para, $data = "0000-00-00")
 
                 return NULL;
             }
-
         } elseif ($de == "PTBR" && $para == "EN") {
             $dataVetor = explode("/", $data);
 
@@ -284,7 +273,6 @@ function converterTimeStampParaNormal($de, $para, $data = "0000-00-00")
 
                 return NULL;
             }
-
         } else
             return $data;
     }
@@ -306,7 +294,6 @@ function converterData($de, $para, $data = "0000-00-00")
 
                 return NULL;
             }
-
         } elseif ($de == "PTBR" && $para == "EN") {
             $dataVetor = explode("/", $data);
 
@@ -317,7 +304,6 @@ function converterData($de, $para, $data = "0000-00-00")
 
                 return NULL;
             }
-
         } else
             return $data;
     }
@@ -650,7 +636,6 @@ function date_convert($de, $para, $data)
         } else
             return $data;
     }
-
 }
 
 function limpaNomeMinisterio($string)
@@ -726,7 +711,6 @@ function tiraApostrofo($string = '')
     $by = array('D ', 'd ');
 
     return str_replace($what, $by, $string);
-
 }
 
 function primeiraLetraMaiuscula($string, $firstAlwaysUpper = true, $encoding = "UTF-8")
@@ -737,14 +721,14 @@ function primeiraLetraMaiuscula($string, $firstAlwaysUpper = true, $encoding = "
     $r = "";
 
     for ($i = 0; $i < count($a); $i++) {
-        if (!$firstAlwaysUpper)
-            $r .= (strlen($a[$i]) <= 3) ? $a[$i] . ' ' : (in_array(mb_convert_case($a[$i], MB_CASE_LOWER, $encoding), $lc)) ? mb_convert_case($a[$i], MB_CASE_LOWER, $encoding) . ' ' : mb_convert_case($a[$i], MB_CASE_TITLE, $encoding) . ' ';
-
-        else {
-            if ($i == 0)
+        if (!$firstAlwaysUpper) {
+            // $r .= (strlen($a[$i]) <= 3) ? $a[$i] . ' ' : (in_array(mb_convert_case($a[$i], MB_CASE_LOWER, $encoding), $lc)) ? mb_convert_case($a[$i], MB_CASE_LOWER, $encoding) . ' ' : mb_convert_case($a[$i], MB_CASE_TITLE, $encoding) . ' ';
+        } else {
+            if ($i == 0) {
                 $r .= mb_convert_case($a[$i], MB_CASE_TITLE, $encoding) . ' ';
-            else
-                $r .= (strlen($a[$i]) <= 3) ? $a[$i] . ' ' : (in_array(mb_convert_case($a[$i], MB_CASE_LOWER, $encoding), $lc)) ? mb_convert_case($a[$i], MB_CASE_LOWER, $encoding) . ' ' : mb_convert_case($a[$i], MB_CASE_TITLE, $encoding) . ' ';
+            } else {
+                // $r .= (strlen($a[$i]) <= 3) ? $a[$i] . ' ' : (in_array(mb_convert_case($a[$i], MB_CASE_LOWER, $encoding), $lc)) ? mb_convert_case($a[$i], MB_CASE_LOWER, $encoding) . ' ' : mb_convert_case($a[$i], MB_CASE_TITLE, $encoding) . ' ';
+            }
         }
     }
     return trim($r);
@@ -897,10 +881,11 @@ if (!function_exists('uuid')) {
         $uuid[6] = chr(ord($uuid[6]) & 0xf | 0x40);
 
         return preg_replace(
-            '/(\w{8})(\w{4})(\w{4})(\w{4})(\w{12})/', '$1-$2-$3-$4-$5', bin2hex($uuid)
+            '/(\w{8})(\w{4})(\w{4})(\w{4})(\w{12})/',
+            '$1-$2-$3-$4-$5',
+            bin2hex($uuid)
         );
     }
-
 }
 
 if (!function_exists('is_uuid')) {
@@ -910,7 +895,6 @@ if (!function_exists('is_uuid')) {
         $pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-{$version}[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i";
         return !!preg_match($pattern, $uuid);
     }
-
 }
 
 function descricaoPermissao($permissao)
@@ -1227,13 +1211,12 @@ function abreviarSituacaoConvenio($situacao = '')
 
 function legenda()
 {
-    ?>
+?>
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
             <h6>Legenda:</h6>
             <ul class="list-group ">
-                <li class="list-group-item bg-primary"
-                    style="background-color: #9FCDFF !Important; padding: 3px !Important; padding-left: 17px !Important;">
+                <li class="list-group-item bg-primary" style="background-color: #9FCDFF !Important; padding: 3px !Important; padding-left: 17px !Important;">
                     Contrato/convênio concluído
                 </li>
             </ul>
@@ -1243,8 +1226,7 @@ function legenda()
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
             <h6>&nbsp;</h6>
             <ul class="list-group ">
-                <li class="list-group-item bg-success text-white"
-                    style="background-color: #4CA746 !Important; color: #FFFFFF !Important;padding: 3px !Important; padding-left: 17px !Important;">
+                <li class="list-group-item bg-success text-white" style="background-color: #4CA746 !Important; color: #FFFFFF !Important;padding: 3px !Important; padding-left: 17px !Important;">
                     Em execução, mas não precisa mais de Financeiro
                 </li>
             </ul>
@@ -1254,8 +1236,7 @@ function legenda()
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
             <h6>&nbsp;</h6>
             <ul class="list-group ">
-                <li class="list-group-item bg-danger text-white"
-                    style="background-color: #df4957 !Important; color: #FFFFFF !Important;padding: 3px !Important; padding-left: 17px !Important;">
+                <li class="list-group-item bg-danger text-white" style="background-color: #df4957 !Important; color: #FFFFFF !Important;padding: 3px !Important; padding-left: 17px !Important;">
                     Contrato/convênio cancelado ou anulado
                 </li>
             </ul>
@@ -1283,7 +1264,7 @@ function legenda()
             </ul>
         </div> -->
     </div>
-    <?php
+<?php
 }
 
 function url_exists($url)
@@ -1602,21 +1583,18 @@ function abreviacaoCargos($cargo = '')
     }
 
     return $abreviacao;
-
 }
 
 function passarTextoParaMaiusculo($texto = '')
 {
 
     return mb_strtoupper($texto, 'UTF-8');
-
 }
 
 function passarTextoParaMinusculo($texto = '')
 {
 
     return mb_strtolower($texto, 'UTF-8');
-
 }
 
 function sanitizeString($str)
@@ -1655,7 +1633,6 @@ function coloracaoStatus($tatus = '')
     }
 
     return $cor;
-
 }
 
 function estadoPorUf($estado = '')
@@ -1777,7 +1754,6 @@ function estadoPorUf($estado = '')
     }
 
     return $uf;
-
 }
 
 function nomeCampoNormalizado($campo)
@@ -2501,11 +2477,9 @@ function calcularPercentual($valorObtido = 0, $valorTotal = 0)
     if ($valorTotal != 0) {
 
         $resultado = formatarValorFloatMysql((($valorObtido / $valorTotal) * 100));
-
     }
 
     return $resultado;
-
 }
 
 function to_array($value): array
@@ -2537,7 +2511,6 @@ function acresentarZeroADireita($valor = '')
     // $quantidade == 6 ? $valor = '0'.$valor : $valor = $valor;
 
     return $valor;
-
 }
 
 function contains($palavra, $frase)
@@ -2554,7 +2527,6 @@ function formatCnpjCpf($value)
     }
 
     return preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "\$1.\$2.\$3/\$4-\$5", $cnpj_cpf);
-
 }
 
 function naoMostrarCpfCompleto($value)
@@ -2567,7 +2539,6 @@ function naoMostrarCpfCompleto($value)
     }
 
     return preg_replace("/(\d{1})(\d{3})(\d{3})(\d{4})(\d{1})/", "\$1.***.***-*\$6", $cnpj_cpf);
-
 }
 
 function pergarPrimeiraLetraUser($nameUser = "")
@@ -2578,7 +2549,6 @@ function pergarPrimeiraLetraUser($nameUser = "")
     is_array($partesNome) && $partesNome > 1 ? $sigla = mb_substr($partesNome[0], 0, 1, 'UTF-8') . mb_substr($partesNome[count($partesNome) - 1], 0, 1, 'UTF-8') : $sigla = mb_substr($partesNome[count($partesNome) - 1], 0, 1, 'UTF-8');
 
     return $sigla;
-
 }
 
 function tratamentoFormatoPorNomeColuna($column_name = "", $conteudo = "")
@@ -2609,7 +2579,6 @@ function tratamentoFormatoPorNomeColuna($column_name = "", $conteudo = "")
 
             $conteudo = $parte_01 . '.' . $parte_02 . '.' . $parte_03;
         }
-
     }
 
     if ($column_name === "num_processo_sei") {
@@ -2653,7 +2622,6 @@ function tratamentoFormatoPorNomeColuna($column_name = "", $conteudo = "")
                 }
             }
         }
-
     }
 
     if ($column_name === "bln_apto_inauguracao") {
@@ -2661,13 +2629,10 @@ function tratamentoFormatoPorNomeColuna($column_name = "", $conteudo = "")
         if ($conteudo === "1") {
 
             $conteudo = "SIM";
-
         }
-
     }
 
     return $conteudo;
-
 }
 
 function mascaraCodCipi($cod_cipi = '')
@@ -2687,8 +2652,6 @@ function mascaraCodCipi($cod_cipi = '')
         } else {
             $cod_cipi = '-';
         }
-
-
     }
 
     return $cod_cipi;
@@ -2769,11 +2732,9 @@ function resultadoPrimarioNomeCompleto($cod_resultado_primario = '')
                 $nomeCompleto = $cod_resultado_primario;
                 break;
         }
-
     }
 
     return $nomeCompleto;
-
 }
 
 function limpezaTexto($texto = "")
@@ -2787,7 +2748,6 @@ function limpezaTexto($texto = "")
     $texto = str_replace("  ", " ", $texto);
 
     return $texto;
-
 }
 
 function tirarPontoBarraTraco($texto = '')
@@ -2798,7 +2758,6 @@ function tirarPontoBarraTraco($texto = '')
         $texto = str_replace(".", "", $texto);
         $texto = str_replace("/", "", $texto);
         $texto = str_replace("-", "", $texto);
-
     }
 
     return $texto;
@@ -2839,7 +2798,6 @@ function prettify_numbers($number = '0', $decimals = 2, $int_only = false)
         if (is_array($primeiroNumero)) {
 
             $primeiroNumero[0] > 1 ? $simbol = ' Bilhões' : $simbol = ' Bilhão';
-
         }
     } // Mega : 1000000
     elseif ($number > '999999') {
@@ -2850,9 +2808,7 @@ function prettify_numbers($number = '0', $decimals = 2, $int_only = false)
         if (is_array($primeiroNumero)) {
 
             $primeiroNumero[0] > 1 ? $simbol = ' Milhões' : $simbol = ' Milhão';
-
         }
-
     } // Kilo : 1000
     elseif ($number > '999') {
         $number = bcdiv($number, '1000', $decimals);
@@ -3034,7 +2990,6 @@ function qualDadosCicloDeVidaEmpreendimento($prop_dsc_situacao_proposta = '')
                 $dados['faseCicloVida'] = 'A proposta foi eliminada em chamamento público';
                 break;
         }
-
     }
 
     return $dados;
@@ -3116,7 +3071,6 @@ function tipoPolaridade($polaridaade = '')
     }
 
     return $polaridaadePorExtenso;
-
 }
 
 function formatarValorConformeUnidadeMedida($unidadeMedida = '', $de = '', $para = '', $valor = '')
@@ -3129,13 +3083,10 @@ function formatarValorConformeUnidadeMedida($unidadeMedida = '', $de = '', $para
             if ($de === 'PTBR' && $para === 'MYSQL') {
 
                 $valor = converteValorSemCasasDecimais('PTBR', 'MYSQL', $valor);
-
             } elseif ($de === 'MYSQL' && $para === 'PTBR') {
 
                 $valor = converteValorSemCasasDecimais('MYSQL', 'PTBR', $valor);
-
             }
-
         }
 
         if ($unidadeMedida === 'Porcentagem' || $unidadeMedida === 'Dinheiro') {
@@ -3143,19 +3094,14 @@ function formatarValorConformeUnidadeMedida($unidadeMedida = '', $de = '', $para
             if ($de === 'PTBR' && $para === 'MYSQL') {
 
                 $valor = converteValor('PTBR', 'MYSQL', $valor);
-
             } elseif ($de === 'MYSQL' && $para === 'PTBR') {
 
                 $valor = converteValor('MYSQL', 'PTBR', $valor);
-
             }
-
         }
-
     }
 
     return $valor;
-
 }
 
 function tipoPerfil($cod_adm = '')
@@ -3176,11 +3122,8 @@ function tipoPerfil($cod_adm = '')
             default:
                 $descricao = null;
                 break;
-
         }
 
         return $descricao;
-
     }
-
 }
