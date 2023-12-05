@@ -67,10 +67,10 @@ class CalculoLivewire extends Component
             // Fim da parte para retornar o(s) cod(s)_organizacao relacionados ao cod_organizacao selecionado
             // --- x --- x --- x ---
 
-            // Início da parte para retornar o(s) plano(s) de ação(ões) relacionados ao 
+            // Início da parte para retornar o(s) plano(s) de ação(ões) relacionados ao
             // cod(s)_organizacao e por ano
             $getPlanoDeAcao = $planoAcao->getPlanoDeAcaoPorCodsOrganizacao($getCodsOrganization,$anoSelecionado);
-            // Fim da parte para retornar o(s) plano(s) de ação(ões) relacionados ao 
+            // Fim da parte para retornar o(s) plano(s) de ação(ões) relacionados ao
             // cod(s)_organizacao e por ano
             // --- x --- x --- x ---
 
@@ -138,7 +138,7 @@ class CalculoLivewire extends Component
                                                 }
 
                                             }
-                                            
+
 
                                         } else {
 
@@ -171,7 +171,7 @@ class CalculoLivewire extends Component
                                             }
 
                                         }
-                                        
+
 
                                     } else {
 
@@ -400,7 +400,7 @@ class CalculoLivewire extends Component
 
                 }
 
-                
+
                 $resultado['color'] = $getgrauSatisfacao['color'];
 
             } else {
@@ -568,7 +568,7 @@ class CalculoLivewire extends Component
 
                                                     // $totalPrevisto = $totalPrevistoAnual;
 
-                                                    $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                                    $totalRealizado .= $evolucaoIndicador->vlr_realizado;
 
                                                 }
 
@@ -588,7 +588,7 @@ class CalculoLivewire extends Component
 
                                             // $totalPrevisto = $totalPrevistoAnual;
 
-                                            $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                            $totalRealizado .= $evolucaoIndicador->vlr_realizado;
 
                                         }
 
@@ -647,7 +647,7 @@ class CalculoLivewire extends Component
 
                 }
 
-                
+
                 $resultado['color'] = $getgrauSatisfacao['color'];
 
             } else {
@@ -720,9 +720,9 @@ class CalculoLivewire extends Component
 
                                     } else {
 
-                                        $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                        $totalPrevisto .= $evolucaoIndicador->vlr_previsto;
 
-                                        $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                        $totalRealizado .= $evolucaoIndicador->vlr_realizado;
 
                                     }
 
@@ -740,9 +740,9 @@ class CalculoLivewire extends Component
 
                             } else {
 
-                                $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                $totalPrevisto .= $evolucaoIndicador->vlr_previsto;
 
-                                $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                $totalRealizado .= $evolucaoIndicador->vlr_realizado;
 
                             }
 
