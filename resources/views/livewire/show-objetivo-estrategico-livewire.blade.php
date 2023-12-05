@@ -320,14 +320,10 @@
                                             } else {
                                                 if (isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto) && $evolucaoIndicador->vlr_previsto != '') {
                                                     $totalPrevisto = $evolucaoIndicador->vlr_previsto;
-                                                } else {
-                                                    $totalPrevisto = 0;
                                                 }
 
-                                                if (isset($evolucaoIndicador->vlr_realizado) && !is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado != '') {
+                                                if (isset($evolucaoIndicador->vlr_realizado) && !is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado != '' && $evolucaoIndicador->vlr_realizado > 0) {
                                                     $totalRealizado = $evolucaoIndicador->vlr_realizado;
-                                                } else {
-                                                    $totalRealizado = 0;
                                                 }
                                             }
                                         }
@@ -339,14 +335,10 @@
                                         } else {
                                             if (isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto) && $evolucaoIndicador->vlr_previsto != '') {
                                                 $totalPrevisto = $evolucaoIndicador->vlr_previsto;
-                                            } else {
-                                                $totalPrevisto = 0;
                                             }
 
-                                            if (isset($evolucaoIndicador->vlr_realizado) && !is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado != '') {
+                                            if (isset($evolucaoIndicador->vlr_realizado) && !is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado != '' && $evolucaoIndicador->vlr_realizado > 0) {
                                                 $totalRealizado = $evolucaoIndicador->vlr_realizado;
-                                            } else {
-                                                $totalRealizado = 0;
                                             }
                                         }
                                     }

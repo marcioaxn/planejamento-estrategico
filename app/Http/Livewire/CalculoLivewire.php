@@ -30,7 +30,8 @@ class CalculoLivewire extends Component
 
     // Início do cálculo para encontrar o percentual alcançado por um determinado grupo de cod_organizacao
 
-    public function calcularPercentualMesSelecionadoCodsOrganizacao($cod_organizacao = '',$anoSelecionado = '', $mesSelecionado = '', $calcularSomenteOMes = false) {
+    public function calcularPercentualMesSelecionadoCodsOrganizacao($cod_organizacao = '', $anoSelecionado = '', $mesSelecionado = '', $calcularSomenteOMes = false)
+    {
 
         // O objetivo dessa função é calcular o (percentual alcançado) de um grupo de unidades da organização sendo que a função irá receber um cod_organizacao e a partir desse código irá encontrar as unidades que estão nos níveis abaixo hierarquicamente. A função também receberá o ano e o mês para realizar a consulta
 
@@ -60,7 +61,7 @@ class CalculoLivewire extends Component
         // Fim da instância do Componente Livewire da MetaPorAnoLivewire
         // --- x --- x --- x ---
 
-        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+        if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
             // Início da parte para retornar o(s) cod(s)_organizacao relacionados ao cod_organizacao selecionado
             $getCodsOrganization = $organization->hierarquiaInferiorCodOrganizacao($cod_organizacao);
@@ -69,7 +70,7 @@ class CalculoLivewire extends Component
 
             // Início da parte para retornar o(s) plano(s) de ação(ões) relacionados ao
             // cod(s)_organizacao e por ano
-            $getPlanoDeAcao = $planoAcao->getPlanoDeAcaoPorCodsOrganizacao($getCodsOrganization,$anoSelecionado);
+            $getPlanoDeAcao = $planoAcao->getPlanoDeAcaoPorCodsOrganizacao($getCodsOrganization, $anoSelecionado);
             // Fim da parte para retornar o(s) plano(s) de ação(ões) relacionados ao
             // cod(s)_organizacao e por ano
             // --- x --- x --- x ---
@@ -78,19 +79,19 @@ class CalculoLivewire extends Component
 
             $contPlanoAcao = 0;
 
-            foreach($getPlanoDeAcao as $planoAcao) {
+            foreach ($getPlanoDeAcao as $planoAcao) {
 
                 $resultadoCalculo = 0;
 
                 $cod_plano_de_acao = $planoAcao->cod_plano_de_acao;
 
-                if(isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+                if (isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
 
                     $indicadores = $indicadorClass->getIndicadorPorCodPlanoDeAcao($cod_plano_de_acao, $anoSelecionado);
 
                     $totalResultado = 0;
 
-                    foreach($indicadores as $indicador) {
+                    foreach ($indicadores as $indicador) {
 
                         $metaPorAno = $metaAno->getMetaPorAnoPorCodIndicadorEAno($indicador->cod_indicador, $anoSelecionado);
 
@@ -102,26 +103,26 @@ class CalculoLivewire extends Component
                         $totalPrevisto = 0;
                         $totalPrevistoAnual = 0;
 
-                        if(!is_null($indicador)) {
+                        if (!is_null($indicador)) {
 
-                            $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador',$indicador->cod_indicador)
-                            ->where('num_ano',$anoSelecionado)
-                            ->orderBy('num_mes')
-                            ->get();
+                            $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador', $indicador->cod_indicador)
+                                ->where('num_ano', $anoSelecionado)
+                                ->orderBy('num_mes')
+                                ->get();
 
-                            $consultarMetaAno = MetaAno::where('cod_indicador',$indicador->cod_indicador)
-                            ->where('num_ano',$anoSelecionado)
-                            ->first();
+                            $consultarMetaAno = MetaAno::where('cod_indicador', $indicador->cod_indicador)
+                                ->where('num_ano', $anoSelecionado)
+                                ->first();
 
-                            foreach($evolucaoIndicador as $evolucaoIndicador) {
+                            foreach ($evolucaoIndicador as $evolucaoIndicador) {
 
-                                if($anoSelecionado == $anoVigente) {
+                                if ($anoSelecionado == $anoVigente) {
 
-                                    if($evolucaoIndicador->num_mes <= $mesAnterior) {
+                                    if ($evolucaoIndicador->num_mes <= $mesAnterior) {
 
-                                        if($indicador->bln_acumulado === 'Sim') {
+                                        if ($indicador->bln_acumulado === 'Sim') {
 
-                                            if(!$calcularSomenteOMes) {
+                                            if (!$calcularSomenteOMes) {
 
                                                 $totalPrevistoAnual = $totalPrevistoAnual + $evolucaoIndicador->vlr_previsto;
 
@@ -129,7 +130,7 @@ class CalculoLivewire extends Component
 
                                             } else {
 
-                                                if($evolucaoIndicador->num_mes == $mesAnterior) {
+                                                if ($evolucaoIndicador->num_mes == $mesAnterior) {
 
                                                     $totalPrevistoAnual = $evolucaoIndicador->vlr_previsto;
 
@@ -152,9 +153,9 @@ class CalculoLivewire extends Component
 
                                 } else {
 
-                                    if($indicador->bln_acumulado === 'Sim') {
+                                    if ($indicador->bln_acumulado === 'Sim') {
 
-                                        if(!$calcularSomenteOMes) {
+                                        if (!$calcularSomenteOMes) {
 
                                             $totalPrevistoAnual = $totalPrevistoAnual + $evolucaoIndicador->vlr_previsto;
 
@@ -162,7 +163,7 @@ class CalculoLivewire extends Component
 
                                         } else {
 
-                                            if($evolucaoIndicador->num_mes == $mesAnterior) {
+                                            if ($evolucaoIndicador->num_mes == $mesAnterior) {
 
                                                 $totalPrevistoAnual = $evolucaoIndicador->vlr_previsto;
 
@@ -187,13 +188,13 @@ class CalculoLivewire extends Component
 
                         }
 
-                        $totalResultado = $totalResultado+$this->prc_alcancado($indicador->dsc_tipo,$totalRealizado,$totalPrevistoAnual);
+                        $totalResultado = $totalResultado + $this->prc_alcancado($indicador->dsc_tipo, $totalRealizado, $totalPrevistoAnual);
 
                     }
 
-                    if($indicadores->count() > 0) {
+                    if ($indicadores->count() > 0) {
 
-                        $resultadoCalculo = ($totalResultado)/$indicadores->count();
+                        $resultadoCalculo = ($totalResultado) / $indicadores->count();
 
                         $resultadoGeralCalculo = $resultadoGeralCalculo + $resultadoCalculo;
 
@@ -203,9 +204,9 @@ class CalculoLivewire extends Component
 
             }
 
-            if($getPlanoDeAcao->count() > 0) {
+            if ($getPlanoDeAcao->count() > 0) {
 
-                $prc_alcancado = round($resultadoGeralCalculo/$getPlanoDeAcao->count());
+                $prc_alcancado = round($resultadoGeralCalculo / $getPlanoDeAcao->count());
 
             } else {
 
@@ -220,7 +221,7 @@ class CalculoLivewire extends Component
             $resultado['quantidadePlanosDeAcao'] = $getPlanoDeAcao->count();
             $resultado['percentual_alcancado'] = $prc_alcancado;
 
-            if($getPlanoDeAcao->count() > 0) {
+            if ($getPlanoDeAcao->count() > 0) {
 
                 $resultado['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
 
@@ -252,47 +253,48 @@ class CalculoLivewire extends Component
 
     // Início do cálculo para encontrar o percentual alcançado por uma determinada unidade utilizando o conteúdo da função calcularAcumuladoObjetivoEstrategico, mas, agora, sem considerar o objetivo estratégico e sim a unidade organizacional
 
-    public function calcularPercentualMesSelecionado($cod_organizacao = '',$anoSelecionado = '', $mesSelecionado = '') {
+    public function calcularPercentualMesSelecionado($cod_organizacao = '', $anoSelecionado = '', $mesSelecionado = '')
+    {
 
         $resultado = [];
 
         $prc_alcancado = 0;
 
-        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+        if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
 
-            if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+            if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
-                $planosAcao = PlanoAcao::whereIn('cod_organizacao',[$cod_organizacao])
-                ->whereYear('dte_inicio','<=',$anoSelecionado)
-                ->whereYear('dte_fim','>=',$anoSelecionado)
-                ->get();
+                $planosAcao = PlanoAcao::whereIn('cod_organizacao', [$cod_organizacao])
+                    ->whereYear('dte_inicio', '<=', $anoSelecionado)
+                    ->whereYear('dte_fim', '>=', $anoSelecionado)
+                    ->get();
 
                 $resultadoGeralCalculo = 0;
 
                 $contPlanoAcao = 0;
 
-                foreach($planosAcao as $planoAcao) {
+                foreach ($planosAcao as $planoAcao) {
 
                     $resultadoCalculo = 0;
 
                     $cod_plano_de_acao = $planoAcao->cod_plano_de_acao;
 
-                    if(isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+                    if (isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
 
                         $planoAcao = PlanoAcao::find($cod_plano_de_acao);
 
-                        $indicadores = Indicador::where('cod_plano_de_acao',$cod_plano_de_acao)
-                        ->with('metaAno');
+                        $indicadores = Indicador::where('cod_plano_de_acao', $cod_plano_de_acao)
+                            ->with('metaAno');
 
-                        $indicadores = $indicadores->whereHas('metaAno', function ($query) use($anoSelecionado) {
-                            $query->where('num_ano',$anoSelecionado);
+                        $indicadores = $indicadores->whereHas('metaAno', function ($query) use ($anoSelecionado) {
+                            $query->where('num_ano', $anoSelecionado);
                         });
 
                         $indicadores = $indicadores->get();
 
                         $totalResultado = 0;
 
-                        foreach($indicadores as $indicador) {
+                        foreach ($indicadores as $indicador) {
 
                             $anoVigente = date('Y');
 
@@ -302,24 +304,24 @@ class CalculoLivewire extends Component
                             $totalPrevisto = 0;
                             $totalPrevistoAnual = 0;
 
-                            if(!is_null($indicador)) {
+                            if (!is_null($indicador)) {
 
-                                $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador',$indicador->cod_indicador)
-                                ->where('num_ano',$anoSelecionado)
-                                ->orderBy('num_mes')
-                                ->get();
+                                $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador', $indicador->cod_indicador)
+                                    ->where('num_ano', $anoSelecionado)
+                                    ->orderBy('num_mes')
+                                    ->get();
 
-                                $consultarMetaAno = MetaAno::where('cod_indicador',$indicador->cod_indicador)
-                                ->where('num_ano',$anoSelecionado)
-                                ->first();
+                                $consultarMetaAno = MetaAno::where('cod_indicador', $indicador->cod_indicador)
+                                    ->where('num_ano', $anoSelecionado)
+                                    ->first();
 
-                                foreach($evolucaoIndicador as $evolucaoIndicador) {
+                                foreach ($evolucaoIndicador as $evolucaoIndicador) {
 
-                                    if($anoSelecionado == $anoVigente) {
+                                    if ($anoSelecionado == $anoVigente) {
 
-                                        if($evolucaoIndicador->num_mes <= $mesAnterior) {
+                                        if ($evolucaoIndicador->num_mes <= $mesAnterior) {
 
-                                            if($indicador->bln_acumulado === 'Sim') {
+                                            if ($indicador->bln_acumulado === 'Sim') {
 
                                                 $totalPrevistoAnual = $totalPrevistoAnual + $evolucaoIndicador->vlr_previsto;
 
@@ -337,7 +339,7 @@ class CalculoLivewire extends Component
 
                                     } else {
 
-                                        if($indicador->bln_acumulado === 'Sim') {
+                                        if ($indicador->bln_acumulado === 'Sim') {
 
                                             $totalPrevistoAnual = $totalPrevistoAnual + $evolucaoIndicador->vlr_previsto;
 
@@ -357,13 +359,13 @@ class CalculoLivewire extends Component
 
                             }
 
-                            $totalResultado = $totalResultado+$this->prc_alcancado($indicador->dsc_tipo,$totalRealizado,$totalPrevistoAnual);
+                            $totalResultado = $totalResultado + $this->prc_alcancado($indicador->dsc_tipo, $totalRealizado, $totalPrevistoAnual);
 
                         }
 
-                        if($indicadores->count() > 0) {
+                        if ($indicadores->count() > 0) {
 
-                            $resultadoCalculo = ($totalResultado)/$indicadores->count();
+                            $resultadoCalculo = ($totalResultado) / $indicadores->count();
 
                             $resultadoGeralCalculo = $resultadoGeralCalculo + $resultadoCalculo;
 
@@ -373,9 +375,9 @@ class CalculoLivewire extends Component
 
                 }
 
-                if($planosAcao->count() > 0) {
+                if ($planosAcao->count() > 0) {
 
-                    $prc_alcancado = $resultadoGeralCalculo/$planosAcao->count();
+                    $prc_alcancado = $resultadoGeralCalculo / $planosAcao->count();
 
                 } else {
 
@@ -390,7 +392,7 @@ class CalculoLivewire extends Component
                 $resultado['quantidadePlanosDeAcao'] = $planosAcao->count();
                 $resultado['percentual_alcancado'] = $prc_alcancado;
 
-                if($planosAcao->count() > 0) {
+                if ($planosAcao->count() > 0) {
 
                     $resultado['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
 
@@ -421,55 +423,56 @@ class CalculoLivewire extends Component
 
     // Fim do cálculo para encontrar o percentual alcançado por uma determinada unidade utilizando o conteúdo da função calcularAcumuladoObjetivoEstrategico, mas, agora, sem considerar o objetivo estratégico e sim a unidade organizacional
 
-    public function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '',$anoSelecionado = '') {
+    public function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '', $anoSelecionado = '')
+    {
 
         $resultado = [];
 
         $prc_alcancado = 0;
 
-        if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '' && isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+        if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '' && isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
 
-            if(isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+            if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
                 $organizacoes = [];
 
-                $organization = Organization::where('cod_organizacao',$cod_organizacao)
-                ->get();
+                $organization = Organization::where('cod_organizacao', $cod_organizacao)
+                    ->get();
 
                 $organizationChild = Organization::orderBy('nom_organizacao')
-                ->get();
+                    ->get();
 
                 foreach ($organization as $result) {
 
                     $organizacoes[$result->cod_organizacao] = $result->cod_organizacao;
 
-                    foreach($organizationChild as $resultChild1) {
+                    foreach ($organizationChild as $resultChild1) {
 
-                        if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
+                        if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
 
                             $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->cod_organizacao;
 
                             foreach ($resultChild1->deshierarquia as $resultChild2) {
 
-                                if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
+                                if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
 
                                     $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->cod_organizacao;
 
                                     foreach ($resultChild2->deshierarquia as $resultChild3) {
 
-                                        if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
+                                        if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
 
                                             $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->cod_organizacao;
 
                                             foreach ($resultChild3->deshierarquia as $resultChild4) {
 
-                                                if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
+                                                if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
 
                                                     $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->cod_organizacao;
 
                                                     foreach ($resultChild4->deshierarquia as $resultChild5) {
 
-                                                        if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
+                                                        if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
                                                             $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->cod_organizacao;
 
@@ -495,70 +498,70 @@ class CalculoLivewire extends Component
 
                 }
 
-                $planosAcao = PlanoAcao::where('cod_objetivo_estrategico',$cod_objetivo_estrategico)
-                ->whereIn('cod_organizacao',$organizacoes)
-                ->whereYear('dte_inicio','<=',$anoSelecionado)
-                ->whereYear('dte_fim','>=',$anoSelecionado)
-                ->get();
+                $planosAcao = PlanoAcao::where('cod_objetivo_estrategico', $cod_objetivo_estrategico)
+                    ->whereIn('cod_organizacao', $organizacoes)
+                    ->whereYear('dte_inicio', '<=', $anoSelecionado)
+                    ->whereYear('dte_fim', '>=', $anoSelecionado)
+                    ->get();
 
                 $resultadoGeralCalculo = 0;
 
                 $contPlanoAcao = 0;
 
-                foreach($planosAcao as $planoAcao) {
+                foreach ($planosAcao as $planoAcao) {
 
                     $resultadoCalculo = 0;
 
                     $cod_plano_de_acao = $planoAcao->cod_plano_de_acao;
 
-                    if(isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+                    if (isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
 
                         $planoAcao = PlanoAcao::find($cod_plano_de_acao);
 
-                        $indicadores = Indicador::where('cod_plano_de_acao',$cod_plano_de_acao)
-                        ->with('metaAno');
+                        $indicadores = Indicador::where('cod_plano_de_acao', $cod_plano_de_acao)
+                            ->with('metaAno');
 
-                        $indicadores = $indicadores->whereHas('metaAno', function ($query) use($anoSelecionado) {
-                            $query->where('num_ano',$anoSelecionado);
+                        $indicadores = $indicadores->whereHas('metaAno', function ($query) use ($anoSelecionado) {
+                            $query->where('num_ano', $anoSelecionado);
                         });
 
                         $indicadores = $indicadores->get();
 
                         $totalResultado = 0;
 
-                        foreach($indicadores as $indicador) {
+                        foreach ($indicadores as $indicador) {
 
                             $anoVigente = date('Y');
 
                             $time = strtotime(date('Y-m-d'));
-                            $mesAnterior = (date("n", strtotime("-1 month", $time)))*1;
+                            $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
 
                             $totalRealizado = 0;
                             $totalPrevisto = 0;
                             $totalPrevistoAnual = 0;
 
-                            if(!is_null($indicador)) {
+                            if (!is_null($indicador)) {
 
-                                $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador',$indicador->cod_indicador)
-                                ->where('num_ano',$anoSelecionado)
-                                ->orderBy('num_mes')
-                                ->get();
+                                $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador', $indicador->cod_indicador)
+                                    ->where('num_ano', $anoSelecionado)
+                                    ->orderBy('num_mes')
+                                    ->get();
 
-                                $consultarMetaAno = MetaAno::where('cod_indicador',$indicador->cod_indicador)
-                                ->where('num_ano',$anoSelecionado)
-                                ->first();
+                                $consultarMetaAno = MetaAno::where('cod_indicador', $indicador->cod_indicador)
+                                    ->where('num_ano', $anoSelecionado)
+                                    ->first();
 
                                 $totalPrevistoAnual = $consultarMetaAno->meta;
 
-                                foreach($evolucaoIndicador as $evolucaoIndicador) {
+                                foreach ($evolucaoIndicador as $evolucaoIndicador) {
 
-                                    if($anoSelecionado == $anoVigente) {
+                                    if ($anoSelecionado == $anoVigente) {
 
-                                        if($mesAnterior != 12) {
+                                        if ($mesAnterior != 12) {
 
-                                            if($evolucaoIndicador->num_mes <= $mesAnterior) {
+                                            if ($evolucaoIndicador->num_mes <= $mesAnterior) {
 
-                                                if($indicador->bln_acumulado === 'Sim') {
+                                                if ($indicador->bln_acumulado === 'Sim') {
 
                                                     // $totalPrevisto = $totalPrevistoAnual;
 
@@ -578,7 +581,7 @@ class CalculoLivewire extends Component
 
                                     } else {
 
-                                        if($indicador->bln_acumulado === 'Sim') {
+                                        if ($indicador->bln_acumulado === 'Sim') {
 
                                             // $totalPrevisto = $totalPrevistoAnual;
 
@@ -600,15 +603,15 @@ class CalculoLivewire extends Component
 
                             // print($totalRealizado." - ".$totalPrevistoAnual."<br>");
 
-                            $totalResultado = $totalResultado+$this->prc_alcancado($indicador->dsc_tipo,$totalRealizado,$totalPrevistoAnual);
+                            $totalResultado = $totalResultado + $this->prc_alcancado($indicador->dsc_tipo, $totalRealizado, $totalPrevistoAnual);
 
                         }
 
-                        if($indicadores->count() > 0) {
+                        if ($indicadores->count() > 0) {
 
                             // print("Quantidade de Indicadores: ".$planosAcao->count()."<br>");
 
-                            $resultadoCalculo = ($totalResultado)/$indicadores->count();
+                            $resultadoCalculo = ($totalResultado) / $indicadores->count();
 
                             // print("Geral: ".$resultadoCalculo."<br>");
 
@@ -620,9 +623,9 @@ class CalculoLivewire extends Component
 
                 }
 
-                if($planosAcao->count() > 0) {
+                if ($planosAcao->count() > 0) {
 
-                    $prc_alcancado = $resultadoGeralCalculo/$planosAcao->count();
+                    $prc_alcancado = $resultadoGeralCalculo / $planosAcao->count();
 
                 } else {
 
@@ -637,7 +640,7 @@ class CalculoLivewire extends Component
                 $resultado['quantidadePlanosDeAcao'] = $planosAcao->count();
                 $resultado['percentual_alcancado'] = $prc_alcancado;
 
-                if($planosAcao->count() > 0) {
+                if ($planosAcao->count() > 0) {
 
                     $resultado['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
 
@@ -666,53 +669,54 @@ class CalculoLivewire extends Component
 
     }
 
-    public function calcularAcumuladoPlanoDeAcao($cod_plano_de_acao = '',$anoSelecionado = '') {
+    public function calcularAcumuladoPlanoDeAcao($cod_plano_de_acao = '', $anoSelecionado = '')
+    {
 
         $result = [];
 
         $resultadoCalculo = 0;
 
-        if(isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+        if (isset($cod_plano_de_acao) && !is_null($cod_plano_de_acao) && $cod_plano_de_acao != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
 
             $planoAcao = PlanoAcao::find($cod_plano_de_acao);
 
-            $indicadores = Indicador::where('cod_plano_de_acao',$cod_plano_de_acao)
-            ->with('metaAno');
+            $indicadores = Indicador::where('cod_plano_de_acao', $cod_plano_de_acao)
+                ->with('metaAno');
 
-            $indicadores = $indicadores->whereHas('metaAno', function ($query) use($anoSelecionado) {
-                $query->where('num_ano',$anoSelecionado);
+            $indicadores = $indicadores->whereHas('metaAno', function ($query) use ($anoSelecionado) {
+                $query->where('num_ano', $anoSelecionado);
             });
 
             $indicadores = $indicadores->get();
 
             $totalResultado = 0;
 
-            foreach($indicadores as $indicador) {
+            foreach ($indicadores as $indicador) {
 
                 $anoVigente = date('Y');
 
                 $time = strtotime(date('Y-m-d'));
-                $mesAnterior = (date("n", strtotime("-1 month", $time)))*1;
+                $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
 
                 $totalRealizado = 0;
                 $totalPrevisto = 0;
 
-                if(!is_null($indicador)) {
+                if (!is_null($indicador)) {
 
-                    $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador',$indicador->cod_indicador)
-                    ->where('num_ano',$anoSelecionado)
-                    ->orderBy('num_mes')
-                    ->get();
+                    $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador', $indicador->cod_indicador)
+                        ->where('num_ano', $anoSelecionado)
+                        ->orderBy('num_mes')
+                        ->get();
 
-                    foreach($evolucaoIndicador as $evolucaoIndicador) {
+                    foreach ($evolucaoIndicador as $evolucaoIndicador) {
 
-                        if($anoSelecionado == $anoVigente) {
+                        if ($anoSelecionado == $anoVigente) {
 
-                            if($mesAnterior != 12) {
+                            if ($mesAnterior != 12) {
 
-                                if($evolucaoIndicador->num_mes <= $mesAnterior) {
+                                if ($evolucaoIndicador->num_mes <= $mesAnterior) {
 
-                                    if($indicador->bln_acumulado === 'Sim') {
+                                    if ($indicador->bln_acumulado === 'Sim') {
 
                                         $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
 
@@ -732,7 +736,7 @@ class CalculoLivewire extends Component
 
                         } else {
 
-                            if($indicador->bln_acumulado === 'Sim') {
+                            if ($indicador->bln_acumulado === 'Sim') {
 
                                 $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
 
@@ -752,15 +756,15 @@ class CalculoLivewire extends Component
 
                 }
 
-                $totalResultado = $totalResultado+$this->prc_alcancado($indicador->dsc_tipo,$totalRealizado,$totalPrevisto);
+                $totalResultado = $totalResultado + $this->prc_alcancado($indicador->dsc_tipo, $totalRealizado, $totalPrevisto);
 
             }
 
-            if($indicadores->count() > 0) {
+            if ($indicadores->count() > 0) {
 
                 // print("Total: ".$totalResultado."<br>");
 
-                $resultadoCalculo = ($totalResultado)/$indicadores->count();
+                $resultadoCalculo = ($totalResultado) / $indicadores->count();
 
                 // print("Geral: ".$resultadoCalculo);
 
@@ -779,7 +783,8 @@ class CalculoLivewire extends Component
 
     }
 
-    public function calcularAcumuladoIndicador($cod_indicador = '',$anoSelecionado = '') {
+    public function calcularAcumuladoIndicador($cod_indicador = '', $anoSelecionado = '')
+    {
 
         // Tipo de conteúdo esperado de cada variável:
         // $tipoCalculo => texto;
@@ -800,34 +805,34 @@ class CalculoLivewire extends Component
 
         $result = [];
 
-        if(isset($cod_indicador) && !is_null($cod_indicador) && $cod_indicador != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+        if (isset($cod_indicador) && !is_null($cod_indicador) && $cod_indicador != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
 
             $indicador = Indicador::find($cod_indicador);
 
             $anoVigente = date('Y');
 
             $time = strtotime(date('Y-m-d'));
-            $mesAnterior = (date("n", strtotime("-1 month", $time)))*1;
+            $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
 
             $totalRealizado = 0;
             $totalPrevisto = 0;
 
-            if(!is_null($indicador)) {
+            if (!is_null($indicador)) {
 
-                $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador',$cod_indicador)
-                ->where('num_ano',$anoSelecionado)
-                ->orderBy('num_mes')
-                ->get();
+                $evolucaoIndicador = EvolucaoIndicador::where('cod_indicador', $cod_indicador)
+                    ->where('num_ano', $anoSelecionado)
+                    ->orderBy('num_mes')
+                    ->get();
 
-                foreach($evolucaoIndicador as $evolucaoIndicador) {
+                foreach ($evolucaoIndicador as $evolucaoIndicador) {
 
-                    if($anoSelecionado == $anoVigente) {
+                    if ($anoSelecionado == $anoVigente) {
 
-                        if($mesAnterior != 12) {
+                        if ($mesAnterior != 12) {
 
-                            if($evolucaoIndicador->num_mes <= $mesAnterior) {
+                            if ($evolucaoIndicador->num_mes <= $mesAnterior) {
 
-                                if($indicador->bln_acumulado === 'Sim') {
+                                if ($indicador->bln_acumulado === 'Sim') {
 
                                     $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
 
@@ -835,9 +840,13 @@ class CalculoLivewire extends Component
 
                                 } else {
 
-                                    $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                    if (!is_null($evolucaoIndicador->vlr_previsto) && $evolucaoIndicador->vlr_previsto > 0) {
+                                        $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                    }
 
-                                    $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                    if (!is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado > 0) {
+                                        $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                    }
 
                                 }
 
@@ -847,7 +856,7 @@ class CalculoLivewire extends Component
 
                     } else {
 
-                        if($indicador->bln_acumulado === 'Sim') {
+                        if ($indicador->bln_acumulado === 'Sim') {
 
                             $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
 
@@ -855,9 +864,13 @@ class CalculoLivewire extends Component
 
                         } else {
 
-                            $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                            if (!is_null($evolucaoIndicador->vlr_previsto) && $evolucaoIndicador->vlr_previsto > 0) {
+                                $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                            }
 
-                            $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                            if (!is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado > 0) {
+                                $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                            }
 
                         }
 
@@ -872,7 +885,7 @@ class CalculoLivewire extends Component
 
             }
 
-            $result = $this->obterResultadoComValorRealizadoEValorPrevisto($indicador->dsc_tipo,$totalRealizado,$totalPrevisto);
+            $result = $this->obterResultadoComValorRealizadoEValorPrevisto($indicador->dsc_tipo, $totalRealizado, $totalPrevisto);
 
             return $result;
 
@@ -887,7 +900,8 @@ class CalculoLivewire extends Component
 
     }
 
-    public function obterResultadoComValorRealizadoEValorPrevisto($dsc_tipo = '',$vlr_realizado = '',$vlr_previsto = '') {
+    public function obterResultadoComValorRealizadoEValorPrevisto($dsc_tipo = '', $vlr_realizado = '', $vlr_previsto = '')
+    {
 
         // Tipo de conteúdo esperado de cada variável:
         // $vlr_realizado => numeric;
@@ -901,34 +915,17 @@ class CalculoLivewire extends Component
         $result = [];
         $prc_alcancado = 0;
 
-        if(isset($dsc_tipo) && !is_null($dsc_tipo) && $dsc_tipo != '') {
+        if (isset($dsc_tipo) && !is_null($dsc_tipo) && $dsc_tipo != '') {
 
-            if(isset($vlr_previsto) && !is_null($vlr_previsto) && $vlr_previsto != '') {
+            if (isset($vlr_previsto) && !is_null($vlr_previsto) && $vlr_previsto != '') {
 
-                if(isset($vlr_realizado) && !is_null($vlr_realizado) && $vlr_realizado != '') {
+                if (isset($vlr_realizado) && !is_null($vlr_realizado) && $vlr_realizado != '') {
 
-                    if($dsc_tipo == '+') {
+                    if ($dsc_tipo == '+') {
 
-                        if($vlr_previsto > 0) {
+                        if ($vlr_previsto > 0) {
 
-                            $prc_alcancado = (($vlr_realizado/$vlr_previsto)*100);
-
-                            $grauSatisfacao = new GrauSatisfacaoLivewire;
-
-                            $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
-
-                            $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
-                            $result['color'] = $getgrauSatisfacao['color'];
-
-                        }
-
-                    }
-
-                    if($dsc_tipo == '-') {
-
-                        if($vlr_previsto > 0) {
-
-                            $prc_alcancado = ((1-($vlr_realizado-$vlr_previsto)/$vlr_previsto)*100)-100;
+                            $prc_alcancado = (($vlr_realizado / $vlr_previsto) * 100);
 
                             $grauSatisfacao = new GrauSatisfacaoLivewire;
 
@@ -941,11 +938,28 @@ class CalculoLivewire extends Component
 
                     }
 
-                    if($dsc_tipo == '=') {
+                    if ($dsc_tipo == '-') {
 
-                        if($vlr_previsto > 0) {
+                        if ($vlr_previsto > 0) {
 
-                            $prc_alcancado = 100-(100-($vlr_realizado/$vlr_previsto)*100);
+                            $prc_alcancado = ((1 - ($vlr_realizado - $vlr_previsto) / $vlr_previsto) * 100) - 100;
+
+                            $grauSatisfacao = new GrauSatisfacaoLivewire;
+
+                            $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
+
+                            $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
+                            $result['color'] = $getgrauSatisfacao['color'];
+
+                        }
+
+                    }
+
+                    if ($dsc_tipo == '=') {
+
+                        if ($vlr_previsto > 0) {
+
+                            $prc_alcancado = 100 - (100 - ($vlr_realizado / $vlr_previsto) * 100);
 
                             $grauSatisfacao = new GrauSatisfacaoLivewire;
 
@@ -982,7 +996,8 @@ class CalculoLivewire extends Component
 
     }
 
-    public function prc_alcancado($dsc_tipo = '',$vlr_realizado = '',$vlr_previsto = '') {
+    public function prc_alcancado($dsc_tipo = '', $vlr_realizado = '', $vlr_previsto = '')
+    {
 
         // Tipo de conteúdo esperado de cada variável:
         // $vlr_realizado => numeric;
@@ -996,37 +1011,37 @@ class CalculoLivewire extends Component
         $result = [];
         $prc_alcancado = 0;
 
-        if(isset($dsc_tipo) && !is_null($dsc_tipo) && $dsc_tipo != '') {
+        if (isset($dsc_tipo) && !is_null($dsc_tipo) && $dsc_tipo != '') {
 
-            if(isset($vlr_previsto) && !is_null($vlr_previsto) && $vlr_previsto != '') {
+            if (isset($vlr_previsto) && !is_null($vlr_previsto) && $vlr_previsto != '') {
 
-                if(isset($vlr_realizado) && !is_null($vlr_realizado) && $vlr_realizado != '') {
+                if (isset($vlr_realizado) && !is_null($vlr_realizado) && $vlr_realizado != '') {
 
-                    if($dsc_tipo == '+') {
+                    if ($dsc_tipo == '+') {
 
-                        if($vlr_previsto > 0) {
+                        if ($vlr_previsto > 0) {
 
-                            $prc_alcancado = (($vlr_realizado/$vlr_previsto)*100);
-
-                        }
-
-                    }
-
-                    if($dsc_tipo == '-') {
-
-                        if($vlr_previsto > 0) {
-
-                            $prc_alcancado = ((1-($vlr_realizado-$vlr_previsto)/$vlr_previsto)*100)-100;
+                            $prc_alcancado = (($vlr_realizado / $vlr_previsto) * 100);
 
                         }
 
                     }
 
-                    if($dsc_tipo == '=') {
+                    if ($dsc_tipo == '-') {
 
-                        if($vlr_previsto > 0) {
+                        if ($vlr_previsto > 0) {
 
-                            $prc_alcancado = 100-(100-($vlr_realizado/$vlr_previsto)*100);
+                            $prc_alcancado = ((1 - ($vlr_realizado - $vlr_previsto) / $vlr_previsto) * 100) - 100;
+
+                        }
+
+                    }
+
+                    if ($dsc_tipo == '=') {
+
+                        if ($vlr_previsto > 0) {
+
+                            $prc_alcancado = 100 - (100 - ($vlr_realizado / $vlr_previsto) * 100);
 
                         }
 
