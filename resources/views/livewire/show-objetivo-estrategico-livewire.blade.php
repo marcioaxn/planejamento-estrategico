@@ -318,9 +318,17 @@
 
                                                 $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
                                             } else {
-                                                $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                                if (isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto) && $evolucaoIndicador->vlr_previsto != '') {
+                                                    $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                                } else {
+                                                    $totalPrevisto = 0;
+                                                }
 
-                                                $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                                if (isset($evolucaoIndicador->vlr_realizado) && !is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado != '') {
+                                                    $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                                } else {
+                                                    $totalRealizado = 0;
+                                                }
                                             }
                                         }
                                     } else {
@@ -329,9 +337,17 @@
 
                                             $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
                                         } else {
-                                            $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                            if (isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto) && $evolucaoIndicador->vlr_previsto != '') {
+                                                $totalPrevisto = $evolucaoIndicador->vlr_previsto;
+                                            } else {
+                                                $totalPrevisto = 0;
+                                            }
 
-                                            $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                            if (isset($evolucaoIndicador->vlr_realizado) && !is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado != '') {
+                                                $totalRealizado = $evolucaoIndicador->vlr_realizado;
+                                            } else {
+                                                $totalRealizado = 0;
+                                            }
                                         }
                                     }
 
@@ -344,14 +360,12 @@
 
                             <?php $resultado = $this->calcularAcumuladoIndicador($indicador->cod_indicador, $this->anoSelecionado); ?>
 
-                            @if ($temMeta)
-                                <div class="pt-2 pb-1 pl-2 text-base text-lef bg-white-500 text-{!! $resultado['grau_de_satisfacao'] !!}-600 rounded-md border-2 border-gray-100 shadow cursor-pointer"
-                                    onclick="javascript: alterarIndicador('<?php print $indicador->cod_indicador; ?>');">
+                            <div class="pt-2 pb-1 pl-2 text-base text-lef bg-white-500 text-{!! $resultado['grau_de_satisfacao'] !!}-600 rounded-md border-2 border-gray-100 shadow cursor-pointer"
+                                onclick="javascript: alterarIndicador('<?php print $indicador->cod_indicador; ?>');">
 
-                                    <?php is_null($this->cod_indicador) && $contIndicador == 1 ? print '<i class="fas fa-arrow-circle-right"></i>&nbsp;' : print ' &nbsp;'; ?><?php $indicador->cod_indicador == $this->cod_indicador ? print '<i class="fas fa-arrow-circle-right"></i>&nbsp;' : print ' &nbsp;'; ?><strong>&nbsp;{!! $indicador->dsc_indicador !!}</strong>
+                                <?php is_null($this->cod_indicador) && $contIndicador == 1 ? print '<i class="fas fa-arrow-circle-right"></i>&nbsp;' : print ' &nbsp;'; ?><?php $indicador->cod_indicador == $this->cod_indicador ? print '<i class="fas fa-arrow-circle-right"></i>&nbsp;' : print ' &nbsp;'; ?><strong>&nbsp;{!! $indicador->dsc_indicador !!}</strong>
 
-                                </div>
-                            @endif
+                            </div>
 
                             <?php $contIndicador = $contIndicador + 1; ?>
                         @endforeach
@@ -445,17 +459,17 @@
 
                                 $("#btnTab" + i).removeClass(
                                     "inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-blue-600 active hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
-                                    );
+                                );
 
                                 $("#btnTab" + i).addClass(
                                     "inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
-                                    );
+                                );
 
                             }
 
                             $("#btnTab" + num_tab).addClass(
                                 "inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2 border-blue-600 active hover:text-gray-600 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
-                                );
+                            );
 
                             setTimeout(function() {
                                 $("#divConteudoTab" + num_tab).fadeIn("slow");
@@ -506,7 +520,8 @@
 
                                                                 <th
                                                                     class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                                    <strong>Meta</strong></th>
+                                                                    <strong>Meta</strong>
+                                                                </th>
 
                                                                 <?php $contMes = 1; ?>
 
@@ -527,11 +542,13 @@
                                                                         <th
                                                                             class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
                                                                             <strong>Acumulado até
-                                                                                {!! mesNumeralParaExtensoCurto($this->mesAnterior) !!}</strong></th>
+                                                                                {!! mesNumeralParaExtensoCurto($this->mesAnterior) !!}</strong>
+                                                                        </th>
                                                                     @else
                                                                         <th
                                                                             class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                                            <strong>Total</strong></th>
+                                                                            <strong>Total</strong>
+                                                                        </th>
                                                                     @endif
 
                                                                 @endif
@@ -546,7 +563,8 @@
 
                                                                 <td
                                                                     class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                                    <strong>Prevista</strong></td>
+                                                                    <strong>Prevista</strong>
+                                                                </td>
 
                                                                 <?php
                                                                 $contMes = 1;
@@ -603,7 +621,8 @@
 
                                                                 <td
                                                                     class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                                    <strong>Realizada</strong></td>
+                                                                    <strong>Realizada</strong>
+                                                                </td>
 
                                                                 <?php $contMes = 1; ?>
 
@@ -904,16 +923,20 @@
                                         <tr class="border-b">
 
                                             <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                <strong></strong>Mês</th>
+                                                <strong></strong>Mês
+                                            </th>
                                             <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                <strong>Meta Prevista</strong></th>
+                                                <strong>Meta Prevista</strong>
+                                            </th>
                                             <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                <strong>Meta Realizada</strong></th>
+                                                <strong>Meta Realizada</strong>
+                                            </th>
 
                                             <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
                                                 A<strong>valiação qualitativa</strong></th>
                                             <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
-                                                <strong>Arquivos</strong></th>
+                                                <strong>Arquivos</strong>
+                                            </th>
 
                                         </tr>
 
@@ -927,7 +950,8 @@
 
                                                     <td
                                                         class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                        <strong>{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</strong></td>
+                                                        <strong>{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</strong>
+                                                    </td>
 
                                                     <?php
 
