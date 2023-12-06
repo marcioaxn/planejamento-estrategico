@@ -146,7 +146,7 @@
                                 $resultPlanoAcao->cod_plano_de_acao,
                         ) !!}">
 
-                            <div class="text-base text-center bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-white rounded-md border-2 border-{!! $resultado['grau_de_satisfacao'] !!}-50 border-opacity-25 shadow-md cursor-pointer"
+                            <div class="text-base text-center bg-{!! $resultado['grau_de_satisfacao'] !!} text-white rounded-md border-2 border-{!! $resultado['grau_de_satisfacao'] !!}-50 border-opacity-25 shadow-md cursor-pointer"
                                 onclick="javascript: alterarPlanoAcao('<?php print $resultPlanoAcao->cod_plano_de_acao; ?>');">
                                 <?php is_null($this->cod_plano_de_acao) && $contPlanoAcao == 1 ? print '<i class="fas fa-arrow-circle-right"></i> ' : print ''; ?><?php $resultPlanoAcao->cod_plano_de_acao == $this->cod_plano_de_acao ? print '<i class="fas fa-arrow-circle-right"></i> ' : print ''; ?>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $this->objetivoEstrategico->num_nivel_hierarquico_apresentacao !!}.{!! $resultPlanoAcao->num_nivel_hierarquico_apresentacao !!}
                             </div>
@@ -649,7 +649,7 @@
 
 
                                                                                             <div
-                                                                                                class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+                                                                                                class="bg-{!! $resultado['grau_de_satisfacao'] !!} text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
                                                                                                 {!! formatarValorConformeUnidadeMedida(
                                                                                                     $this->indicador->dsc_unidade_medida,
@@ -733,7 +733,7 @@
 
             <td class="text-sm text-gray-900 font-light whitespace-nowrap text-right">
 
-                <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+                <div class="bg-{!! $resultado['grau_de_satisfacao'] !!} text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
                     {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida, 'MYSQL', 'PTBR', $totalRealizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
 
@@ -1005,7 +1005,7 @@
 
 
                                                                         <div
-                                                                            class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+                                                                            class="bg-{!! $resultado['grau_de_satisfacao'] !!} text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
                                                                             {!! formatarValorConformeUnidadeMedida(
                                                                                 $this->indicador->dsc_unidade_medida,
@@ -1061,7 +1061,7 @@
 
 
                                                                 <div
-                                                                    class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+                                                                    class="bg-{!! $resultado['grau_de_satisfacao'] !!} text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
                                                                     {!! formatarValorConformeUnidadeMedida(
                                                                         $this->indicador->dsc_unidade_medida,
