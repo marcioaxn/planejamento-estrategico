@@ -931,7 +931,7 @@ class CalculoLivewire extends Component
 
                             $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
 
-                            $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
+                            $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'] . '-500';
                             $result['color'] = $getgrauSatisfacao['color'];
 
                         }
@@ -948,7 +948,7 @@ class CalculoLivewire extends Component
 
                             $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
 
-                            $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
+                            $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'] . '-500';
                             $result['color'] = $getgrauSatisfacao['color'];
 
                         }
@@ -965,7 +965,7 @@ class CalculoLivewire extends Component
 
                             $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
 
-                            $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
+                            $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'] . '-500';
                             $result['color'] = $getgrauSatisfacao['color'];
 
                         }
