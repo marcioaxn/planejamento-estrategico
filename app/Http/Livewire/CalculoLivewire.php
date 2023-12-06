@@ -976,7 +976,7 @@ class CalculoLivewire extends Component
 
                     // O resultado será a cor relativa para 'Não houve o preenchimento';
 
-                    $result['grau_de_satisfacao'] = 'pink';
+                    $result['grau_de_satisfacao'] = 'pink-800';
                     $result['color'] = 'white';
 
                 }
