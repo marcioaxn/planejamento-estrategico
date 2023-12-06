@@ -707,7 +707,7 @@
 
 
                                                                                     <div
-                                                                                        class="bg-{!! $resultado['grau_de_satisfacao'] !!} text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+                                                                                        class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
                                                                                         {!! formatarValorConformeUnidadeMedida(
                                                                                             $this->indicador->dsc_unidade_medida,
