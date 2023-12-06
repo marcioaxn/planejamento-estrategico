@@ -932,7 +932,7 @@ class CalculoLivewire extends Component
                             $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
 
                             $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
-                            $result['color'] = $getgrauSatisfacao['color'];
+                            $result['color'] = $getgrauSatisfacao['color'] . '-500';
 
                         }
 
@@ -949,7 +949,7 @@ class CalculoLivewire extends Component
                             $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
 
                             $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
-                            $result['color'] = $getgrauSatisfacao['color'];
+                            $result['color'] = $getgrauSatisfacao['color'] . '-500';
 
                         }
 
@@ -966,7 +966,7 @@ class CalculoLivewire extends Component
                             $getgrauSatisfacao = $grauSatisfacao->obterGrauSatisfacao($prc_alcancado);
 
                             $result['grau_de_satisfacao'] = $getgrauSatisfacao['grau_de_satisfacao'];
-                            $result['color'] = $getgrauSatisfacao['color'];
+                            $result['color'] = $getgrauSatisfacao['color'] . '-500';
 
                         }
 
@@ -976,7 +976,7 @@ class CalculoLivewire extends Component
 
                     // O resultado será a cor relativa para 'Não houve o preenchimento';
 
-                    $result['grau_de_satisfacao'] = 'pink';
+                    $result['grau_de_satisfacao'] = 'pink-800';
                     $result['color'] = 'white';
 
                 }
