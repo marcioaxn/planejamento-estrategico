@@ -352,7 +352,7 @@
 
                             <?php $resultado = $this->calcularAcumuladoIndicador($indicador->cod_indicador, $this->anoSelecionado); ?>
 
-                            <div class="pt-2 pb-1 pl-2 text-base text-lef bg-white-500 text-{!! $resultado['grau_de_satisfacao'] !!}-600 rounded-md border-2 border-gray-100 shadow cursor-pointer"
+                            <div class="pt-2 pb-1 pl-2 text-base text-lef bg-white-500 text-{!! $resultado['grau_de_satisfacao'] !!}-<?php $resultado['grau_de_satisfacao'] != 'pink' ? print('600') : print('800') ?> rounded-md border-2 border-gray-100 shadow cursor-pointer"
                                 onclick="javascript: alterarIndicador('<?php print $indicador->cod_indicador; ?>');">
 
                                 <?php is_null($this->cod_indicador) && $contIndicador == 1 ? print '<i class="fas fa-arrow-circle-right"></i>&nbsp;' : print ' &nbsp;'; ?><?php $indicador->cod_indicador == $this->cod_indicador ? print '<i class="fas fa-arrow-circle-right"></i>&nbsp;' : print ' &nbsp;'; ?><strong>&nbsp;{!! $indicador->dsc_indicador !!}</strong>
@@ -733,7 +733,7 @@
 
             <td class="text-sm text-gray-900 font-light whitespace-nowrap text-right">
 
-                <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+                <div class="bg-{!! $resultado['grau_de_satisfacao'] !!}-<?php $resultado['grau_de_satisfacao'] != 'pink' ? print('500') : print('800') ?> text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
                     {!! formatarValorConformeUnidadeMedida($this->indicador->dsc_unidade_medida, 'MYSQL', 'PTBR', $totalRealizado) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
 
