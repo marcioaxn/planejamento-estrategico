@@ -292,6 +292,8 @@ class UsuariosLivewire extends Component
                 // Início do IF para ter a certeza de que o usuário não existe no banco de dados
                 if (!$consultaUsuario) {
 
+                    $complementoInformacao = null;
+
                     $gravarNovoUsuario = new User;
 
                     $gravarNovoUsuario->name = $this->name;
@@ -319,8 +321,6 @@ class UsuariosLivewire extends Component
                     */
 
                     if ($this->adm == 2) {
-
-                        $complementoInformacao = null;
 
                         $complementoInformacao = "<br /><br /><span class='text-red-700'>No caso desse(a) usuário(a) que o perfil é de Gestor(a), você poderá no menu <strong>Administração do Sistema</strong> e submenu <strong>Plano de Ação</strong> efetuar a indicação se ele(a) atuará como Servidor(a) Responsável ou como Servidor(a) Substituto(a) num determinado Plano de Ação.<br /><br />Se o Plano de Ação ainda não foi criado essa indicação é feita no momento da criação, mas se já foi o caminho será editar o Plano de Ação e dessa forma efetuar a indicação.</span>";
 
