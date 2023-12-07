@@ -159,7 +159,7 @@ class UsuariosLivewire extends Component
                 // Início do IF para verificar se houve alteração no perfil de usuário
                 if ($consultaUsuario->adm != $this->adm) {
 
-                    $alteracao['adm'] = ($this->adm)*1;
+                    $alteracao['adm'] = ($this->adm) * 1;
 
                     $consultaUsuario->adm == 1 ? $perfilTabela = "Super administrador(a)" : $perfilTabela = "Gestor(a)";
                     $this->adm == 1 ? $perfilForm = "Super administrador(a)" : $perfilForm = "Gestor(a)";
@@ -252,7 +252,6 @@ class UsuariosLivewire extends Component
                 // --- x --- x --- x ---
 
                 // Este ELSE é para o caso do usuário ter clicado em Editar, mas não fizera nenhuma alteração
-
                 else {
 
                     $this->showModalResultadoEdicao = true;
@@ -264,7 +263,6 @@ class UsuariosLivewire extends Component
             }
             // Fim do IF que verifica se existe o ID do usuário, pois se existir será a parte do update
             // --- x --- x --- x ---
-
             else {
 
                 // Início da consulta para verificar se esse usuário já está cadastrado
@@ -312,10 +310,13 @@ class UsuariosLivewire extends Component
                     $email = $this->email;
                     $nome = $this->name;
 
+                    // Descomentar quando houver um servidor de e-mail configurado. Além de tirar este endereço 'maxnprojetos@gmail.com' e incluir o endereço correto.
+                    /*
                     Mail::send('email.cadastro', ['name' => $nome, 'textoEmail' => $textoEmail, 'header' => $header], function ($message) use ($email, $nome, $assunto, $header) {
                         $message->to($email, $nome)->subject($assunto);
                         $message->from('maxnprojetos@gmail.com', config('app.name'));
                     });
+                    */
 
                     if ($this->adm == 2) {
 
