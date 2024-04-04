@@ -219,6 +219,12 @@
 
                                         <div class="border-t blue-gray-100"></div>
 
+                                        <x-jet-dropdown-link href="{{ url($ano . '/adm/indicador-objetivo-estrategico') }}" :active="request()->routeIs('indicadores.objetivo-estrategico')">
+                                            {{ __('Indicadores dos Objetivos Estratégicos') }}
+                                        </x-jet-dropdown-link>
+
+                                        <div class="border-t blue-gray-100"></div>
+
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/plano-de-acao') }}"
                                             :active="request()->routeIs('planoAcao')">
                                             {{ __('Plano de Ação') }}
@@ -227,7 +233,7 @@
                                         <div class="border-t blue-gray-100"></div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/indicador') }}" :active="request()->routeIs('indicadores')">
-                                            {{ __('Indicadores') }}
+                                            {{ __('Indicadores do Plano de Ação') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>

@@ -12,6 +12,7 @@ use App\Http\Livewire\{
     MissaoVisaoValoresLivewire,
     PerspectivaLivewire,
     ObjetivoEstrategicoLivewire,
+    IndicadoresObjetivoEstrategicoLivewire,
     PlanoAcaoLivewire,
     IndicadoresLivewire,
     GrauSatisfacaoLivewire,
@@ -38,7 +39,7 @@ Route::get('/', function () {
     return redirect()->action(ShowDashboard::class, ['ano' => $ano, 'cod_organizacao' => $cod_organizacao]);
 })->name('pei.principal');
 
-Route::get('{ano?}/dashboard',DashboardLivewire::class)->name('dashboard');
+Route::get('{ano?}/dashboard', DashboardLivewire::class)->name('dashboard');
 
 // Route::PATCH('{ano}',[PrincipalController::class, 'index']);
 // Route::get('{ano}',[PrincipalController::class, 'index']);
@@ -63,12 +64,13 @@ Route::group(['middleware' => ['auth:sanctum', 'verified', 'auth', 'trocarSenha'
 
     Route::get('{ano}/adm/objetivo-estrategico', ObjetivoEstrategicoLivewire::class)->name('objetivoEstragico');
 
+    Route::get('{ano}/adm/indicador-objetivo-estrategico', IndicadoresObjetivoEstrategicoLivewire::class)->name('indicadores.objetivo-estrategico');
+
     Route::get('{ano}/adm/plano-de-acao', PlanoAcaoLivewire::class)->name('planoAcao');
 
     Route::get('{ano}/adm/indicador', IndicadoresLivewire::class)->name('indicadores');
 
     Route::get('{ano}/adm/grau-satisfacao', GrauSatisfacaoLivewire::class)->name('grauSatisfacao');
-
 });
 
 Route::get('{ano}/unidade/{cod_organizacao}/perspectiva/{cod_perspectiva}/objetivo-estrategico/{cod_objetivo_estrategico}/plano-de-acao/{cod_plano_de_acao?}', ShowObjetivoEstrategicoLivewire::class)->name('pei.showObjetivoEstrategico');
