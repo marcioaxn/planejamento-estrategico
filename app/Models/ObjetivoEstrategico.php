@@ -12,7 +12,7 @@ class ObjetivoEstrategico extends Model
 {
     use Uuids;
     use SoftDeletes;
-    
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -24,21 +24,39 @@ class ObjetivoEstrategico extends Model
 
     protected $guarded = array();
 
-    public function perspectiva() {
+    public function perspectiva()
+    {
 
         return $this->belongsTo(Perspectiva::class, 'cod_perspectiva');
 
     }
 
-    public function planosDeAcao() {
+    public function primeiroIndicador()
+    {
 
-        if(Session::has('cod_plano_de_acao')) {
+        return $this->hasOne(Indicador::class, 'cod_objetivo_estrategico')
+            ->orderBy('created_at', 'DESC');
+
+    }
+
+    public function indicadores()
+    {
+
+        return $this->hasMany(Indicador::class, 'cod_objetivo_estrategico')
+            ->orderBy('dsc_indicador');
+
+    }
+
+    public function planosDeAcao()
+    {
+
+        if (Session::has('cod_plano_de_acao')) {
 
             $cod_plano_de_acao = Session::get('cod_plano_de_acao');
 
             return $this->hasMany(PlanoAcao::class, 'cod_objetivo_estrategico')
-            ->with('tipoExecucao')
-            ->where('cod_plano_de_acao','=',$cod_plano_de_acao);
+                ->with('tipoExecucao')
+                ->where('cod_plano_de_acao', '=', $cod_plano_de_acao);
 
         } else {
 
@@ -48,17 +66,18 @@ class ObjetivoEstrategico extends Model
 
     }
 
-    public function planosDeAcaoPorArea() {
+    public function planosDeAcaoPorArea()
+    {
 
-        if(Session::has('cod_organizacao')) {
+        if (Session::has('cod_organizacao')) {
 
             $cod_organizacao = Session::get('cod_organizacao');
 
             return $this->hasMany(PlanoAcao::class, 'cod_objetivo_estrategico')
-            ->with('tipoExecucao')
-            ->whereIn('cod_organizacao',$cod_organizacao)
-            ->whereYear('dte_inicio','<=',Session::get('anoSelecionado'))
-            ->whereYear('dte_fim','>=',Session::get('anoSelecionado'));
+                ->with('tipoExecucao')
+                ->whereIn('cod_organizacao', $cod_organizacao)
+                ->whereYear('dte_inicio', '<=', Session::get('anoSelecionado'))
+                ->whereYear('dte_fim', '>=', Session::get('anoSelecionado'));
 
         } else {
 
@@ -67,5 +86,5 @@ class ObjetivoEstrategico extends Model
         }
 
     }
-    
+
 }
