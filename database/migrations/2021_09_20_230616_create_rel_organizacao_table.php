@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateRelOrganizacaoTable extends Migration
 {
-    
+
     public function up()
     {
         Schema::create('rel_organizacao', function (Blueprint $table) {
