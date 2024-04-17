@@ -25,24 +25,24 @@
 
         <div class="w-full md:w-1/2 px-3 md:px-1 md:pl-3 pt-1 md:mb-0 pt-2">
 
-            <div class="flex items-center justify-center text-center h-18 sm:h-16 md:h-28 lg:h-20 xl:h-18 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-stone-50 rounded-md text-stone-700 text-sm shadow ">
-                <span class="text-stone-800 align-text-top"><strong>Missão</strong>:</span>&nbsp;{{ $this->missaoVisaoValores->dsc_missao }}
+            <div class="items-center justify-center text-center h-32 sm:h-24 md:h-28 lg:h-24 xl:h-24 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-stone-50 rounded-md text-stone-700 text-base shadow ">
+                <span class="text-stone-800 align-text-top pb-1"><strong>Missão</strong>:</span><p class="pt-1">{{ $this->missaoVisaoValores->dsc_missao }}</p>
             </div>
 
         </div>
 
         <div class="w-full md:w-1/2 px-3 md:px-1 md:pr-3 pt-1 md:mb-0 pt-2">
 
-            <div class="flex items-center justify-center text-center h-18 sm:h-16 md:h-28 lg:h-20 xl:h-18 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-stone-50 rounded-md text-stone-700 text-sm shadow ">
-                <span class="text-stone-800"><strong>Visão</strong>:</span>&nbsp;{{ $this->missaoVisaoValores->dsc_visao }}
+            <div class="items-center justify-center text-center h-32 sm:h-24 md:h-28 lg:h-24 xl:h-24 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-stone-50 rounded-md text-stone-700 text-base shadow ">
+                <span class="text-stone-800 align-text-top pb-1"><strong>Visão</strong>:</span><p class="pt-1">{{ $this->missaoVisaoValores->dsc_visao }}</p>
             </div>
 
         </div>
 
         <div class="w-full md:w-1/1 px-3 pt-1 md:mb-0 pt-2">
 
-            <div class="flex items-center justify-center text-center h-18 sm:h-16 md:h-28 lg:h-20 xl:h-18 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-stone-50 rounded-md text-stone-700 text-sm shadow ">
-            <span class="text-stone-800"><strong>Valores</strong>:</span>&nbsp;{{ $this->missaoVisaoValores->dsc_valores }}
+            <div class="items-center justify-center text-center h-32 sm:h-24 md:h-28 lg:h-24 xl:h-24 pt-3 pb-3 md:pt-5 md:pb-6 lg:pt-2 lg:pb-2 xl:pt-0 xl:pb-0 pl-3 pr-3 bg-stone-50 rounded-md text-stone-700 text-base shadow ">
+            <span class="text-stone-800 align-text-top pb-1"><strong>Valores</strong>:</span><p class="pt-1">{{ $this->missaoVisaoValores->dsc_valores }}</p>
             </div>
 
         </div>
@@ -87,14 +87,17 @@
             @php
                 if($resultPerspectiva->num_nivel_hierarquico_apresentacao == 1) {
                     $colorBg = 'purple-200 text-purple-800';
+                    $border = 'border-purple-200';
                 } elseif($resultPerspectiva->num_nivel_hierarquico_apresentacao == 2) {
                     $colorBg = 'sky-100 text-sky-700';
+                    $border = 'border-sky-200';
                 } else {
                     $colorBg = 'fuchsia-200 text-fuchsia-800';
+                    $border = 'border-fuchsia-200';
                 }
             @endphp
 
-            <div class="bg-{{ $colorBg }} bg-opacity-50 text-lg px-1 pt-1 pb-1 pl-3 pr-3"><span class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}. </span><strong>{!! $resultPerspectiva->dsc_perspectiva !!}</strong></div>
+            <div class="bg-{{ $colorBg . ' ' . $border }} bg-opacity-50 text-lg px-1 pt-1 pb-1 pl-3 pr-3"><span class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}. </span><strong>{!! $resultPerspectiva->dsc_perspectiva !!}</strong></div>
 
             @if($resultPerspectiva->objetivosEstrategicos->count() > 0)
 
@@ -104,7 +107,7 @@
 
                 <a href="{!! url($this->ano.'/unidade/'.$this->cod_organizacao.'/perspectiva/'.$resultPerspectiva->cod_perspectiva.'/objetivo-estrategico/'.$resultObjetivoEstragico->cod_objetivo_estrategico.'/plano-de-acao') !!}" >
 
-                    <div class="pt-2 pb-2 pl-3 pr-3 bg-white rounded-md border-2 border-gray-50 border-opacity-25 shadow ">
+                    <div class="pt-2 pb-2 pl-3 pr-3 bg-white rounded-md border-2 {{ $border }} border-opacity-50 shadow ">
 
                         <div id="load-objetivo-estrategico-{!! $resultObjetivoEstragico->cod_objetivo_estrategico !!}" class="max-w-sm w-full mx-auto">
 
@@ -134,7 +137,7 @@
 
                         <div  id="objetivo-estrategico-{!! $resultObjetivoEstragico->cod_objetivo_estrategico !!}" class="w-full" style="width: 100%!Important; display: none;">
 
-                            <p class="w-full text-sm text-left text-gray-600 h-24 " style="width: 100%!Important;"><strong>OE {!! $resultObjetivoEstragico->num_nivel_hierarquico_apresentacao !!}.</strong> {!! $resultObjetivoEstragico->dsc_objetivo_estrategico !!}</p>
+                            <p class="w-full text-lg text-start text-gray-600 h-32 " style="width: 100%!Important;"><strong>OE {!! $resultObjetivoEstragico->num_nivel_hierarquico_apresentacao !!}.</strong> {!! $resultObjetivoEstragico->dsc_objetivo_estrategico !!}</p>
 
                             <div class="w-full pt-1" style="width: 100%!Important;">
 

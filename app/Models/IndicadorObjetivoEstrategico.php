@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Indicador extends Model
+class IndicadorObjetivoEstrategico extends Model
 {
     use Uuids;
     use SoftDeletes;
-    
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -50,5 +50,5 @@ class Indicador extends Model
         ->orderBy('created_at','desc');
 
     }
-    
+
 }

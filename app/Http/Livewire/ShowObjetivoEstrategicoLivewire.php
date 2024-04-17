@@ -11,6 +11,7 @@ use App\Models\RelOrganization;
 use App\Models\MissaoVisaoValores;
 use App\Models\Perspectiva;
 use App\Models\ObjetivoEstrategico;
+use App\Models\IndicadorObjetivoEstrategico;
 use App\Models\PlanoAcao;
 use App\Models\Indicador;
 use App\Models\EvolucaoIndicador;
@@ -75,6 +76,10 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public $txt_avaliacao = null;
 
     public $objetivoEstragico = [];
+
+    public $indicadoresObjetivoEstrategico = [];
+
+    public $cod_indicador_objetivo_estrategico_selecionado = null;
 
     public $indicador = [];
     public $cod_indicador_selecionado = null;
@@ -578,6 +583,16 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $this->pei = $pei;
 
+        $indicadoresObjetivoEstrategico = IndicadorObjetivoEstrategico::with('linhaBase', 'metaAno', 'evolucaoIndicador', 'acoesRealizadas');
+
+        if (isset($this->cod_objetivo_estrategico) && !empty($this->cod_objetivo_estrategico)) {
+            $indicadoresObjetivoEstrategico = $indicadoresObjetivoEstrategico->where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico);
+        }
+
+        $indicadoresObjetivoEstrategico = $indicadoresObjetivoEstrategico->get();
+
+        $this->indicadoresObjetivoEstrategico = $indicadoresObjetivoEstrategico;
+
         $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_objetivo_estrategico AS dsc_objetivo_estrategico, cod_objetivo_estrategico"));
 
         if (isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '' && $perspectiva->count() > 0) {
@@ -592,13 +607,16 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $anoSelecionado = $this->anoSelecionado;
 
+        // Tirar este trecho
         $objetivoEstrategico = $objetivoEstrategico->orderBy('num_nivel_hierarquico_apresentacao')
             ->with('perspectiva')
             ->pluck('dsc_objetivo_estrategico', 'cod_objetivo_estrategico');
+        // Tirar esse trecho
 
         $this->objetivoEstragico = $objetivoEstrategico;
 
-        $objetivoEstrategico = ObjetivoEstrategico::find($this->cod_objetivo_estrategico);
+        $objetivoEstrategico = ObjetivoEstrategico::with('primeiroIndicador', 'primeiroIndicador.linhaBase', 'primeiroIndicador.metaAno', 'primeiroIndicador.evolucaoIndicador')
+        ->find($this->cod_objetivo_estrategico);
 
         $this->objetivoEstrategico = $objetivoEstrategico;
 
@@ -778,8 +796,6 @@ class ShowObjetivoEstrategicoLivewire extends Component
                             $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
 
                             foreach ($indicador->evolucaoIndicador as $evolucaoIndicador) {
-
-                                // dd("Aqui 8", $indicador->evolucaoIndicador, $evolucaoIndicador);
 
                                 if ($evolucaoIndicador->num_ano == $this->ano) {
 
