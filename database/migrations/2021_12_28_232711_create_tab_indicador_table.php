@@ -14,7 +14,12 @@ class CreateTabIndicadorTable extends Migration
             $table->foreignUuid('cod_plano_de_acao')->nullable()->references('cod_plano_de_acao')->on('pei.tab_plano_de_acao');
             $table->foreignUuid('cod_objetivo_estrategico')->nullable()->references('cod_objetivo_estrategico')->on('pei.tab_objetivo_estrategico');
             $table->text('dsc_tipo')->nullable(false);
+            $table->text('nom_indicador')->nullable(false);
             $table->text('dsc_indicador')->nullable(false);
+            $table->text('txt_observacao')->nullable(false);
+            $table->text('dsc_meta')->nullable(false);
+            $table->text('dsc_atributos')->nullable(false);
+            $table->text('dsc_referencial_comparativo')->nullable(false);
             $table->text('dsc_unidade_medida')->nullable(false);
             $table->smallInteger('num_peso')->nullable(true);
             $table->string('bln_acumulado')->nullable(false);

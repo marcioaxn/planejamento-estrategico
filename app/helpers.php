@@ -2275,20 +2275,20 @@ function nomeCampoTabelaNormalizado($campo)
         case 'vlr_maximo':
             $campoNormalizado = 'Percentual máximo aceitável';
             break;
-        case '':
-            $campoNormalizado = '';
+        case 'nom_indicador':
+            $campoNormalizado = 'Nome do indicador';
             break;
-        case '':
-            $campoNormalizado = '';
+        case 'txt_observacao':
+            $campoNormalizado = 'Observação';
             break;
-        case '':
-            $campoNormalizado = '';
+        case 'dsc_meta':
+            $campoNormalizado = 'Descrição da Meta';
             break;
-        case '':
-            $campoNormalizado = '';
+        case 'dsc_atributos':
+            $campoNormalizado = 'Atributos';
             break;
-        case '':
-            $campoNormalizado = '';
+        case 'dsc_referencial_comparativo':
+            $campoNormalizado = 'Referencial comparativo';
             break;
         case '':
             $campoNormalizado = '';
