@@ -115,7 +115,25 @@
 
                     </div>
 
-                    <div class="w-full md:w-3/3 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-2/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_indicador" value="Nome do Indicador" />
+                            {!! Form::text('nom_indicador', null, [
+                                'class' =>
+                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
+                                'id' => 'nom_indicador',
+                                'placeholder' => 'Escreva o nome do indicador',
+                                'required' => 'required',
+                                'style' => 'width: 100%',
+                                'wire:model' => 'nom_indicador',
+                            ]) !!}
+                            <x-jet-input-error for="nom_indicador" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="dsc_indicador" value="Descrição do Indicador" />
@@ -134,7 +152,83 @@
 
                     </div>
 
-                    <div class="w-full md:w-3/3 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelopcional for="txt_observacao" value="Observações" />
+                            {!! Form::textarea('txt_observacao', null, [
+                                'class' =>
+                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
+                                'id' => 'txt_observacao',
+                                'placeholder' => 'Escreva a descrição do indicador',
+                                'rows' => 2,
+                                'required' => 'required',
+                                'style' => 'width: 100%',
+                                'wire:model' => 'txt_observacao',
+                            ]) !!}
+                            <x-jet-input-error for="txt_observacao" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_meta" value="Descrição da Meta" />
+                            {!! Form::textarea('dsc_meta', null, [
+                                'class' =>
+                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
+                                'id' => 'dsc_meta',
+                                'placeholder' => 'Escreva a descrição do indicador',
+                                'rows' => 2,
+                                'required' => 'required',
+                                'style' => 'width: 100%',
+                                'wire:model' => 'dsc_meta',
+                            ]) !!}
+                            <x-jet-input-error for="dsc_meta" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelopcional for="dsc_atributos" value="Atributos" />
+                            {!! Form::textarea('dsc_atributos', null, [
+                                'class' =>
+                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
+                                'id' => 'dsc_atributos',
+                                'placeholder' => 'Escreva a descrição do indicador',
+                                'rows' => 2,
+                                'required' => 'required',
+                                'style' => 'width: 100%',
+                                'wire:model' => 'dsc_atributos',
+                            ]) !!}
+                            <x-jet-input-error for="dsc_atributos" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelopcional for="dsc_referencial_comparativo" value="Referencial comparativo" />
+                            {!! Form::textarea('dsc_referencial_comparativo', null, [
+                                'class' =>
+                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
+                                'id' => 'dsc_referencial_comparativo',
+                                'placeholder' => 'Escreva a descrição do indicador',
+                                'rows' => 2,
+                                'required' => 'required',
+                                'style' => 'width: 100%',
+                                'wire:model' => 'dsc_referencial_comparativo',
+                            ]) !!}
+                            <x-jet-input-error for="dsc_referencial_comparativo" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelopcional for="dsc_formula" value="Fórmula do Indicador" />

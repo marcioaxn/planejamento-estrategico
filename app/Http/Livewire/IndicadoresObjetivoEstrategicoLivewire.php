@@ -37,7 +37,18 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
     public $indicadores = [];
 
+    public $nom_indicador = null;
+
     public $dsc_indicador = null;
+
+    public $txt_observacao = null;
+
+    public $dsc_meta = null;
+
+    public $dsc_atributos = null;
+
+    public $dsc_referencial_comparativo = null;
+
     public $dsc_formula = null;
 
     public $unidadesMedida = ['Quantidade' => 'Quantidade', 'Porcentagem' => 'Porcentagem', 'Dinheiro' => 'Dinheiro R$ 0,00 (real)'];
@@ -447,7 +458,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
         // Início do IF para verificar se a variável $cods_organizacao contem algum conteúdo
         if (isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '') {
 
-            $indicador = Indicador::orderBy('dsc_indicador')
+            $indicador = Indicador::orderBy('nom_indicador')
                 ->where('cod_objetivo_estrategico', $cod_objetivo_estrategico)
                 ->with('metaAno');
 
@@ -1094,6 +1105,19 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                         // --- x --- x --- x --- x --- x --- x ---
 
+                        // Início do trecho para o nome do indicador
+
+                        if (isset($this->nom_indicador) && !is_null($this->nom_indicador) && $this->nom_indicador != '') {
+
+                            $save->nom_indicador = $this->nom_indicador;
+
+                            $modificacoes = $modificacoes . "Nome do indicador: <strong><span class='text-green-800'>" . $this->nom_indicador . "</span></strong><br>";
+                        }
+
+                        // Fim do trecho para o nome do indicador
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
                         // Início do trecho para a descrição do indicador
 
                         if (isset($this->dsc_indicador) && !is_null($this->dsc_indicador) && $this->dsc_indicador != '') {
@@ -1104,6 +1128,58 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
                         }
 
                         // Fim do trecho para a descrição do indicador
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para a observação
+
+                        if (isset($this->txt_observacao) && !is_null($this->txt_observacao) && $this->txt_observacao != '') {
+
+                            $save->txt_observacao = $this->txt_observacao;
+
+                            $modificacoes = $modificacoes . "Observação: <strong><span class='text-green-800'>" . $this->txt_observacao . "</span></strong><br>";
+                        }
+
+                        // Fim do trecho para a observação
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para a descrição meta
+
+                        if (isset($this->dsc_meta) && !is_null($this->dsc_meta) && $this->dsc_meta != '') {
+
+                            $save->dsc_meta = $this->dsc_meta;
+
+                            $modificacoes = $modificacoes . "Descrição da meta: <strong><span class='text-green-800'>" . $this->dsc_meta . "</span></strong><br>";
+                        }
+
+                        // Fim do trecho para a descrição meta
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para os atributos do indicador
+
+                        if (isset($this->dsc_atributos) && !is_null($this->dsc_atributos) && $this->dsc_atributos != '') {
+
+                            $save->dsc_atributos = $this->dsc_atributos;
+
+                            $modificacoes = $modificacoes . "Atributos do indicador: <strong><span class='text-green-800'>" . $this->dsc_atributos . "</span></strong><br>";
+                        }
+
+                        // Fim do trecho para os atributos do indicador
+
+                        // --- x --- x --- x --- x --- x --- x ---
+
+                        // Início do trecho para o referencial comparativo do indicador
+
+                        if (isset($this->dsc_referencial_comparativo) && !is_null($this->dsc_referencial_comparativo) && $this->dsc_referencial_comparativo != '') {
+
+                            $save->dsc_referencial_comparativo = $this->dsc_referencial_comparativo;
+
+                            $modificacoes = $modificacoes . "Referencial comparativo do indicador: <strong><span class='text-green-800'>" . $this->dsc_referencial_comparativo . "</span></strong><br>";
+                        }
+
+                        // Fim do trecho para o referencial comparativo do indicador
 
                         // --- x --- x --- x --- x --- x --- x ---
 
