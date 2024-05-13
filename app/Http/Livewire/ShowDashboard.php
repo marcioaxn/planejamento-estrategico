@@ -29,6 +29,8 @@ class ShowDashboard extends Component
 
     public $grau_satisfacao = null;
 
+    public $calcularAcumuladoIndicadoresObjetivoEstrategico;
+
     public $calcularAcumuladoObjetivoEstrategico;
 
     public $calculoPorArea = null;
@@ -60,7 +62,6 @@ class ShowDashboard extends Component
         if (!Auth::guest() && Auth::user()->trocarsenha === 1) {
 
             return redirect('/user/profile');
-
         }
 
         $this->ano = $ano;
@@ -68,15 +69,22 @@ class ShowDashboard extends Component
         if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
             $this->cod_organizacao = $cod_organizacao;
-
         } else {
 
             $this->cod_organizacao = null;
-
         }
 
         $session->put("ano", $this->ano);
+    }
 
+    protected function calcularAcumuladoIndicadoresObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '', $anoSelecionado = '')
+    {
+
+        $calcular = new CalculoLivewire;
+
+        $result = $calcular->calcularAcumuladoIndicadoresObjetivoEstrategico($cod_organizacao, $cod_objetivo_estrategico, $anoSelecionado);
+
+        return $result;
     }
 
     protected function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '', $anoSelecionado = '')
@@ -87,7 +95,6 @@ class ShowDashboard extends Component
         $result = $calcular->calcularAcumuladoObjetivoEstrategico($cod_organizacao, $cod_objetivo_estrategico, $anoSelecionado);
 
         return $result;
-
     }
 
     public function render($ano = '', $cod_organizacao = '')
@@ -96,11 +103,9 @@ class ShowDashboard extends Component
         if (isset($this->ano) && !is_null($this->ano) && $this->ano != '' && is_numeric($this->ano)) {
 
             $this->ano = $this->ano;
-
         } else {
 
             $this->ano = date('Y');
-
         }
 
         Session()->forget('cod_organizacao');
@@ -113,33 +118,29 @@ class ShowDashboard extends Component
         $cod_organizacao = $this->cod_organizacao;
 
         $this->pei = Pei::where('num_ano_inicio_pei', '<=', $ano)
-        ->where('num_ano_fim_pei', '>=', $ano)
-        ->first();
+            ->where('num_ano_fim_pei', '>=', $ano)
+            ->first();
 
         $nom_organizacao = $this->nom_organizacao;
 
         if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
-
-
-
         } else {
 
             $consultarOrganizacaoDeVisualizacao = Organization::select('cod_organizacao')
-            ->whereColumn('cod_organizacao', 'rel_cod_organizacao')
-            ->first();
+                ->whereColumn('cod_organizacao', 'rel_cod_organizacao')
+                ->first();
 
             $this->cod_organizacao = $consultarOrganizacaoDeVisualizacao->cod_organizacao;
-
         }
 
         $organizacoes = [];
 
         $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
-        ->get();
+            ->get();
 
         $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
-        ->orderBy('nom_organizacao')
-        ->get();
+            ->orderBy('nom_organizacao')
+            ->get();
 
         foreach ($organization as $result) {
 
@@ -174,27 +175,16 @@ class ShowDashboard extends Component
                                                 if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
                                                     $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->sgl_organizacao . ' - ' . $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
-
                                                 }
-
                                             }
-
                                         }
-
                                     }
-
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         $this->organization = $organizacoes;
@@ -208,26 +198,23 @@ class ShowDashboard extends Component
             if (isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
 
                 $missaoVisaoValores = $missaoVisaoValores->where('cod_organizacao', $this->cod_organizacao);
-
             }
 
             $this->missaoVisaoValores = $missaoVisaoValores->first();
 
             $this->perspectiva = Perspectiva::where('cod_pei', $this->pei->cod_pei)
-            ->with('objetivosEstrategicos')
-            ->orderBy('num_nivel_hierarquico_apresentacao', 'desc')
-            ->get();
+                ->with('objetivosEstrategicos')
+                ->orderBy('num_nivel_hierarquico_apresentacao', 'desc')
+                ->get();
 
             $this->grau_satisfacao = $this->grauSatisfacao();
 
-            return view('livewire.show-dashboard', ['ano' => $ano, 'cod_organizacao' => $this->cod_organizacao]);
-
+            return view('livewire.mapa-estrategico.show-dashboard', ['ano' => $ano, 'cod_organizacao' => $this->cod_organizacao]);
         } else {
 
             $this->existePei = false;
 
-            return view('livewire.show-dashboard', ['ano' => $ano, 'cod_organizacao' => $this->cod_organizacao]);
-
+            return view('livewire.mapa-estrategico.show-dashboard', ['ano' => $ano, 'cod_organizacao' => $this->cod_organizacao]);
         }
     }
 
@@ -235,8 +222,8 @@ class ShowDashboard extends Component
     {
 
         $organizacao = Organization::with('hierarquia')
-        ->where('cod_organizacao', $cod_organizacao)
-        ->get();
+            ->where('cod_organizacao', $cod_organizacao)
+            ->get();
 
         $hierarquiaSuperior = null;
 
@@ -249,8 +236,8 @@ class ShowDashboard extends Component
                     $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result2->sgl_organizacao;
 
                     $organizacao2 = Organization::with('hierarquia')
-                    ->where('cod_organizacao', $result2->cod_organizacao)
-                    ->get();
+                        ->where('cod_organizacao', $result2->cod_organizacao)
+                        ->get();
 
                     foreach ($organizacao2 as $result3) {
 
@@ -261,8 +248,8 @@ class ShowDashboard extends Component
                                 $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result4->sgl_organizacao;
 
                                 $organizacao3 = Organization::with('hierarquia')
-                                ->where('cod_organizacao', $result4->cod_organizacao)
-                                ->get();
+                                    ->where('cod_organizacao', $result4->cod_organizacao)
+                                    ->get();
 
                                 foreach ($organizacao3 as $result5) {
 
@@ -273,8 +260,8 @@ class ShowDashboard extends Component
                                             $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result6->sgl_organizacao;
 
                                             $organizacao4 = Organization::with('hierarquia')
-                                            ->where('cod_organizacao', $result6->cod_organizacao)
-                                            ->get();
+                                                ->where('cod_organizacao', $result6->cod_organizacao)
+                                                ->get();
 
                                             foreach ($organizacao4 as $result7) {
 
@@ -283,40 +270,27 @@ class ShowDashboard extends Component
                                                     foreach ($result7->hierarquia as $result8) {
 
                                                         $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result8->sgl_organizacao;
-
                                                     }
-
                                                 }
-
                                             }
-
                                         }
-
                                     }
-
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         return $hierarquiaSuperior;
-
     }
 
     public function grauSatisfacao()
     {
 
         $consultarGrauSatisfacao = GrauSatisfacao::orderBy('vlr_minimo')
-        ->get();
+            ->get();
 
         $montagemGrauSatisfacao = '';
 
@@ -327,11 +301,9 @@ class ShowDashboard extends Component
             if ($grauSatisfacao->cor === 'yellow') {
 
                 $color = 'white';
-
             }
 
             $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-' . $color . ' bg-' . $grauSatisfacao->cor . '-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">' . $grauSatisfacao->dsc_grau_satisfcao . ' de ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_minimo) . '% a ' . converteValor('MYSQL', 'PTBR', $grauSatisfacao->vlr_maximo) . '%</div>';
-
         }
 
         // $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-gray-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">Sem meta prevista para o período</div>';
@@ -339,6 +311,5 @@ class ShowDashboard extends Component
         // $montagemGrauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-white bg-pink-800 text-sm antialiased sm:subpixel-antialiased md:antialiased">Não houve o preenchimento</div>';
 
         return $montagemGrauSatisfacao;
-
     }
 }
