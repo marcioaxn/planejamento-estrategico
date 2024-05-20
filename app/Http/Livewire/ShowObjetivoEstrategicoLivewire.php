@@ -417,6 +417,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public function render()
     {
 
+
         Session()->forget('cod_plano_de_acao_identificado');
 
         $this->cod_plano_de_acao = $this->cod_plano_de_acao;
