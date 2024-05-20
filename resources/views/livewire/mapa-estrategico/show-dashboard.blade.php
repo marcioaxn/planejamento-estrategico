@@ -37,17 +37,17 @@
 
         </div>
 
-        <div class="pt-2 pl-1 pr-2 sm:pr-2 md:pr-1 ">
+        <div class="p-2">
 
             @include('livewire.objetivo-estrategico.por-perspectiva')
 
         </div>
 
-        <div class="px-3 py-2 pl-2 pr-2">
+        <div class="mb-4 p-2">
 
             <div>
 
-                <p class="mt-4 mb-1 pl-1">Legenda:</p>
+                <p class="">Legenda:</p>
 
             </div>
 
@@ -58,11 +58,6 @@
 
             </div>
 
-        </div>
-
-        <div class="w-full flex flex-col bg-white"
-            style="margin: 0px!Important; padding: 0px!Important; height: 33px!Important;">
-            &nbsp;
         </div>
 
     </div>
