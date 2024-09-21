@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\Pei;
 use App\Models\Organization;
 use App\Models\RelOrganization;
-use App\Models\MissaoVisaoValores;
+use App\Models\MissaoVisao;
 use App\Models\Perspectiva;
 use App\Models\PlanoAcao;
 use App\Models\ObjetivoEstrategico;
@@ -16,6 +16,7 @@ use \Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Livewire\CalculoLivewire;
+use App\Models\Valores;
 use Illuminate\Support\Facades\Auth;
 
 ini_set('memory_limit', '7096M');
@@ -41,7 +42,10 @@ class ShowDashboard extends Component
     public $organization = null;
     public $cod_organizacao = null;
     public $cod_organizacao_select = null;
-    public $missaoVisaoValores = null;
+    public $MissaoVisao = null;
+
+    public $valores = null;
+
     public $perspectiva = null;
     public $cod_perspectiva = null;
     public $objetivoEstragico = null;
@@ -193,14 +197,23 @@ class ShowDashboard extends Component
 
             $this->existePei = true;
 
-            $missaoVisaoValores = MissaoVisaoValores::where('cod_pei', $this->pei->cod_pei);
+            $MissaoVisao = MissaoVisao::where('cod_pei', $this->pei->cod_pei);
 
             if (isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
 
-                $missaoVisaoValores = $missaoVisaoValores->where('cod_organizacao', $this->cod_organizacao);
+                $MissaoVisao = $MissaoVisao->where('cod_organizacao', $this->cod_organizacao);
             }
 
-            $this->missaoVisaoValores = $missaoVisaoValores->first();
+            $this->MissaoVisao = $MissaoVisao->first();
+
+            $valores = Valores::where('cod_pei', $this->pei->cod_pei);
+
+            if (isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
+
+                $valores = $valores->where('cod_organizacao', $this->cod_organizacao);
+            }
+
+            $this->valores = $valores->get();
 
             $this->perspectiva = Perspectiva::where('cod_pei', $this->pei->cod_pei)
                 ->with('objetivosEstrategicos')

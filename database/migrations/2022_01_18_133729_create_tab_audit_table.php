@@ -16,10 +16,11 @@ class CreateTabAuditTable extends Migration
             $table->text('depois')->nullable(true);
             $table->string('table')->nullable(false);
             $table->string('column_name')->nullable(false);
-            $table->string('data_type')->nullable(false);
+            $table->string('data_type')->nullable(true);
             $table->string('table_id')->nullable(false);
             $table->string('ip')->nullable(false);
             $table->foreignUuid('user_id')->references('id')->on('users');
+            $table->timestamp('dte_expired_at')->nullable(false);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -23,31 +23,35 @@ class IndicadorObjetivoEstrategico extends Model
 
     protected $guarded = array();
 
-    public function linhaBase() {
+    public function linhaBase()
+    {
 
         return $this->hasMany(LinhaBase::class, 'cod_indicador');
 
     }
 
-    public function metaAno() {
+    public function metaAno()
+    {
 
         return $this->hasMany(MetaAno::class, 'cod_indicador');
 
     }
 
-    public function evolucaoIndicador() {
+    public function evolucaoIndicador()
+    {
 
         return $this->hasMany(EvolucaoIndicador::class, 'cod_indicador')
-        ->orderBy('num_ano')
-        ->orderBy('num_mes');
+            ->orderBy('num_ano')
+            ->orderBy('num_mes');
 
     }
 
-    public function acoesRealizadas() {
+    public function acoesRealizadas()
+    {
 
         return $this->hasMany(Acoes::class, 'table_id')
-        ->whereIn('table',['tab_indicador'])
-        ->orderBy('created_at','desc');
+            ->whereIn('table', ['tab_indicador'])
+            ->orderBy('created_at', 'desc');
 
     }
 

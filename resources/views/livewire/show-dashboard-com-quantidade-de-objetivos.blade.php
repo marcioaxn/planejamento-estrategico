@@ -7,7 +7,7 @@
             <div class="pt-1 pb-1 pl-3 pr-3 bg-white rounded-md border-2 border-gray-300 border-opacity-25 text-gray-600 text-lg items-center font-semibold text-lg " style="text-align: center!Important;">
                 Mapa Estratégico
             </div>
-            
+
         </div>
 
         <div class="w-full md:w-1/1 px-3 mb-6 pt-1 md:mb-0">
@@ -18,12 +18,12 @@
 
         </div>
 
-        @if(isset($this->missaoVisaoValores) && !is_null($this->missaoVisaoValores) && $this->missaoVisaoValores != '')
+        @if(isset($this->MissaoVisao) && !is_null($this->MissaoVisao) && $this->MissaoVisao != '')
 
         <div class="w-full md:w-1/2 px-3 mb-6 pt-1 md:mb-0 pt-2">
 
             <div class="pt-2 pb-2 pl-3 pr-3 bg-white rounded-md text-gray-600 text-base shadow ">
-                Missão: {{ $this->missaoVisaoValores->dsc_missao }}
+                Missão: {{ $this->MissaoVisao->dsc_missao }}
             </div>
 
         </div>
@@ -31,7 +31,7 @@
         <div class="w-full md:w-1/2 px-3 mb-6 pt-1 md:mb-0 pt-2">
 
             <div class="pt-2 pb-2 pl-3 pr-3 bg-white rounded-md text-gray-600 text-base shadow ">
-                Visão: {{ $this->missaoVisaoValores->dsc_visao }}
+                Visão: {{ $this->MissaoVisao->dsc_visao }}
             </div>
 
         </div>
@@ -39,7 +39,7 @@
         <div class="w-full md:w-1/1 px-3 mb-6 pt-1 md:mb-0 pt-2">
 
             <div class="pt-2 pb-2 pl-3 pr-3 bg-white rounded-md text-gray-600 text-base shadow ">
-                Valores: {{ $this->missaoVisaoValores->dsc_missao }}
+                Valores: {{ $this->MissaoVisao->dsc_missao }}
             </div>
 
         </div>
@@ -71,7 +71,7 @@
         </div>
 
         @endif
-        
+
     </div>
 
     <div class="pt-3 pl-3 pr-3">

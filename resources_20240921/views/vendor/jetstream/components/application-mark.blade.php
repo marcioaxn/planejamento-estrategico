@@ -1,0 +1,1 @@
+<img src="{{ asset('img/brasaoRepublica_small_3.png') }}">

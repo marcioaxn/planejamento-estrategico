@@ -5,9 +5,9 @@
 
             <div class="w-full md:w-1/1 mt-2 mb-1 ml-1 mr-1 pt-1">
 
-                <div class="pt-1 pb-1 pl-3 pr-2 bg-white text-gray-600 text-lg items-center font-semibold text-lg "
+                <div class="rounded pt-1 pb-1 pl-3 pr-2 bg-blue-600 text-white text-lg items-center font-semibold text-lg "
                     style="text-align: center!Important;">
-                    Mapa Estratégico
+                    {{ $this->pei->dsc_pei }}
                 </div>
 
             </div>
@@ -37,7 +37,7 @@
 
         </div>
 
-        <div class="p-2">
+        <div class="mt-2 p-2">
 
             @include('livewire.objetivo-estrategico.por-perspectiva')
 

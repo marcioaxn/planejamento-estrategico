@@ -23,6 +23,12 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Session;
 
+use App\Http\Livewire\UsuariosLivewire;
+use App\Http\Livewire\ShowOrganization;
+
+use App\Http\Controllers\AtualizarOuCriarPorModeloDadosController;
+use App\Models\RelIndicadorObjetivoEstrategicoOrganizacao;
+
 class IndicadoresObjetivoEstrategicoLivewire extends Component
 {
 
@@ -33,7 +39,12 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
     public $cod_objetivo_estrategico = null;
     public $objetivoEstragico = [];
 
+    public $organizacoes = [];
+    public $selected_organizations = null;
+
     public $cod_indicador = null;
+
+    public $cod_indicador_gravado = null;
 
     public $indicadores = [];
 
@@ -444,6 +455,21 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
     public $iconAbrirFechar = 'fas fa-plus text-xs';
     public $iconFechar = 'fas fa-minus text-xs';
 
+    public function hydrate()
+    {
+        $this->emit('select2Hydrate');
+    }
+
+    public function instanciarShowOrganization()
+    {
+        return new ShowOrganization;
+    }
+
+    public function instanciarAtualizarOuCriarPorModeloDadosController()
+    {
+        return new AtualizarOuCriarPorModeloDadosController;
+    }
+
     public function getIndicadorPorCodObjetivoEstrategico($cod_objetivo_estrategico = '', $anoSelecionado = '')
     {
 
@@ -507,6 +533,8 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
     public function create()
     {
+
+        $atualizarOuCriarPorModeloDados = $this->instanciarAtualizarOuCriarPorModeloDadosController();
 
         $contMetaAnualPreenchida = 0;
 
@@ -1098,7 +1126,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                             $consultarObjetivoEstrategico = ObjetivoEstrategico::find($this->cod_objetivo_estrategico);
 
-                            $modificacoes = $modificacoes . "Objetivo Estratégico relacionado: <span class='text-green-800'>" . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->dsc_objetivo_estrategico . "</span><br>";
+                            $modificacoes = $modificacoes . "Objetivo Estratégico relacionado: <span class='text-green-800'>" . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->nom_objetivo_estrategico . "</span><br>";
                         }
 
                         // Fim do trecho para o código do Objetivo Estratégico
@@ -1275,31 +1303,57 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                         $save->save();
 
+                        $this->cod_indicador_gravado = $save->cod_indicador;
+
                         // Fim do trecho para Salvar a primeira parte dos dados do indicador
 
                         // --- x --- x --- x --- x --- x --- x ---
 
+                        // Início do trecho para gravar a Área Responsável
+
+                        $table = 'rel_indicador_objetivo_estrategico_organizacao';
+                        $model = 'App\Models\\' . transformarNomeTabelaParaNomeModel($table);
+
+                        $id = [];
+                        $campos = [];
+
+                        foreach ($this->selected_organizations as $value) {
+                            $campos['cod_indicador'] = $this->cod_indicador_gravado;
+                            $campos['cod_organizacao'] = $value;
+
+                            $atualizarOuCriarPorModeloDados->atualizarOuCriarPorModeloDados($model, $id, $campos);
+
+                            $organizationLivewire = $this->instanciarShowOrganization();
+
+                            $organizacao = $organizationLivewire->getOrganizacao($value);
+
+                            $modificacoes = $modificacoes . "Área responsável: <span class='text-green-800'>" . nl2br($organizacao->nom_organizacao . '-' . $organizacao->sgl_organizacao . $this->hierarquiaUnidade($value)) . "</span><br>";
+                        }
+
+                        // Fim do trecho para gravar a Área Responsável
+                        // --- x --- x --- x --- x --- x --- x ---
+
                         // Início do trecho para a Linha de Base
 
-                        $saveLinhaBase = new LinhaBase;
-
                         if (isset($this->num_ano_base_1) && !is_null($this->num_ano_base_1) && $this->num_ano_base_1 != '' && isset($this->num_linha_base_1) && !is_null($this->num_linha_base_1) && $this->num_linha_base_1 != '') {
+
+                            $saveLinhaBase = new LinhaBase;
 
                             $saveLinhaBase->cod_indicador = $save->cod_indicador;
                             $saveLinhaBase->num_ano = $this->num_ano_base_1;
                             $saveLinhaBase->num_linha_base = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'PTBR', 'MYSQL', $this->num_linha_base_1);
 
                             $modificacoes = $modificacoes . "Linha de Base: <span class='text-green-800'>" . $this->num_ano_base_1 . " - " . $this->num_linha_base_1 . "</span><br>";
+
+                            // Início do trecho para Salvar a Linha de base
+
+                            $saveLinhaBase->save();
+
+                            // Fim do trecho para Salvar a Linha de base
+                            // --- x --- x --- x --- x --- x --- x ---
                         }
 
                         // Fim do trecho para a Linha de Base
-                        // --- x --- x --- x --- x --- x --- x ---
-
-                        // Início do trecho para Salvar a Linha de base
-
-                        $saveLinhaBase->save();
-
-                        // Fim do trecho para Salvar a Linha de base
                         // --- x --- x --- x --- x --- x --- x ---
 
                         // Início do trecho para a Meta Prevista Anual
@@ -1393,11 +1447,9 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                         // Já existir o indicador
 
-                        $consultarPlanoDeAcao = ObjetivoEstrategico::find($this->cod_objetivo_estrategico);
-
                         $this->showModalImportant = true;
 
-                        $this->mensagemImportant = "Já existi esse indicador com essas mesmas características para este Plano de Ação (" . $consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao . '. ' . $consultarPlanoDeAcao->dsc_plano_de_acao . ")";
+                        $this->mensagemImportant = "Já existi esse indicador com essas mesmas características para este Plano de Ação (" . $consultarIndicador->num_nivel_hierarquico_apresentacao . '. ' . $consultarIndicador->nom_indicador . ")";
                     }
 
                     // --- x --- x --- x --- x --- x --- x ---
@@ -1413,7 +1465,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                     $cabecalhoModificacoes = '';
 
-                    $cabecalhoModificacoes = 'Objetivo Estratégico: <strong>' . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->dsc_objetivo_estrategico . '</strong><br>Indicador: <strong>' . $editar->dsc_indicador . '</strong><br><br>';
+                    $cabecalhoModificacoes = 'Objetivo Estratégico: <strong>' . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->nom_objetivo_estrategico . '</strong><br>Indicador: <strong>' . $editar->dsc_indicador . '</strong><br><br>';
 
                     $estruturaTable = $this->estruturaTableParaEditar();
 
@@ -1521,67 +1573,142 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                     }
 
+                    // Início do trecho para gravar a Área Responsável
+
+                    $organizationLivewire = $this->instanciarShowOrganization();
+
+                    $selected_organizations = [];
+
+                    foreach ($editar->codOrganizacoes as $value) {
+                        array_push($selected_organizations, $value->cod_organizacao);
+                    }
+
+                    if ($selected_organizations != $this->selected_organizations) {
+
+                        foreach ($selected_organizations as $value) {
+                            if (!in_array($value, $this->selected_organizations)) {
+
+                                $organizacao = $organizationLivewire->getOrganizacao($value);
+
+                                $modificacoes = $modificacoes . "Área responsável excluída: <span class='text-green-800'>" . nl2br($organizacao->nom_organizacao . '-' . $organizacao->sgl_organizacao . $this->hierarquiaUnidade($value)) . "</span><br>";
+
+                                $excluirRelacao = RelIndicadorObjetivoEstrategicoOrganizacao::where('cod_indicador', $this->cod_indicador)
+                                    ->where('cod_organizacao', $value)
+                                    ->delete();
+                            }
+                        }
+
+                        $table = 'rel_indicador_objetivo_estrategico_organizacao';
+                        $model = 'App\Models\\' . transformarNomeTabelaParaNomeModel($table);
+
+                        $id = [];
+                        $campos = [];
+
+                        foreach ($this->selected_organizations as $value) {
+                            if (!in_array($value, $selected_organizations)) {
+
+                                $campos['cod_indicador'] = $this->cod_indicador;
+                                $campos['cod_organizacao'] = $value;
+
+                                $atualizarOuCriarPorModeloDados->atualizarOuCriarPorModeloDados($model, $id, $campos);
+
+                                $organizacao = $organizationLivewire->getOrganizacao($value);
+
+                                $modificacoes = $modificacoes . "Área responsável inserida: <span class='text-green-800'>" . nl2br($organizacao->nom_organizacao . '-' . $organizacao->sgl_organizacao . $this->hierarquiaUnidade($value)) . "</span><br>";
+                            }
+                        }
+
+                    }
+
+                    // Fim do trecho para gravar a Área Responsável
+                    // --- x --- x --- x --- x --- x --- x ---
+
                     // Início da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Linha de Base do indicador
 
                     $this->num_linha_base_1 = converteValor('PTBR', 'MYSQL', $this->num_linha_base_1);
 
-                    $contLinhaBase = 1;
+                    if ($editar->linhaBase->count() > 0) {
+                        $contLinhaBase = 1;
 
-                    foreach ($editar->linhaBase as $linhaBase) {
+                        foreach ($editar->linhaBase as $linhaBase) {
 
-                        if ($contLinhaBase == 1) {
+                            if ($contLinhaBase == 1) {
 
-                            $editarLinhaBase = LinhaBase::find($linhaBase->cod_linha_base);
+                                $editarLinhaBase = LinhaBase::find($linhaBase->cod_linha_base);
 
-                            if ($linhaBase->num_ano != $this->num_ano_base_1) {
+                                if ($linhaBase->num_ano != $this->num_ano_base_1) {
 
-                                $alteracaoLinhaBase['num_ano'] = $this->num_ano_base_1;
+                                    $alteracaoLinhaBase['num_ano'] = $this->num_ano_base_1;
 
-                                $audit = Audit::create(
-                                    array(
-                                        'table' => 'tab_linha_base_indicador',
-                                        'table_id' => $linhaBase->cod_linha_base,
-                                        'column_name' => 'num_ano',
-                                        'data_type' => 'smallint',
-                                        'ip' => $_SERVER['REMOTE_ADDR'],
-                                        'user_id' => Auth::user()->id,
-                                        'acao' => 'Editou',
-                                        'antes' => $linhaBase->num_ano,
-                                        'depois' => $this->num_ano_base_1
-                                    )
-                                );
+                                    $audit = Audit::create(
+                                        array(
+                                            'table' => 'tab_linha_base_indicador',
+                                            'table_id' => $linhaBase->cod_linha_base,
+                                            'column_name' => 'num_ano',
+                                            'data_type' => 'smallint',
+                                            'ip' => $_SERVER['REMOTE_ADDR'],
+                                            'user_id' => Auth::user()->id,
+                                            'acao' => 'Editou',
+                                            'antes' => $linhaBase->num_ano,
+                                            'depois' => $this->num_ano_base_1
+                                        )
+                                    );
 
-                                $modificacoesLinhaBase = $modificacoesLinhaBase . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado('num_ano_base_1') . '</b> de <span style="color:#CD3333;">( ' . $linhaBase->num_ano . ' )</span> para <span style="color:#28a745;">( ' . $this->num_ano_base_1 . ' )</span>;<br>';
+                                    $modificacoesLinhaBase = $modificacoesLinhaBase . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado('num_ano_base_1') . '</b> de <span style="color:#CD3333;">( ' . $linhaBase->num_ano . ' )</span> para <span style="color:#28a745;">( ' . $this->num_ano_base_1 . ' )</span>;<br>';
+                                }
+
+                                if ($linhaBase->num_linha_base != $this->num_linha_base_1) {
+
+                                    $alteracaoLinhaBase['num_linha_base'] = $this->num_linha_base_1;
+
+                                    $audit = Audit::create(
+                                        array(
+                                            'table' => 'tab_linha_base_indicador',
+                                            'table_id' => $linhaBase->cod_linha_base,
+                                            'column_name' => 'num_linha_base',
+                                            'data_type' => 'numeric',
+                                            'ip' => $_SERVER['REMOTE_ADDR'],
+                                            'user_id' => Auth::user()->id,
+                                            'acao' => 'Editou',
+                                            'antes' => $linhaBase->num_linha_base,
+                                            'depois' => $this->num_linha_base_1
+                                        )
+                                    );
+
+                                    $modificacoesLinhaBase = $modificacoesLinhaBase . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado('num_ano_base_1') . '</b> de <span style="color:#CD3333;">( ' . $linhaBase->num_linha_base . ' )</span> para <span style="color:#28a745;">( ' . formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'MYSQL', 'PTBR', $this->num_linha_base_1) . ' )</span>;<br>';
+                                }
+
+                                if (isset($modificacoesLinhaBase) && !is_null($modificacoesLinhaBase) && $modificacoesLinhaBase != '') {
+
+                                    $editarLinhaBase->update($alteracaoLinhaBase);
+                                }
                             }
 
-                            if ($linhaBase->num_linha_base != $this->num_linha_base_1) {
+                            $contLinhaBase = $contLinhaBase + 1;
+                        }
+                    } else {
+                        // Início do trecho para a Linha de Base
 
-                                $alteracaoLinhaBase['num_linha_base'] = $this->num_linha_base_1;
+                        if (isset($this->num_ano_base_1) && !is_null($this->num_ano_base_1) && $this->num_ano_base_1 != '' && isset($this->num_linha_base_1) && !is_null($this->num_linha_base_1) && $this->num_linha_base_1 != '') {
 
-                                $audit = Audit::create(
-                                    array(
-                                        'table' => 'tab_linha_base_indicador',
-                                        'table_id' => $linhaBase->cod_linha_base,
-                                        'column_name' => 'num_linha_base',
-                                        'data_type' => 'numeric',
-                                        'ip' => $_SERVER['REMOTE_ADDR'],
-                                        'user_id' => Auth::user()->id,
-                                        'acao' => 'Editou',
-                                        'antes' => $linhaBase->num_linha_base,
-                                        'depois' => $this->num_linha_base_1
-                                    )
-                                );
+                            $saveLinhaBase = new LinhaBase;
 
-                                $modificacoesLinhaBase = $modificacoesLinhaBase . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado('num_ano_base_1') . '</b> de <span style="color:#CD3333;">( ' . $linhaBase->num_linha_base . ' )</span> para <span style="color:#28a745;">( ' . formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'MYSQL', 'PTBR', $this->num_linha_base_1) . ' )</span>;<br>';
-                            }
+                            $saveLinhaBase->cod_indicador = $this->cod_indicador;
+                            $saveLinhaBase->num_ano = $this->num_ano_base_1;
+                            $saveLinhaBase->num_linha_base = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'PTBR', 'MYSQL', $this->num_linha_base_1);
 
-                            if (isset($modificacoesLinhaBase) && !is_null($modificacoesLinhaBase) && $modificacoesLinhaBase != '') {
+                            $modificacoes = $modificacoes . "Linha de Base: <span class='text-green-800'>" . $this->num_ano_base_1 . " - " . $this->num_linha_base_1 . "</span><br>";
 
-                                $editarLinhaBase->update($alteracaoLinhaBase);
-                            }
+                            // Início do trecho para Salvar a Linha de base
+
+                            $saveLinhaBase->save();
+
+                            // Fim do trecho para Salvar a Linha de base
+                            // --- x --- x --- x --- x --- x --- x ---
                         }
 
-                        $contLinhaBase = $contLinhaBase + 1;
+                        // Fim do trecho para a Linha de Base
+                        // --- x --- x --- x --- x --- x --- x ---
                     }
 
                     // Fim da verificação se houve alteração entre o valor antigo e o atual e se houver alteração preencher o array de alteracao[] e a variável de modificacoes para os dados da Linha de Base do indicador
@@ -1823,7 +1950,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                         $this->showModalResultadoEdicao = true;
 
-                        $this->mensagemResultadoEdicao = $cabecalhoModificacoes . 'Nada foi feito, por não ter nenhuma modificação nesse indicador desse Plano de Ação.';
+                        $this->mensagemResultadoEdicao = $cabecalhoModificacoes . 'Nada foi feito, por não ter nenhuma modificação neste indicador do objetivo estratégico.';
                     }
 
                     // Fim do trecho para editar um indicador
@@ -1847,8 +1974,16 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
     public function editForm($cod_indicador = '')
     {
 
-        $singleData = Indicador::with('linhaBase', 'metaAno', 'evolucaoIndicador')
+        $singleData = Indicador::with('linhaBase', 'metaAno', 'evolucaoIndicador', 'codOrganizacoes', 'organizacoes')
             ->find($cod_indicador);
+
+        $selected_organizations = [];
+
+        foreach ($singleData->codOrganizacoes as $value) {
+            array_push($selected_organizations, $value->cod_organizacao);
+        }
+
+        $this->selected_organizations = $selected_organizations;
 
         $this->cod_indicador = $singleData->cod_indicador;
 
@@ -1872,7 +2007,12 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
         $this->cod_objetivo_estrategico = $consultarObjetivoEstrategico->cod_objetivo_estrategico;
         $this->cod_objetivo_estrategico = $singleData->cod_objetivo_estrategico;
 
+        $this->nom_indicador = $singleData->nom_indicador;
         $this->dsc_indicador = $singleData->dsc_indicador;
+        $this->txt_observacao = $singleData->txt_observacao;
+        $this->dsc_meta = $singleData->dsc_meta;
+        $this->dsc_atributos = $singleData->dsc_atributos;
+        $this->dsc_referencial_comparativo = $singleData->dsc_referencial_comparativo;
         $this->dsc_formula = $singleData->dsc_formula;
         $this->dsc_unidade_medida = $singleData->dsc_unidade_medida;
         $this->dsc_tipo = $singleData->dsc_tipo;
@@ -1951,7 +2091,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
         $texto = '';
 
-        $texto .= '<p class="my-2 text-gray-900 text-xs leading-relaxed"><strong>Dados do Indicador para confirmar a exclusão</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>' . $consultarPei->dsc_pei . ' (' . $consultarPei->num_ano_inicio_pei . ' a ' . $consultarPei->num_ano_fim_pei . ')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Perspectiva: <strong>' . $consultarPerspectiva->num_nivel_hierarquico_apresentacao . '. ' . $consultarPerspectiva->dsc_perspectiva . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Objetivo Estratégico: <strong>' . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->dsc_objetivo_estrategico . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Plano de Ação: <strong>' . $consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao . '. ' . $consultarPlanoDeAcao->dsc_plano_de_acao . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">_________________________________</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Descrição do Indicador: <strong>' . $singleData->dsc_indicador . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade de Medida do Indicador: <strong>' . $singleData->dsc_unidade_medida . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Esse indicador terá o resultado acumulado? <strong>' . $singleData->bln_acumulado . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Tipo de Análise do Indicador (Polaridade): <strong>' . tipoPolaridade($singleData->dsc_tipo) . '</strong></p><p class="my-2 text-gray-500 text-xs font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
+        $texto .= '<p class="my-2 text-gray-900 text-xs leading-relaxed"><strong>Dados do Indicador para confirmar a exclusão</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>' . $consultarPei->dsc_pei . ' (' . $consultarPei->num_ano_inicio_pei . ' a ' . $consultarPei->num_ano_fim_pei . ')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Perspectiva: <strong>' . $consultarPerspectiva->num_nivel_hierarquico_apresentacao . '. ' . $consultarPerspectiva->dsc_perspectiva . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Objetivo Estratégico: <strong>' . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->nom_objetivo_estrategico . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Plano de Ação: <strong>' . $consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao . '. ' . $consultarPlanoDeAcao->dsc_plano_de_acao . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">_________________________________</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Descrição do Indicador: <strong>' . $singleData->dsc_indicador . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade de Medida do Indicador: <strong>' . $singleData->dsc_unidade_medida . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Esse indicador terá o resultado acumulado? <strong>' . $singleData->bln_acumulado . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Tipo de Análise do Indicador (Polaridade): <strong>' . tipoPolaridade($singleData->dsc_tipo) . '</strong></p><p class="my-2 text-gray-500 text-xs font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
 
         $this->mensagemDelete = $texto;
 
@@ -1986,7 +2126,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
         $texto = '';
 
-        $texto .= '<p class="my-2 text-gray-900 text-xs leading-relaxed"><strong>Excluiu com sucesso este Indicador</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>' . $consultarPei->dsc_pei . ' (' . $consultarPei->num_ano_inicio_pei . ' a ' . $consultarPei->num_ano_fim_pei . ')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Perspectiva: <strong>' . $consultarPerspectiva->num_nivel_hierarquico_apresentacao . '. ' . $consultarPerspectiva->dsc_perspectiva . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Objetivo Estratégico: <strong>' . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->dsc_objetivo_estrategico . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Plano de Ação: <strong>' . $consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao . '. ' . $consultarPlanoDeAcao->dsc_plano_de_acao . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">_________________________________</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Descrição do Indicador: <strong>' . $singleData->dsc_indicador . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade de Medida do Indicador: <strong>' . $singleData->dsc_unidade_medida . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Esse indicador terá o resultado acumulado? <strong>' . $singleData->bln_acumulado . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Tipo de Análise do Indicador (Polaridade): <strong>' . tipoPolaridade($singleData->dsc_tipo) . '</strong></p>';
+        $texto .= '<p class="my-2 text-gray-900 text-xs leading-relaxed"><strong>Excluiu com sucesso este Indicador</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>' . $consultarPei->dsc_pei . ' (' . $consultarPei->num_ano_inicio_pei . ' a ' . $consultarPei->num_ano_fim_pei . ')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Perspectiva: <strong>' . $consultarPerspectiva->num_nivel_hierarquico_apresentacao . '. ' . $consultarPerspectiva->dsc_perspectiva . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Objetivo Estratégico: <strong>' . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->nom_objetivo_estrategico . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Plano de Ação: <strong>' . $consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao . '. ' . $consultarPlanoDeAcao->dsc_plano_de_acao . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">_________________________________</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Descrição do Indicador: <strong>' . $singleData->dsc_indicador . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade de Medida do Indicador: <strong>' . $singleData->dsc_unidade_medida . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Esse indicador terá o resultado acumulado? <strong>' . $singleData->bln_acumulado . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Tipo de Análise do Indicador (Polaridade): <strong>' . tipoPolaridade($singleData->dsc_tipo) . '</strong></p>';
 
         $acao = Acoes::create(
             array(
@@ -2043,20 +2183,16 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
         if ($this->abrirFecharForm === 'none') {
 
-            $this->cod_perspectiva = null;
-            $this->cod_pei = null;
-            $this->dsc_perspectiva = null;
-            $this->num_nivel_hierarquico_apresentacao = null;
+            $this->zerarVariaveis();
+
             $this->editarForm = false;
 
             $this->abrirFecharForm = 'block';
             $this->iconAbrirFechar = 'fas fa-minus text-xs';
         } else {
 
-            $this->cod_perspectiva = null;
-            $this->cod_pei = null;
-            $this->dsc_perspectiva = null;
-            $this->num_nivel_hierarquico_apresentacao = null;
+            $this->zerarVariaveis();
+
             $this->editarForm = false;
 
             $this->abrirFecharForm = 'none';
@@ -2085,6 +2221,10 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
     public function render()
     {
 
+        $organizationLivewire = $this->instanciarShowOrganization();
+
+        $this->organizacoes = $organizationLivewire->getOrganizations();
+
         if (isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
 
             $consultarPlanoDeAcao = ObjetivoEstrategico::find($this->cod_objetivo_estrategico);
@@ -2099,8 +2239,8 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
         // Início para montagem dos anos da linha de base
 
         $anos = [];
-        for ($index = date('Y') - 1; $index >= 2012; $index -= 1) {
-            $anos[$index * 1] = $index * 1;
+        for ($index = date('Y') - 1; $index >= 2014; $index -= 1) {
+            $anos[$index] = $index;
         }
 
         $this->anosLinhaBase = $anos;
@@ -2131,7 +2271,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
         $this->perspectiva = $perspectiva;
 
-        $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_objetivo_estrategico AS dsc_objetivo_estrategico, cod_objetivo_estrategico"));
+        $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||nom_objetivo_estrategico AS dsc_objetivo_estrategico, cod_objetivo_estrategico"));
 
         if (isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '') {
 
@@ -2921,70 +3061,32 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
     protected function hierarquiaUnidade($cod_organizacao)
     {
-
         $organizacao = Organization::with('hierarquia')
             ->where('cod_organizacao', $cod_organizacao)
             ->get();
 
         $hierarquiaSuperior = null;
 
-        foreach ($organizacao as $result1) {
+        $this->processHierarquia($organizacao, $hierarquiaSuperior);
 
-            if ($result1->hierarquia) {
+        return $hierarquiaSuperior;
+    }
 
-                foreach ($result1->hierarquia as $result2) {
-
-                    $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result2->sgl_organizacao;
-
-                    $organizacao2 = Organization::with('hierarquia')
-                        ->where('cod_organizacao', $result2->cod_organizacao)
-                        ->get();
-
-                    foreach ($organizacao2 as $result3) {
-
-                        if ($result3->hierarquia) {
-
-                            foreach ($result3->hierarquia as $result4) {
-
-                                $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result4->sgl_organizacao;
-
-                                $organizacao3 = Organization::with('hierarquia')
-                                    ->where('cod_organizacao', $result4->cod_organizacao)
-                                    ->get();
-
-                                foreach ($organizacao3 as $result5) {
-
-                                    if ($result5->hierarquia) {
-
-                                        foreach ($result5->hierarquia as $result6) {
-
-                                            $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result6->sgl_organizacao;
-
-                                            $organizacao4 = Organization::with('hierarquia')
-                                                ->where('cod_organizacao', $result6->cod_organizacao)
-                                                ->get();
-
-                                            foreach ($organizacao4 as $result7) {
-
-                                                if ($result7->hierarquia) {
-
-                                                    foreach ($result7->hierarquia as $result8) {
-
-                                                        $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result8->sgl_organizacao;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+    private function processHierarquia($organizacao, &$hierarquiaSuperior)
+    {
+        foreach ($organizacao as $result) {
+            if ($result->hierarquia) {
+                foreach ($result->hierarquia as $subOrganizacao) {
+                    $hierarquiaSuperior .= '/' . $subOrganizacao->sgl_organizacao;
+                    $this->processHierarquia(
+                        Organization::with('hierarquia')
+                            ->where('cod_organizacao', $subOrganizacao->cod_organizacao)
+                            ->get(),
+                        $hierarquiaSuperior
+                    );
                 }
             }
         }
-
-        return $hierarquiaSuperior;
     }
 
     protected function zerarVariaveis()
@@ -2997,11 +3099,18 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
         $this->cod_objetivo_estrategico = null;
         $this->objetivoEstragico = [];
 
+        $this->selected_organizations = null;
+
         $this->cod_indicador = null;
 
         $this->cod_objetivo_estrategico = null;
-        $this->objetivoEstrategico = [];
+        $this->nom_indicador = null;
         $this->dsc_indicador = null;
+        $this->txt_observacao = null;
+        $this->dsc_meta = null;
+        $this->dsc_atributos = null;
+        $this->dsc_referencial_comparativo = null;
+
         $this->dsc_formula = null;
         $this->tiposIndicadores = ['+' => 'Quanto maior for o resultado melhor', '-' => 'Quanto menor for o resultado melhor', '=' => 'Quanto igual for o resultado melhor'];
         $this->dsc_unidade_medida = null;
@@ -3038,372 +3147,18 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
         $this->num_linha_base_2 = null;
         $this->num_linha_base_3 = null;
 
-        $this->metaAno_2020 = null;
-        $this->metaAno_2021 = null;
-        $this->metaAno_2022 = null;
-        $this->metaAno_2023 = null;
-        $this->metaAno_2024 = null;
-        $this->metaAno_2025 = null;
-        $this->metaAno_2026 = null;
-        $this->metaAno_2027 = null;
-        $this->metaAno_2028 = null;
-        $this->metaAno_2029 = null;
-        $this->metaAno_2030 = null;
-        $this->metaAno_2031 = null;
-        $this->metaAno_2032 = null;
-        $this->metaAno_2033 = null;
-        $this->metaAno_2034 = null;
-        $this->metaAno_2035 = null;
-        $this->metaAno_2036 = null;
-        $this->metaAno_2037 = null;
-        $this->metaAno_2038 = null;
-        $this->metaAno_2039 = null;
-        $this->metaAno_2040 = null;
-        $this->metaAno_2041 = null;
-        $this->metaAno_2042 = null;
-        $this->metaAno_2043 = null;
-        $this->metaAno_2044 = null;
-        $this->metaAno_2045 = null;
+        for ($year = 2020; $year <= 2045; $year++) {
 
-        $this->metaMes_1_2020 = null;
-        $this->metaMes_2_2020 = null;
-        $this->metaMes_3_2020 = null;
-        $this->metaMes_4_2020 = null;
-        $this->metaMes_5_2020 = null;
-        $this->metaMes_6_2020 = null;
-        $this->metaMes_7_2020 = null;
-        $this->metaMes_8_2020 = null;
-        $this->metaMes_9_2020 = null;
-        $this->metaMes_10_2020 = null;
-        $this->metaMes_11_2020 = null;
-        $this->metaMes_12_2020 = null;
-        $this->metaMes_1_2021 = null;
-        $this->metaMes_2_2021 = null;
-        $this->metaMes_3_2021 = null;
-        $this->metaMes_4_2021 = null;
-        $this->metaMes_5_2021 = null;
-        $this->metaMes_6_2021 = null;
-        $this->metaMes_7_2021 = null;
-        $this->metaMes_8_2021 = null;
-        $this->metaMes_9_2021 = null;
-        $this->metaMes_10_2021 = null;
-        $this->metaMes_11_2021 = null;
-        $this->metaMes_12_2021 = null;
-        $this->metaMes_1_2022 = null;
-        $this->metaMes_2_2022 = null;
-        $this->metaMes_3_2022 = null;
-        $this->metaMes_4_2022 = null;
-        $this->metaMes_5_2022 = null;
-        $this->metaMes_6_2022 = null;
-        $this->metaMes_7_2022 = null;
-        $this->metaMes_8_2022 = null;
-        $this->metaMes_9_2022 = null;
-        $this->metaMes_10_2022 = null;
-        $this->metaMes_11_2022 = null;
-        $this->metaMes_12_2022 = null;
-        $this->metaMes_1_2023 = null;
-        $this->metaMes_2_2023 = null;
-        $this->metaMes_3_2023 = null;
-        $this->metaMes_4_2023 = null;
-        $this->metaMes_5_2023 = null;
-        $this->metaMes_6_2023 = null;
-        $this->metaMes_7_2023 = null;
-        $this->metaMes_8_2023 = null;
-        $this->metaMes_9_2023 = null;
-        $this->metaMes_10_2023 = null;
-        $this->metaMes_11_2023 = null;
-        $this->metaMes_12_2023 = null;
-        $this->metaMes_1_2024 = null;
-        $this->metaMes_2_2024 = null;
-        $this->metaMes_3_2024 = null;
-        $this->metaMes_4_2024 = null;
-        $this->metaMes_5_2024 = null;
-        $this->metaMes_6_2024 = null;
-        $this->metaMes_7_2024 = null;
-        $this->metaMes_8_2024 = null;
-        $this->metaMes_9_2024 = null;
-        $this->metaMes_10_2024 = null;
-        $this->metaMes_11_2024 = null;
-        $this->metaMes_12_2024 = null;
-        $this->metaMes_1_2025 = null;
-        $this->metaMes_2_2025 = null;
-        $this->metaMes_3_2025 = null;
-        $this->metaMes_4_2025 = null;
-        $this->metaMes_5_2025 = null;
-        $this->metaMes_6_2025 = null;
-        $this->metaMes_7_2025 = null;
-        $this->metaMes_8_2025 = null;
-        $this->metaMes_9_2025 = null;
-        $this->metaMes_10_2025 = null;
-        $this->metaMes_11_2025 = null;
-        $this->metaMes_12_2025 = null;
-        $this->metaMes_1_2026 = null;
-        $this->metaMes_2_2026 = null;
-        $this->metaMes_3_2026 = null;
-        $this->metaMes_4_2026 = null;
-        $this->metaMes_5_2026 = null;
-        $this->metaMes_6_2026 = null;
-        $this->metaMes_7_2026 = null;
-        $this->metaMes_8_2026 = null;
-        $this->metaMes_9_2026 = null;
-        $this->metaMes_10_2026 = null;
-        $this->metaMes_11_2026 = null;
-        $this->metaMes_12_2026 = null;
-        $this->metaMes_1_2027 = null;
-        $this->metaMes_2_2027 = null;
-        $this->metaMes_3_2027 = null;
-        $this->metaMes_4_2027 = null;
-        $this->metaMes_5_2027 = null;
-        $this->metaMes_6_2027 = null;
-        $this->metaMes_7_2027 = null;
-        $this->metaMes_8_2027 = null;
-        $this->metaMes_9_2027 = null;
-        $this->metaMes_10_2027 = null;
-        $this->metaMes_11_2027 = null;
-        $this->metaMes_12_2027 = null;
-        $this->metaMes_1_2028 = null;
-        $this->metaMes_2_2028 = null;
-        $this->metaMes_3_2028 = null;
-        $this->metaMes_4_2028 = null;
-        $this->metaMes_5_2028 = null;
-        $this->metaMes_6_2028 = null;
-        $this->metaMes_7_2028 = null;
-        $this->metaMes_8_2028 = null;
-        $this->metaMes_9_2028 = null;
-        $this->metaMes_10_2028 = null;
-        $this->metaMes_11_2028 = null;
-        $this->metaMes_12_2028 = null;
-        $this->metaMes_1_2029 = null;
-        $this->metaMes_2_2029 = null;
-        $this->metaMes_3_2029 = null;
-        $this->metaMes_4_2029 = null;
-        $this->metaMes_5_2029 = null;
-        $this->metaMes_6_2029 = null;
-        $this->metaMes_7_2029 = null;
-        $this->metaMes_8_2029 = null;
-        $this->metaMes_9_2029 = null;
-        $this->metaMes_10_2029 = null;
-        $this->metaMes_11_2029 = null;
-        $this->metaMes_12_2029 = null;
-        $this->metaMes_1_2030 = null;
-        $this->metaMes_2_2030 = null;
-        $this->metaMes_3_2030 = null;
-        $this->metaMes_4_2030 = null;
-        $this->metaMes_5_2030 = null;
-        $this->metaMes_6_2030 = null;
-        $this->metaMes_7_2030 = null;
-        $this->metaMes_8_2030 = null;
-        $this->metaMes_9_2030 = null;
-        $this->metaMes_10_2030 = null;
-        $this->metaMes_11_2030 = null;
-        $this->metaMes_12_2030 = null;
-        $this->metaMes_1_2031 = null;
-        $this->metaMes_2_2031 = null;
-        $this->metaMes_3_2031 = null;
-        $this->metaMes_4_2031 = null;
-        $this->metaMes_5_2031 = null;
-        $this->metaMes_6_2031 = null;
-        $this->metaMes_7_2031 = null;
-        $this->metaMes_8_2031 = null;
-        $this->metaMes_9_2031 = null;
-        $this->metaMes_10_2031 = null;
-        $this->metaMes_11_2031 = null;
-        $this->metaMes_12_2031 = null;
-        $this->metaMes_1_2032 = null;
-        $this->metaMes_2_2032 = null;
-        $this->metaMes_3_2032 = null;
-        $this->metaMes_4_2032 = null;
-        $this->metaMes_5_2032 = null;
-        $this->metaMes_6_2032 = null;
-        $this->metaMes_7_2032 = null;
-        $this->metaMes_8_2032 = null;
-        $this->metaMes_9_2032 = null;
-        $this->metaMes_10_2032 = null;
-        $this->metaMes_11_2032 = null;
-        $this->metaMes_12_2032 = null;
-        $this->metaMes_1_2033 = null;
-        $this->metaMes_2_2033 = null;
-        $this->metaMes_3_2033 = null;
-        $this->metaMes_4_2033 = null;
-        $this->metaMes_5_2033 = null;
-        $this->metaMes_6_2033 = null;
-        $this->metaMes_7_2033 = null;
-        $this->metaMes_8_2033 = null;
-        $this->metaMes_9_2033 = null;
-        $this->metaMes_10_2033 = null;
-        $this->metaMes_11_2033 = null;
-        $this->metaMes_12_2033 = null;
-        $this->metaMes_1_2034 = null;
-        $this->metaMes_2_2034 = null;
-        $this->metaMes_3_2034 = null;
-        $this->metaMes_4_2034 = null;
-        $this->metaMes_5_2034 = null;
-        $this->metaMes_6_2034 = null;
-        $this->metaMes_7_2034 = null;
-        $this->metaMes_8_2034 = null;
-        $this->metaMes_9_2034 = null;
-        $this->metaMes_10_2034 = null;
-        $this->metaMes_11_2034 = null;
-        $this->metaMes_12_2034 = null;
-        $this->metaMes_1_2035 = null;
-        $this->metaMes_2_2035 = null;
-        $this->metaMes_3_2035 = null;
-        $this->metaMes_4_2035 = null;
-        $this->metaMes_5_2035 = null;
-        $this->metaMes_6_2035 = null;
-        $this->metaMes_7_2035 = null;
-        $this->metaMes_8_2035 = null;
-        $this->metaMes_9_2035 = null;
-        $this->metaMes_10_2035 = null;
-        $this->metaMes_11_2035 = null;
-        $this->metaMes_12_2035 = null;
-        $this->metaMes_1_2036 = null;
-        $this->metaMes_2_2036 = null;
-        $this->metaMes_3_2036 = null;
-        $this->metaMes_4_2036 = null;
-        $this->metaMes_5_2036 = null;
-        $this->metaMes_6_2036 = null;
-        $this->metaMes_7_2036 = null;
-        $this->metaMes_8_2036 = null;
-        $this->metaMes_9_2036 = null;
-        $this->metaMes_10_2036 = null;
-        $this->metaMes_11_2036 = null;
-        $this->metaMes_12_2036 = null;
-        $this->metaMes_1_2037 = null;
-        $this->metaMes_2_2037 = null;
-        $this->metaMes_3_2037 = null;
-        $this->metaMes_4_2037 = null;
-        $this->metaMes_5_2037 = null;
-        $this->metaMes_6_2037 = null;
-        $this->metaMes_7_2037 = null;
-        $this->metaMes_8_2037 = null;
-        $this->metaMes_9_2037 = null;
-        $this->metaMes_10_2037 = null;
-        $this->metaMes_11_2037 = null;
-        $this->metaMes_12_2037 = null;
-        $this->metaMes_1_2038 = null;
-        $this->metaMes_2_2038 = null;
-        $this->metaMes_3_2038 = null;
-        $this->metaMes_4_2038 = null;
-        $this->metaMes_5_2038 = null;
-        $this->metaMes_6_2038 = null;
-        $this->metaMes_7_2038 = null;
-        $this->metaMes_8_2038 = null;
-        $this->metaMes_9_2038 = null;
-        $this->metaMes_10_2038 = null;
-        $this->metaMes_11_2038 = null;
-        $this->metaMes_12_2038 = null;
-        $this->metaMes_1_2039 = null;
-        $this->metaMes_2_2039 = null;
-        $this->metaMes_3_2039 = null;
-        $this->metaMes_4_2039 = null;
-        $this->metaMes_5_2039 = null;
-        $this->metaMes_6_2039 = null;
-        $this->metaMes_7_2039 = null;
-        $this->metaMes_8_2039 = null;
-        $this->metaMes_9_2039 = null;
-        $this->metaMes_10_2039 = null;
-        $this->metaMes_11_2039 = null;
-        $this->metaMes_12_2039 = null;
-        $this->metaMes_1_2040 = null;
-        $this->metaMes_2_2040 = null;
-        $this->metaMes_3_2040 = null;
-        $this->metaMes_4_2040 = null;
-        $this->metaMes_5_2040 = null;
-        $this->metaMes_6_2040 = null;
-        $this->metaMes_7_2040 = null;
-        $this->metaMes_8_2040 = null;
-        $this->metaMes_9_2040 = null;
-        $this->metaMes_10_2040 = null;
-        $this->metaMes_11_2040 = null;
-        $this->metaMes_12_2040 = null;
-        $this->metaMes_1_2041 = null;
-        $this->metaMes_2_2041 = null;
-        $this->metaMes_3_2041 = null;
-        $this->metaMes_4_2041 = null;
-        $this->metaMes_5_2041 = null;
-        $this->metaMes_6_2041 = null;
-        $this->metaMes_7_2041 = null;
-        $this->metaMes_8_2041 = null;
-        $this->metaMes_9_2041 = null;
-        $this->metaMes_10_2041 = null;
-        $this->metaMes_11_2041 = null;
-        $this->metaMes_12_2041 = null;
-        $this->metaMes_1_2042 = null;
-        $this->metaMes_2_2042 = null;
-        $this->metaMes_3_2042 = null;
-        $this->metaMes_4_2042 = null;
-        $this->metaMes_5_2042 = null;
-        $this->metaMes_6_2042 = null;
-        $this->metaMes_7_2042 = null;
-        $this->metaMes_8_2042 = null;
-        $this->metaMes_9_2042 = null;
-        $this->metaMes_10_2042 = null;
-        $this->metaMes_11_2042 = null;
-        $this->metaMes_12_2042 = null;
-        $this->metaMes_1_2043 = null;
-        $this->metaMes_2_2043 = null;
-        $this->metaMes_3_2043 = null;
-        $this->metaMes_4_2043 = null;
-        $this->metaMes_5_2043 = null;
-        $this->metaMes_6_2043 = null;
-        $this->metaMes_7_2043 = null;
-        $this->metaMes_8_2043 = null;
-        $this->metaMes_9_2043 = null;
-        $this->metaMes_10_2043 = null;
-        $this->metaMes_11_2043 = null;
-        $this->metaMes_12_2043 = null;
-        $this->metaMes_1_2044 = null;
-        $this->metaMes_2_2044 = null;
-        $this->metaMes_3_2044 = null;
-        $this->metaMes_4_2044 = null;
-        $this->metaMes_5_2044 = null;
-        $this->metaMes_6_2044 = null;
-        $this->metaMes_7_2044 = null;
-        $this->metaMes_8_2044 = null;
-        $this->metaMes_9_2044 = null;
-        $this->metaMes_10_2044 = null;
-        $this->metaMes_11_2044 = null;
-        $this->metaMes_12_2044 = null;
-        $this->metaMes_1_2045 = null;
-        $this->metaMes_2_2045 = null;
-        $this->metaMes_3_2045 = null;
-        $this->metaMes_4_2045 = null;
-        $this->metaMes_5_2045 = null;
-        $this->metaMes_6_2045 = null;
-        $this->metaMes_7_2045 = null;
-        $this->metaMes_8_2045 = null;
-        $this->metaMes_9_2045 = null;
-        $this->metaMes_10_2045 = null;
-        $this->metaMes_11_2045 = null;
-        $this->metaMes_12_2045 = null;
+            $metaAno = "metaAno_{$year}";
+            $this->$metaAno = null;
 
-        $this->requiredMetaAno_2020 = null;
-        $this->requiredMetaAno_2021 = null;
-        $this->requiredMetaAno_2022 = null;
-        $this->requiredMetaAno_2023 = null;
-        $this->requiredMetaAno_2024 = null;
-        $this->requiredMetaAno_2025 = null;
-        $this->requiredMetaAno_2026 = null;
-        $this->requiredMetaAno_2027 = null;
-        $this->requiredMetaAno_2028 = null;
-        $this->requiredMetaAno_2029 = null;
-        $this->requiredMetaAno_2030 = null;
-        $this->requiredMetaAno_2031 = null;
-        $this->requiredMetaAno_2032 = null;
-        $this->requiredMetaAno_2033 = null;
-        $this->requiredMetaAno_2034 = null;
-        $this->requiredMetaAno_2035 = null;
-        $this->requiredMetaAno_2036 = null;
-        $this->requiredMetaAno_2037 = null;
-        $this->requiredMetaAno_2038 = null;
-        $this->requiredMetaAno_2039 = null;
-        $this->requiredMetaAno_2040 = null;
-        $this->requiredMetaAno_2041 = null;
-        $this->requiredMetaAno_2042 = null;
-        $this->requiredMetaAno_2043 = null;
-        $this->requiredMetaAno_2044 = null;
-        $this->requiredMetaAno_2045 = null;
+            for ($month = 1; $month <= 12; $month++) {
+                $metaMes = "metaMes_{$month}_{$year}";
+                $this->$metaMes = null;
+            }
+            $requiredMetaAno = "requiredMetaAno_{$year}";
+            $this->$requiredMetaAno = null;
+        }
 
         $this->ano1 = null;
         $this->ano2 = null;

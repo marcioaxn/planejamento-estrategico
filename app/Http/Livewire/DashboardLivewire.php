@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\Pei;
 use App\Models\Organization;
 use App\Models\RelOrganization;
-use App\Models\MissaoVisaoValores;
+use App\Models\MissaoVisao;
 use App\Models\Perspectiva;
 use App\Models\PlanoAcao;
 use App\Models\ObjetivoEstrategico;
@@ -39,7 +39,7 @@ class DashboardLivewire extends Component
     public $organization = null;
     public $cod_organizacao = null;
     public $cod_organizacao_select = null;
-    public $missaoVisaoValores = null;
+    public $MissaoVisao = null;
     public $perspectiva = null;
     public $cod_perspectiva = null;
     public $objetivoEstragico = null;
@@ -196,7 +196,7 @@ class DashboardLivewire extends Component
     {
 
         $cods_organizacao_primeiro_nivel = [];
-        
+
         $cods_e_percentuais_organizacao_primeiro_nivel = [];
 
         // Início para verificar se existe conteúdo na variável $this->mesSelecionado
@@ -256,10 +256,6 @@ class DashboardLivewire extends Component
 
         $this->percentualAlcancadoNoAnoUnidadeSelecionada = ['unidade' => $getDadosCodOrganizacao, 'percentualAlcancado' => $calcularPercentualNoAnoCodsOrganizacao];
 
-        // dd($this->percentualAlcancadoNoMesUnidadeSelecionada,$this->percentualAlcancadoNoPeriodoUnidadeSelecionada,$this->percentualAlcancadoNoAnoUnidadeSelecionada);
-
-        // dd($this->percentualAlcancadoNoAnoUnidadeSelecionada['percentualAlcancado']['percentual_alcancado']);
-
         // Início da consulta para encontrar o percentual alcançado pela unidade base
 
         $consultarOrganizacoesAgregadasPrimeiroNivel = Organization::where('rel_cod_organizacao',$cod_organizacao)
@@ -305,8 +301,6 @@ class DashboardLivewire extends Component
         // Fim da consulta para encontrar o percentual alcançado pelas unidades do primeiro nível
         // --- x --- x --- x ---
 
-        // dd($this->percentualAlcancadoNoMesUnidadePrimeiroNivel);
-
     }
 
     public function render()
@@ -325,7 +319,7 @@ class DashboardLivewire extends Component
 
             $this->refreshChart(Session('cod_organizacao'));
 
-            
+
         } else {
 
             $this->cod_organizacao = $this->cod_organizacao;

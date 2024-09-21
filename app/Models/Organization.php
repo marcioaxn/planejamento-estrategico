@@ -11,7 +11,7 @@ class Organization extends Model
 {
     use Uuids;
     use SoftDeletes;
-    
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -33,5 +33,10 @@ class Organization extends Model
     public function deshierarquia()
     {
         return $this->belongsToMany(Organization::class, 'rel_organizacao', 'rel_cod_organizacao', 'cod_organizacao');
+    }
+
+    public function indicadores()
+    {
+        return $this->belongsToMany(IndicadorObjetivoEstrategico::class, 'pei.rel_indicador_objetivo_estrategico_organizacao', 'cod_organizacao', 'cod_indicador');
     }
 }
