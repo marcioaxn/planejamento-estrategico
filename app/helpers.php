@@ -79,18 +79,21 @@ function lerCurl($url = '')
 
     $curl = curl_init();
 
-    curl_setopt_array($curl, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_TIMEOUT => 30000,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "GET",
-        CURLOPT_HTTPHEADER => array(
-            // Set Here Your Requesred Headers
-            'Content-Type: application/json',
-        ),
-    ));
+    curl_setopt_array(
+        $curl,
+        array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_TIMEOUT => 30000,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                // Set Here Your Requesred Headers
+                'Content-Type: application/json',
+            ),
+        )
+    );
     $response = curl_exec($curl);
     $err = curl_error($curl);
     curl_close($curl);
@@ -345,7 +348,7 @@ function detectarConverteValor($valor)
 
     $valor = str_replace(',', '.', $valor);
 
-    return number_format((float)$valor, 2, ',', '.');
+    return number_format((float) $valor, 2, ',', '.');
 
     return $valor;
 }
@@ -778,8 +781,10 @@ function mesExtensoParaNumeral($mesExtenso)
     return $mesNumeral;
 }
 
-function mesNumeralParaExtensoCurto($valor)
+function mesNumeralParaExtensoCurto($valor = null)
 {
+
+    $mes = '';
 
     switch ($valor) {
         case 1;
@@ -823,7 +828,7 @@ function mesNumeralParaExtensoCurto($valor)
     return $mes;
 }
 
-function mesNumeralParaExtenso($mes)
+function mesNumeralParaExtenso($mes = null)
 {
 
     $mesNumeral = '';
@@ -934,7 +939,7 @@ function descricaoCurtaPermissao($permissao)
 function microtime_float()
 {
     list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
+    return ((float) $usec + (float) $sec);
 }
 
 function UR_exists($url)
@@ -944,8 +949,10 @@ function UR_exists($url)
     curl_exec($ch);
     $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    if ($retcode == 200) echo 'YES';
-    else              echo 'NO';
+    if ($retcode == 200)
+        echo 'YES';
+    else
+        echo 'NO';
 }
 
 function urlExists($url)
@@ -1211,12 +1218,13 @@ function abreviarSituacaoConvenio($situacao = '')
 
 function legenda()
 {
-?>
+    ?>
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
             <h6>Legenda:</h6>
             <ul class="list-group ">
-                <li class="list-group-item bg-primary" style="background-color: #9FCDFF !Important; padding: 3px !Important; padding-left: 17px !Important;">
+                <li class="list-group-item bg-primary"
+                    style="background-color: #9FCDFF !Important; padding: 3px !Important; padding-left: 17px !Important;">
                     Contrato/convênio concluído
                 </li>
             </ul>
@@ -1226,7 +1234,8 @@ function legenda()
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
             <h6>&nbsp;</h6>
             <ul class="list-group ">
-                <li class="list-group-item bg-success text-white" style="background-color: #4CA746 !Important; color: #FFFFFF !Important;padding: 3px !Important; padding-left: 17px !Important;">
+                <li class="list-group-item bg-success text-white"
+                    style="background-color: #4CA746 !Important; color: #FFFFFF !Important;padding: 3px !Important; padding-left: 17px !Important;">
                     Em execução, mas não precisa mais de Financeiro
                 </li>
             </ul>
@@ -1236,7 +1245,8 @@ function legenda()
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
             <h6>&nbsp;</h6>
             <ul class="list-group ">
-                <li class="list-group-item bg-danger text-white" style="background-color: #df4957 !Important; color: #FFFFFF !Important;padding: 3px !Important; padding-left: 17px !Important;">
+                <li class="list-group-item bg-danger text-white"
+                    style="background-color: #df4957 !Important; color: #FFFFFF !Important;padding: 3px !Important; padding-left: 17px !Important;">
                     Contrato/convênio cancelado ou anulado
                 </li>
             </ul>
@@ -1264,7 +1274,7 @@ function legenda()
             </ul>
         </div> -->
     </div>
-<?php
+    <?php
 }
 
 function url_exists($url)
@@ -2182,7 +2192,7 @@ function nomeCampoTabelaNormalizado($campo)
         case 'dsc_visao':
             $campoNormalizado = 'Visão';
             break;
-        case 'dsc_valores':
+        case 'nom_valor':
             $campoNormalizado = 'Valores';
             break;
         case 'dsc_perspectiva':
@@ -2484,7 +2494,7 @@ function calcularPercentual($valorObtido = 0, $valorTotal = 0)
 
 function to_array($value): array
 {
-    $arr = (array)$value;
+    $arr = (array) $value;
     if (!is_object($value)) {
         return $arr;
     }
@@ -2765,7 +2775,7 @@ function tirarPontoBarraTraco($texto = '')
 
 function prettify_numbers($number = '0', $decimals = 2, $int_only = false)
 {
-    $number = (string)$number;
+    $number = (string) $number;
 
     $simbol = null;
 
@@ -2816,7 +2826,8 @@ function prettify_numbers($number = '0', $decimals = 2, $int_only = false)
     }
 
     // Retorna apenas o número inteiro
-    if ($int_only) return (int)$number . $simbol;
+    if ($int_only)
+        return (int) $number . $simbol;
 
     // Retorna o número e o símbolo
     return $number . $simbol;
@@ -3126,4 +3137,13 @@ function tipoPerfil($cod_adm = '')
 
         return $descricao;
     }
+}
+
+function transformarNomeTabelaParaNomeModel($nomeTabela = null)
+{
+    $nomeTabela = str_replace('_', ' ', $nomeTabela); // Substitui os underscores por espaços
+    $nomeTabela = ucwords($nomeTabela); // Converte as primeiras letras de cada palavra para maiúsculas
+    $nomeTabela = str_replace(' ', '', $nomeTabela); // Remove os espaços
+
+    return $nomeTabela;
 }

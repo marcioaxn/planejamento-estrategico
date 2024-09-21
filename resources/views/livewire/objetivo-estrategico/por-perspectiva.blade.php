@@ -2,20 +2,32 @@
     @foreach ($this->perspectiva as $resultPerspectiva)
         @php
             if ($resultPerspectiva->num_nivel_hierarquico_apresentacao == 1) {
-                $colorBg = 'slate-500 text-white';
+                $colorBg = 'slate-700 text-white';
                 $colorBgInterno = 'bg-slate-50';
-                $border = 'border-slate-500';
+                $border = 'border-slate-700';
                 $borderInterno = 'border-slate-200';
             } elseif ($resultPerspectiva->num_nivel_hierarquico_apresentacao == 2) {
-                $colorBg = 'lime-600 text-white';
-                $colorBgInterno = 'bg-lime-50';
-                $border = 'border-lime-600';
-                $borderInterno = 'border-lime-200';
+                $colorBg = 'green-600 text-white';
+                $colorBgInterno = 'bg-green-50';
+                $border = 'border-green-600';
+                $borderInterno = 'border-green-200';
             } else {
                 $colorBg = 'fuchsia-200 text-fuchsia-800';
                 $border = 'border-fuchsia-200';
             }
         @endphp
+
+        <style>
+            .h-full {
+                display: grid;
+                grid-template-rows: 1fr auto;
+            }
+
+            #divChartIndicadoresEPlanoAcao {
+                grid-row: 2;
+                padding-bottom: 35px !Important;
+            }
+        </style>
 
         <div class="bg-white rounded-lg overflow-hidden border-2 {{ $border }} mb-2">
 
@@ -68,38 +80,40 @@
                                         $this->anoSelecionado,
                                     );
                                 @endphp
-                                <div class="bg-white rounded-xl shadow-md overflow-hidden border-2">
-                                    <a href="{!! url(
-                                        $this->ano .
-                                            '/unidade/' .
-                                            $this->cod_organizacao .
-                                            '/perspectiva/' .
-                                            $resultPerspectiva->cod_perspectiva .
-                                            '/objetivo-estrategico/' .
-                                            $resultObjetivoEstragico->cod_objetivo_estrategico .
-                                            '/plano-de-acao',
-                                    ) !!}">
-                                        <div class="relative">
-                                            <div
-                                                class="bg-{{ $colorBg . ' ' . $border }} text-lg px-1 pt-1 pb-1 pl-3 pr-3">
-                                                <span class="text-sm"><strong>OE
-                                                        {!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $resultObjetivoEstragico->num_nivel_hierarquico_apresentacao !!}.</strong>
-                                                </span>
-                                            </div>
+                                <div class="bg-white rounded-xl shadow-md overflow-hidden border-2 h-full">
+
+                                    <div class="relative">
+                                        <div class="bg-{{ $colorBg . ' ' . $border }} text-lg px-1 pt-1 pb-1 pl-3 pr-3">
+                                            <span class="text-sm"><strong>OE
+                                                    {!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $resultObjetivoEstragico->num_nivel_hierarquico_apresentacao !!}.</strong>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="h-full" id="divChartIndicadoresEPlanoAcao">
+                                        <div class="cabecalho_div mt-0 pt-0 mb-0 pb-0">
+                                            <p
+                                                class="text-base text-gray-lite dark:text-[#A6A6A6] text-justify mt-0 pt-0 mb-0 pb-0">
+                                                {{ $resultObjetivoEstragico->nom_objetivo_estrategico }}
+                                            </p>
                                         </div>
 
-                                        <div class="h-full">
-                                            <div class="cabecalho_div mt-0 pt-0 mb-0 pb-0">
-                                                <p
-                                                    class="text-base text-gray-lite dark:text-[#A6A6A6] text-justify mt-0 pt-0 mb-0 pb-0">
-                                                    {{ $resultObjetivoEstragico->dsc_objetivo_estrategico }}
-                                                </p>
-                                            </div>
+                                        <a
+                                            href="{{ route('objetivo-estrategico', [
+                                                $this->ano,
+                                                'e37b40bf-4852-4fc7-8d0a-1cb6243ae9b6',
+                                                $this->cod_organizacao,
+                                                $resultPerspectiva->cod_perspectiva,
+                                                $resultObjetivoEstragico->cod_objetivo_estrategico,
+                                            ]) }}">
+
                                             <div class="principal_div mt-0 pt-0 mb-0 pb-0"
                                                 style="vertical-align: bottom !Important;">
                                                 <div class="flex justify-between mb-1">
                                                     @php
-                                                        $resultIndicador['quantidadeIndicador'] > 1 ? $textoAcao = 'indicadores' : $textoAcao = 'indicador';
+                                                        $resultIndicador['quantidadeIndicador'] > 1
+                                                            ? ($textoAcao = 'indicadores')
+                                                            : ($textoAcao = 'indicador');
                                                     @endphp
                                                     <span class="text-xs text-gray-700">
                                                         <span class="text-base">{!! !is_null($resultIndicador['quantidadeIndicador']) ? $resultIndicador['quantidadeIndicador'] : 0 !!}</span>
@@ -116,6 +130,18 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                        </a>
+
+                                        <a
+                                            href="{{ route('objetivo-estrategico', [
+                                                $this->ano,
+                                                '3ac5e10e-8960-4b7c-a1cf-455597c875a7',
+                                                $this->cod_organizacao,
+                                                $resultPerspectiva->cod_perspectiva,
+                                                $resultObjetivoEstragico->cod_objetivo_estrategico,
+                                            ]) }}">
+
                                             <div class="rodape_div mt-0 pt-0 mb-0 pb-0">
                                                 <div class="flex justify-between mb-1">
                                                     <span class="text-xs text-gray-700">
@@ -138,9 +164,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                    </a>
+                                        </a>
+                                    </div>
                                 </div>
                             @endforeach
 

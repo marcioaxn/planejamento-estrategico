@@ -2,16 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrincipalController;
-use App\Http\Controllers\OrganizacaoController;
 use App\Http\Controllers\ArquivosController;
 
 use App\Http\Livewire\{
     ShowDashboard,
     ShowOrganization,
     PlanejamentoEstrategicoIntegrado,
-    MissaoVisaoValoresLivewire,
+    MissaoVisaoLivewire,
+    ValoresLivewire,
     PerspectivaLivewire,
     ObjetivoEstrategicoLivewire,
+    IndicadorObjetivoEstrategicoLivewire,
     IndicadoresObjetivoEstrategicoLivewire,
     PlanoAcaoLivewire,
     IndicadoresLivewire,
@@ -58,7 +59,9 @@ Route::group(['middleware' => ['auth:sanctum', 'verified', 'auth', 'trocarSenha'
 
     Route::get('{ano}/adm/pei', PlanejamentoEstrategicoIntegrado::class)->name('PlanejamentoEstrategicoIntegrado');
 
-    Route::get('{ano}/adm/missao-visao-valores', MissaoVisaoValoresLivewire::class)->name('missao');
+    Route::get('{ano}/adm/missao-visao', MissaoVisaoLivewire::class)->name('missao');
+
+    Route::get('{ano}/adm/valores', ValoresLivewire::class)->name('adm.valores');
 
     Route::get('{ano}/adm/perspectiva', PerspectivaLivewire::class)->name('perspectiva');
 
@@ -73,7 +76,9 @@ Route::group(['middleware' => ['auth:sanctum', 'verified', 'auth', 'trocarSenha'
     Route::get('{ano}/adm/grau-satisfacao', GrauSatisfacaoLivewire::class)->name('grauSatisfacao');
 });
 
-Route::get('{ano}/unidade/{cod_organizacao}/perspectiva/{cod_perspectiva}/objetivo-estrategico/{cod_objetivo_estrategico}/plano-de-acao/{cod_plano_de_acao?}', ShowObjetivoEstrategicoLivewire::class)->name('pei.showObjetivoEstrategico');
+Route::get('{ano}/{cod_origem}/{cod_organizacao}/{cod_perspectiva}/{cod_objetivo_estrategico}/{cod_plano_de_acao?}', ShowObjetivoEstrategicoLivewire::class)->name('objetivo-estrategico');
+
+Route::get('{ano}/indicador-objetivo-estrategico/{cod_organizacao}/{cod_perspectiva}/{cod_objetivo_estrategico}/{cod_plano_de_acao?}', IndicadorObjetivoEstrategicoLivewire::class)->name('objetivo-estrategico.indicador');
 
 Route::get('{ano}/evolucao-mensal-arquivo/{cod_arquivo}', 'App\Http\Controllers\ArquivosController@show')->name('showArquivoEvolucaoMensal');
 

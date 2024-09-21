@@ -11,7 +11,7 @@ class Indicador extends Model
 {
     use Uuids;
     use SoftDeletes;
-    
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -23,32 +23,47 @@ class Indicador extends Model
 
     protected $guarded = array();
 
-    public function linhaBase() {
+    public function linhaBase()
+    {
 
         return $this->hasMany(LinhaBase::class, 'cod_indicador');
 
     }
 
-    public function metaAno() {
+    public function metaAno()
+    {
 
         return $this->hasMany(MetaAno::class, 'cod_indicador');
 
     }
 
-    public function evolucaoIndicador() {
+    public function evolucaoIndicador()
+    {
 
         return $this->hasMany(EvolucaoIndicador::class, 'cod_indicador')
-        ->orderBy('num_ano')
-        ->orderBy('num_mes');
+            ->orderBy('num_ano')
+            ->orderBy('num_mes');
 
     }
 
-    public function acoesRealizadas() {
+    public function acoesRealizadas()
+    {
 
         return $this->hasMany(Acoes::class, 'table_id')
-        ->whereIn('table',['tab_indicador'])
-        ->orderBy('created_at','desc');
+            ->whereIn('table', ['tab_indicador'])
+            ->orderBy('created_at', 'desc');
 
     }
-    
+
+    public function codOrganizacoes()
+    {
+        return $this->hasMany(RelIndicadorObjetivoEstrategicoOrganizacao::class, 'cod_indicador')
+            ->select('cod_indicador', 'cod_organizacao');
+    }
+
+    public function organizacoes()
+    {
+        return $this->belongsToMany(Organization::class, 'pei.rel_indicador_objetivo_estrategico_organizacao', 'cod_indicador', 'cod_organizacao');
+    }
+
 }

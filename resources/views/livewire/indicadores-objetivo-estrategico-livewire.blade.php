@@ -52,7 +52,7 @@
 
                     </div>
 
-                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-3">
+                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="cod_perspectiva" value="Perspectiva" />
@@ -115,10 +115,54 @@
 
                     </div>
 
+                    <div class="w-full md:w-3/3 px-3 mb-1 md:mb-0 pt-0" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <style>
+                            .select2-selection {
+                                border-color: #d1d5db !Important;
+                                min-height: 41px !Important;
+                            }
+                        </style>
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="organizations-select" value="Área responsável" />
+
+                            {!! Form::select('selected_organizations', $this->organizacoes, null, [
+                                'class' => 'w-full m-0 p-0',
+                                'style' => 'height: 40px!Important;',
+                                'id' => 'organizations-select',
+                                'multiple' => true,
+                                'required' => 'required',
+                                'wire:model' => 'selected_organizations',
+                            ]) !!}
+                            <x-jet-input-error for="organizations-select" class="mt-2" />
+
+                            <script>
+                                window.loadSelect2 = () => {
+                                    $('#organizations-select').select2({
+                                        // theme: "classic",
+                                    }).on('change', function() {
+                                        var data = $('#organizations-select').select2("val");
+                                        @this.set('selected_organizations', data);
+                                    });
+                                }
+
+                                document.addEventListener("livewire:load", () => {
+                                    loadSelect2();
+                                    window.livewire.on('select2Hydrate', () => {
+                                        loadSelect2();
+                                    });
+                                });
+                            </script>
+
+                        </div>
+
+                    </div>
+
                     <div class="w-full md:w-2/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_indicador" value="Nome do Indicador" />
+                            <x-jet-labelpreenchimentoobrigatoriio for="nom_indicador" value="Nome do Indicador" />
                             {!! Form::text('nom_indicador', null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
@@ -160,7 +204,7 @@
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
                                 'id' => 'txt_observacao',
-                                'placeholder' => 'Escreva a descrição do indicador',
+                                'placeholder' => 'Escreva, se necessário, as observações relacionadas a este indicador',
                                 'rows' => 2,
                                 'required' => 'required',
                                 'style' => 'width: 100%',
@@ -179,7 +223,7 @@
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
                                 'id' => 'dsc_meta',
-                                'placeholder' => 'Escreva a descrição do indicador',
+                                'placeholder' => 'Escreva a descrição da meta deste indicador',
                                 'rows' => 2,
                                 'required' => 'required',
                                 'style' => 'width: 100%',
@@ -198,7 +242,7 @@
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
                                 'id' => 'dsc_atributos',
-                                'placeholder' => 'Escreva a descrição do indicador',
+                                'placeholder' => 'Escreva os atributos deste indicador',
                                 'rows' => 2,
                                 'required' => 'required',
                                 'style' => 'width: 100%',
@@ -217,7 +261,7 @@
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
                                 'id' => 'dsc_referencial_comparativo',
-                                'placeholder' => 'Escreva a descrição do indicador',
+                                'placeholder' => 'Escreva o referencial comparativo deste indicador',
                                 'rows' => 2,
                                 'required' => 'required',
                                 'style' => 'width: 100%',
@@ -393,7 +437,7 @@
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
                                 'id' => 'dsc_fonte',
-                                'placeholder' => 'Escreva a fonte desse indicador',
+                                'placeholder' => 'Escreva a fonte deste indicador',
                                 'rows' => 2,
                                 'style' => 'width: 100%',
                                 'wire:model' => 'dsc_fonte',
@@ -476,7 +520,7 @@
 
                     <div class="w-full md:w-1/1 px-3 mb-0 md:mb-0 pt-6" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
-                        <x-jet-labelpreenchimentoobrigatoriio for="dsc_tipo" value="Linha de Base" />
+                        <x-jet-labelopcional for="dsc_tipo" value="Linha de Base" />
 
                     </div>
 
@@ -489,7 +533,6 @@
                                 'placeholder' => 'Ano da linha base',
                                 'autocomplete' => 'off',
                                 'wire:model' => 'num_ano_base_1',
-                                'required' => 'required',
                             ]) !!}
                             {!! Form::text('num_linha_base_1', null, [
                                 'class' => $this->inputValorLinhaBaseClass,
@@ -497,7 +540,6 @@
                                 'placeholder' => 'Linha de base',
                                 'wire:model' => 'num_linha_base_1',
                                 'autocomplete' => 'off',
-                                'required' => 'required',
                             ]) !!}
 
                         </div>
@@ -843,7 +885,7 @@
                             <div class="bg-gray-200 bg-opacity-50 text-gray-600 text-lg px-1 pb-1 pl-3 pr-3"><span
                                     class="text-sm">OE: <span
                                         class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $resultObjetivosEstrategicos->num_nivel_hierarquico_apresentacao !!}.
-                                    </span><strong>{!! $resultObjetivosEstrategicos->dsc_objetivo_estrategico !!}</strong></span></div>
+                                    </span><strong>{!! $resultObjetivosEstrategicos->nom_objetivo_estrategico !!}</strong></span></div>
 
                         </div>
 

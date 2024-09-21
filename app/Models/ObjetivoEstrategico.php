@@ -31,6 +31,22 @@ class ObjetivoEstrategico extends Model
 
     }
 
+    public function fututosAlmejados()
+    {
+
+        return $this->hasMany(FuturoAlmejado::class, 'cod_objetivo_estrategico')
+            ->orderBy('dsc_futuro_almejado');
+
+    }
+
+    public function fututoAlmejadoParaEdicao()
+    {
+
+        return $this->hasMany(FuturoAlmejado::class, 'cod_objetivo_estrategico')
+            ->orderBy('created_at', 'ASC');
+
+    }
+
     public function primeiroIndicador()
     {
 

@@ -15,7 +15,7 @@ use App\Models\RelUsersTabOrganizacoesTabPerfilAcesso;
 use App\Models\Acoes;
 use App\Models\Audit;
 use DB;
-Use Auth;
+use Auth;
 use Illuminate\Support\Str;
 
 class PlanoAcaoLivewire extends Component
@@ -53,7 +53,7 @@ class PlanoAcaoLivewire extends Component
     public $ultimoAnoDoPeiSelecionado = null;
 
     public $estruturaTable = null;
-    
+
     public $editarForm = false;
     public $deleteForm = false;
     public $audit = false;
@@ -82,25 +82,25 @@ class PlanoAcaoLivewire extends Component
         // Fim da declaração da variável de consulta ao plano de ação
         // --- x --- x --- x ---
 
-        
+
         // Início da consulta ao plano de ação
         $planosAcao = PlanoAcao::orderBy('num_nivel_hierarquico_apresentacao')
-        ->orderBy('dsc_plano_de_acao');
+            ->orderBy('dsc_plano_de_acao');
 
         // Início do IF para verificar se a variável $cods_organizacao contem algum conteúdo
-        if(isset($cods_organizacao) && !is_null($cods_organizacao) && $cods_organizacao != '') {
+        if (isset($cods_organizacao) && !is_null($cods_organizacao) && $cods_organizacao != '') {
 
 
             // Início do IF para verificar se a variável $cods_organizacao é do tipo array e se o array é maior que zero
-            if(is_array($cods_organizacao) && count($cods_organizacao) > 0) {
+            if (is_array($cods_organizacao) && count($cods_organizacao) > 0) {
 
-                $planosAcao = $planosAcao->whereIn('cod_organizacao',$cods_organizacao);
+                $planosAcao = $planosAcao->whereIn('cod_organizacao', $cods_organizacao);
 
             } else {
 
                 // Esta é a exceção caso a variável $cods_organizacao não seja do tipo array e se o array é não maior que zero
 
-                $planosAcao = $planosAcao->where('cod_organizacao',$cods_organizacao);
+                $planosAcao = $planosAcao->where('cod_organizacao', $cods_organizacao);
 
             }
             // Fim do IF para verificar se a variável $cods_organizacao é do tipo array e se o array é maior que zero
@@ -111,10 +111,10 @@ class PlanoAcaoLivewire extends Component
         // --- x --- x --- x ---
 
         // Início do IF para verificar se a variável $ano contem algum conteúdo
-        if(isset($ano) && !is_null($ano) && $ano != '') {
+        if (isset($ano) && !is_null($ano) && $ano != '') {
 
-            $planosAcao = $planosAcao->whereYear('dte_inicio','<=',$ano)
-            ->whereYear('dte_fim','>=',$ano);
+            $planosAcao = $planosAcao->whereYear('dte_inicio', '<=', $ano)
+                ->whereYear('dte_fim', '>=', $ano);
 
         }
         // Fim do IF para verificar se a variável $ano contem algum conteúdo
@@ -129,18 +129,19 @@ class PlanoAcaoLivewire extends Component
 
     }
 
-    protected function pesquisarCodigo($cod_objetivo_estrategico = '') {
+    protected function pesquisarCodigo($cod_objetivo_estrategico = '')
+    {
 
         $this->num_nivel_hierarquico_apresentacao = '';
 
-        if(isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '') {
+        if (isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '') {
 
             $planoAcao = PlanoAcao::select('num_nivel_hierarquico_apresentacao')
-            ->where('cod_objetivo_estrategico',$cod_objetivo_estrategico)
-            ->orderBy('num_nivel_hierarquico_apresentacao','desc')
-            ->first();
+                ->where('cod_objetivo_estrategico', $cod_objetivo_estrategico)
+                ->orderBy('num_nivel_hierarquico_apresentacao', 'desc')
+                ->first();
 
-            if($planoAcao) {
+            if ($planoAcao) {
 
                 $this->num_nivel_hierarquico_apresentacao = (($planoAcao->num_nivel_hierarquico_apresentacao) + 1);
 
@@ -156,9 +157,10 @@ class PlanoAcaoLivewire extends Component
 
     }
 
-    public function abrirFecharForm() {
+    public function abrirFecharForm()
+    {
 
-        if($this->abrirFecharForm === 'none') {
+        if ($this->abrirFecharForm === 'none') {
 
             $this->cod_perspectiva = null;
             $this->cod_pei = null;
@@ -184,112 +186,113 @@ class PlanoAcaoLivewire extends Component
 
     }
 
-    public function create() {
+    public function create()
+    {
 
         // Necessário incluir a parte de validação
 
         $modificacoes = '';
         $alteracao = array();
 
-        if(!$this->editarForm) {
+        if (!$this->editarForm) {
 
             $modificacoes = "Inseriu os seguintes dados em relação ao novo Plano de Ação:<br><br>";
 
             $save = new PlanoAcao;
 
-            if(isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
+            if (isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
 
                 $save->cod_objetivo_estrategico = $this->cod_objetivo_estrategico;
 
                 $consultarObjetivoEstrategico = ObjetivoEstrategico::find($this->cod_objetivo_estrategico);
 
-                $modificacoes = $modificacoes . "Objetivo Estratégico: <span class='text-green-800'>".$consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao.'. '.$consultarObjetivoEstrategico->dsc_objetivo_estrategico."</span><br>";
+                $modificacoes = $modificacoes . "Objetivo Estratégico: <span class='text-green-800'>" . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->nom_objetivo_estrategico . "</span><br>";
 
             }
 
-            if(isset($this->cod_tipo_execucao) && !is_null($this->cod_tipo_execucao) && $this->cod_tipo_execucao != '') {
+            if (isset($this->cod_tipo_execucao) && !is_null($this->cod_tipo_execucao) && $this->cod_tipo_execucao != '') {
 
                 $save->cod_tipo_execucao = $this->cod_tipo_execucao;
 
                 $consultarTipoExecucao = TipoExecucao::find($this->cod_tipo_execucao);
 
-                $modificacoes = $modificacoes . "Tipo: <span class='text-green-800'>".$consultarTipoExecucao->dsc_tipo_execucao."</span><br>";
+                $modificacoes = $modificacoes . "Tipo: <span class='text-green-800'>" . $consultarTipoExecucao->dsc_tipo_execucao . "</span><br>";
 
             }
 
-            if(isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
+            if (isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
 
                 $save->cod_organizacao = $this->cod_organizacao;
 
                 $consultarOrganizacao = Organization::find($this->cod_organizacao);
 
-                $modificacoes = $modificacoes . "Unidade Responsável: <span class='text-green-800'>".$consultarOrganizacao->sgl_organizacao." - ".$consultarOrganizacao->nom_organizacao."</span><br>";
+                $modificacoes = $modificacoes . "Unidade Responsável: <span class='text-green-800'>" . $consultarOrganizacao->sgl_organizacao . " - " . $consultarOrganizacao->nom_organizacao . "</span><br>";
 
             }
 
-            if(isset($this->dsc_plano_de_acao) && !is_null($this->dsc_plano_de_acao) && $this->dsc_plano_de_acao != '') {
+            if (isset($this->dsc_plano_de_acao) && !is_null($this->dsc_plano_de_acao) && $this->dsc_plano_de_acao != '') {
 
                 $save->num_nivel_hierarquico_apresentacao = $this->num_nivel_hierarquico_apresentacao;
 
                 $save->dsc_plano_de_acao = $this->dsc_plano_de_acao;
 
-                $modificacoes = $modificacoes . "Descrição: <span class='text-green-800'>".$this->num_nivel_hierarquico_apresentacao.'. '.$this->dsc_plano_de_acao."</span><br>";
+                $modificacoes = $modificacoes . "Descrição: <span class='text-green-800'>" . $this->num_nivel_hierarquico_apresentacao . '. ' . $this->dsc_plano_de_acao . "</span><br>";
 
             }
 
-            if(isset($this->txt_principais_entregas) && !is_null($this->txt_principais_entregas) && $this->txt_principais_entregas != '') {
+            if (isset($this->txt_principais_entregas) && !is_null($this->txt_principais_entregas) && $this->txt_principais_entregas != '') {
 
                 $save->txt_principais_entregas = $this->txt_principais_entregas;
 
-                $modificacoes = $modificacoes . "Principais entregas: <span class='text-green-800'>".$this->txt_principais_entregas."</span><br>";
+                $modificacoes = $modificacoes . "Principais entregas: <span class='text-green-800'>" . $this->txt_principais_entregas . "</span><br>";
 
             }
 
-            if(isset($this->dte_inicio) && !is_null($this->dte_inicio) && $this->dte_inicio != '') {
+            if (isset($this->dte_inicio) && !is_null($this->dte_inicio) && $this->dte_inicio != '') {
 
                 $save->dte_inicio = $this->dte_inicio;
 
-                $modificacoes = $modificacoes . "Data de Início: <span class='text-green-800'>".converterData('EN','PTBR',$this->dte_inicio)."</span><br>";
+                $modificacoes = $modificacoes . "Data de Início: <span class='text-green-800'>" . converterData('EN', 'PTBR', $this->dte_inicio) . "</span><br>";
 
             }
 
-            if(isset($this->dte_fim) && !is_null($this->dte_fim) && $this->dte_fim != '') {
+            if (isset($this->dte_fim) && !is_null($this->dte_fim) && $this->dte_fim != '') {
 
                 $save->dte_fim = $this->dte_fim;
 
-                $modificacoes = $modificacoes . "Data de Conclusão: <span class='text-green-800'>".converterData('EN','PTBR',$this->dte_fim)."</span><br>";
+                $modificacoes = $modificacoes . "Data de Conclusão: <span class='text-green-800'>" . converterData('EN', 'PTBR', $this->dte_fim) . "</span><br>";
 
             }
 
-            if(isset($this->bln_status) && !is_null($this->bln_status) && $this->bln_status != '') {
+            if (isset($this->bln_status) && !is_null($this->bln_status) && $this->bln_status != '') {
 
                 $save->bln_status = $this->bln_status;
 
-                $modificacoes = $modificacoes . "Status: <span class='text-green-800'>".$this->bln_status."</span><br>";
+                $modificacoes = $modificacoes . "Status: <span class='text-green-800'>" . $this->bln_status . "</span><br>";
 
             }
 
-            if(isset($this->vlr_orcamento_previsto) && !is_null($this->vlr_orcamento_previsto) && $this->vlr_orcamento_previsto != '') {
+            if (isset($this->vlr_orcamento_previsto) && !is_null($this->vlr_orcamento_previsto) && $this->vlr_orcamento_previsto != '') {
 
-                $save->vlr_orcamento_previsto = converteValor('PTBR','MYSQL',$this->vlr_orcamento_previsto);
+                $save->vlr_orcamento_previsto = converteValor('PTBR', 'MYSQL', $this->vlr_orcamento_previsto);
 
-                $modificacoes = $modificacoes . "Orçamento Previsto: <span class='text-green-800'>".$this->vlr_orcamento_previsto."</span><br>";
+                $modificacoes = $modificacoes . "Orçamento Previsto: <span class='text-green-800'>" . $this->vlr_orcamento_previsto . "</span><br>";
 
             }
 
-            if(isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
+            if (isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
 
                 $consultarUsuarioResponsavel = User::find($this->user_id_responsavel);
 
-                $modificacoes = $modificacoes . "Servidor(a) Responsável: <span class='text-green-800'>".$consultarUsuarioResponsavel->name."</span><br>";
+                $modificacoes = $modificacoes . "Servidor(a) Responsável: <span class='text-green-800'>" . $consultarUsuarioResponsavel->name . "</span><br>";
 
             }
 
-            if(isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
+            if (isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
 
                 $consultarUsuarioSubstituto = User::find($this->user_id_substituto);
 
-                $modificacoes = $modificacoes . "Servidor(a) Substituto: <span class='text-green-800'>".$consultarUsuarioSubstituto->name."</span><br>";
+                $modificacoes = $modificacoes . "Servidor(a) Substituto: <span class='text-green-800'>" . $consultarUsuarioSubstituto->name . "</span><br>";
 
             }
 
@@ -302,7 +305,7 @@ class PlanoAcaoLivewire extends Component
                 'acao' => $modificacoes
             ));
 
-            if(isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
+            if (isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
 
                 $saveUsuarioResponsavel = new RelUsersTabOrganizacoesTabPerfilAcesso;
 
@@ -318,7 +321,7 @@ class PlanoAcaoLivewire extends Component
 
             }
 
-            if(isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
+            if (isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
 
                 $saveUsuarioSubstituto = new RelUsersTabOrganizacoesTabPerfilAcesso;
 
@@ -340,27 +343,27 @@ class PlanoAcaoLivewire extends Component
 
         } else {
 
-            $editar = PlanoAcao::with('servidorResponsavel','servidorSubstituto')
-            ->find($this->cod_plano_de_acao);
+            $editar = PlanoAcao::with('servidorResponsavel', 'servidorSubstituto')
+                ->find($this->cod_plano_de_acao);
 
             $estruturaTable = $this->estruturaTableParaEditar();
 
-            foreach($estruturaTable as $result) {
+            foreach ($estruturaTable as $result) {
 
                 $column_name = $result->column_name;
                 $data_type = $result->data_type;
 
                 // Início da parte para igualar a formatação do campo de valor
 
-                if($data_type === 'numeric') {
+                if ($data_type === 'numeric') {
 
-                    $this->$column_name = converteValor('PTBR','MYSQL',$this->$column_name);
+                    $this->$column_name = converteValor('PTBR', 'MYSQL', $this->$column_name);
 
                 }
 
                 // Fim da parte para igualar a formatação do campo de valor
 
-                if($editar->$column_name != $this->$column_name) {
+                if ($editar->$column_name != $this->$column_name) {
 
                     $alteracao[$column_name] = $this->$column_name;
 
@@ -376,45 +379,45 @@ class PlanoAcaoLivewire extends Component
                         'depois' => $this->$column_name
                     ));
 
-                    if($data_type === 'date') {
+                    if ($data_type === 'date') {
 
-                        $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.converterData('EN','PTBR',$editar->$column_name).' )</span> para <span style="color:#28a745;">( '.converterData('EN','PTBR',$this->$column_name).' )</span>;<br>';
+                        $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converterData('EN', 'PTBR', $editar->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . converterData('EN', 'PTBR', $this->$column_name) . ' )</span>;<br>';
 
-                    } elseif($data_type === 'numeric') {
+                    } elseif ($data_type === 'numeric') {
 
-                        $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.converteValor('MYSQL','PTBR',$editar->$column_name).' )</span> para <span style="color:#28a745;">( '.converteValor('MYSQL','PTBR',$this->$column_name).' )</span>;<br>';
+                        $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converteValor('MYSQL', 'PTBR', $editar->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . converteValor('MYSQL', 'PTBR', $this->$column_name) . ' )</span>;<br>';
 
-                    } elseif($data_type === 'uuid') {
+                    } elseif ($data_type === 'uuid') {
 
-                        if($column_name === 'cod_objetivo_estrategico') {
+                        if ($column_name === 'cod_objetivo_estrategico') {
 
                             $consultarValorAntigo = ObjetivoEstrategico::find($editar->$column_name);
 
                             $consultarValorAtualizado = ObjetivoEstrategico::find($this->$column_name);
 
-                            $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.$consultarValorAntigo->num_nivel_hierarquico_apresentacao.'. '.$consultarValorAntigo->dsc_objetivo_estrategico.' )</span> para <span style="color:#28a745;">( '.$consultarValorAtualizado->num_nivel_hierarquico_apresentacao.'. '.$consultarValorAtualizado->dsc_objetivo_estrategico.' )</span>;<br>';
+                            $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $consultarValorAntigo->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAntigo->nom_objetivo_estrategico . ' )</span> para <span style="color:#28a745;">( ' . $consultarValorAtualizado->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAtualizado->nom_objetivo_estrategico . ' )</span>;<br>';
 
-                        } elseif($column_name === 'cod_tipo_execucao') {
+                        } elseif ($column_name === 'cod_tipo_execucao') {
 
                             $consultarValorAntigo = TipoExecucao::find($editar->$column_name);
 
                             $consultarValorAtualizado = TipoExecucao::find($this->$column_name);
 
-                            $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.$consultarValorAntigo->dsc_tipo_execucao.' )</span> para <span style="color:#28a745;">( '.$consultarValorAtualizado->dsc_tipo_execucao.' )</span>;<br>';
+                            $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $consultarValorAntigo->dsc_tipo_execucao . ' )</span> para <span style="color:#28a745;">( ' . $consultarValorAtualizado->dsc_tipo_execucao . ' )</span>;<br>';
 
-                        } elseif($column_name === 'cod_organizacao') {
+                        } elseif ($column_name === 'cod_organizacao') {
 
                             $consultarValorAntigo = Organization::find($editar->$column_name);
 
                             $consultarValorAtualizado = Organization::find($this->$column_name);
 
-                            $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.$consultarValorAntigo->sgl_organizacao.' - '.$consultarValorAntigo->nom_organizacao.' )</span> para <span style="color:#28a745;">( '.$consultarValorAtualizado->sgl_organizacao.' - '.$consultarValorAtualizado->nom_organizacao.' )</span>;<br>';
+                            $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $consultarValorAntigo->sgl_organizacao . ' - ' . $consultarValorAntigo->nom_organizacao . ' )</span> para <span style="color:#28a745;">( ' . $consultarValorAtualizado->sgl_organizacao . ' - ' . $consultarValorAtualizado->nom_organizacao . ' )</span>;<br>';
 
                         }
 
                     } else {
 
-                        $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.$editar->$column_name.' )</span> para <span style="color:#28a745;">( '.$this->$column_name.' )</span>;<br>';
+                        $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $editar->$column_name . ' )</span> para <span style="color:#28a745;">( ' . $this->$column_name . ' )</span>;<br>';
 
                     }
 
@@ -424,19 +427,19 @@ class PlanoAcaoLivewire extends Component
 
             // Início da verificação se houve modificação do(a) servidor(a) responsável
 
-            if(isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
+            if (isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
 
                 $servidorResponsavelAntigo = '';
                 $idServidorResponsavelAntigo = '';
 
-                foreach($editar->servidorResponsavel as $servidorResponsavel) {
+                foreach ($editar->servidorResponsavel as $servidorResponsavel) {
 
                     $servidorResponsavelAntigo = $servidorResponsavel->name;
                     $idServidorResponsavelAntigo = $servidorResponsavel->id;
 
                 }
 
-                if($idServidorResponsavelAntigo != $this->user_id_responsavel) {
+                if ($idServidorResponsavelAntigo != $this->user_id_responsavel) {
 
                     $consultarNovoServidorResponsavel = User::find($this->user_id_responsavel);
 
@@ -454,11 +457,11 @@ class PlanoAcaoLivewire extends Component
 
                     // Início excluir o(a) atual servidor(a) responsável
 
-                    $consultarRelUsersTabOrganizacoesTabPerfilAcesso = RelUsersTabOrganizacoesTabPerfilAcesso::where('cod_plano_de_acao',$this->cod_plano_de_acao)
-                    ->where('user_id',$idServidorResponsavelAntigo)
-                    ->where('cod_organizacao',$this->cod_organizacao)
-                    ->where('cod_perfil','c00b9ebc-7014-4d37-97dc-7875e55fff4c')
-                    ->first();
+                    $consultarRelUsersTabOrganizacoesTabPerfilAcesso = RelUsersTabOrganizacoesTabPerfilAcesso::where('cod_plano_de_acao', $this->cod_plano_de_acao)
+                        ->where('user_id', $idServidorResponsavelAntigo)
+                        ->where('cod_organizacao', $this->cod_organizacao)
+                        ->where('cod_perfil', 'c00b9ebc-7014-4d37-97dc-7875e55fff4c')
+                        ->first();
 
                     $consultarRelUsersTabOrganizacoesTabPerfilAcesso->delete();
 
@@ -482,7 +485,7 @@ class PlanoAcaoLivewire extends Component
 
                     // Fim cadastrar o(a) novo servidor(a) responsável
 
-                    $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado('user_id_responsavel').'</b> de <span style="color:#CD3333;">( '.$servidorResponsavelAntigo.' )</span> para <span style="color:#28a745;">( '.$consultarNovoServidorResponsavel->name.' )</span>;<br>';
+                    $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado('user_id_responsavel') . '</b> de <span style="color:#CD3333;">( ' . $servidorResponsavelAntigo . ' )</span> para <span style="color:#28a745;">( ' . $consultarNovoServidorResponsavel->name . ' )</span>;<br>';
 
                 }
 
@@ -494,21 +497,21 @@ class PlanoAcaoLivewire extends Component
 
             // Início da verificação se houve modificação do(a) servidor(a) substituto(a)
 
-            if(isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
+            if (isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
 
                 $servidorSubstitutoAntigo = '';
                 $idServidorSubstitutoAntigo = '';
 
-                foreach($editar->servidorSubstituto as $servidorSubstituto) {
+                foreach ($editar->servidorSubstituto as $servidorSubstituto) {
 
                     $servidorSubstitutoAntigo = $servidorSubstituto->name;
                     $idServidorSubstitutoAntigo = $servidorSubstituto->id;
 
                 }
 
-                if(isset($idServidorSubstitutoAntigo) && !is_null($idServidorSubstitutoAntigo) && $idServidorSubstitutoAntigo != '') {
+                if (isset($idServidorSubstitutoAntigo) && !is_null($idServidorSubstitutoAntigo) && $idServidorSubstitutoAntigo != '') {
 
-                    if($idServidorSubstitutoAntigo != $this->user_id_substituto) {
+                    if ($idServidorSubstitutoAntigo != $this->user_id_substituto) {
 
                         $consultarNovoServidorSubstituto = User::find($this->user_id_substituto);
 
@@ -526,11 +529,11 @@ class PlanoAcaoLivewire extends Component
 
                         // Início excluir o(a) atual servidor(a) substituto(a)
 
-                        $consultarRelUsersTabOrganizacoesTabPerfilAcesso = RelUsersTabOrganizacoesTabPerfilAcesso::where('cod_plano_de_acao',$this->cod_plano_de_acao)
-                        ->where('user_id',$idServidorSubstitutoAntigo)
-                        ->where('cod_organizacao',$this->cod_organizacao)
-                        ->where('cod_perfil','c00b9ebc-7014-4d37-97dc-7875e55fff5d')
-                        ->first();
+                        $consultarRelUsersTabOrganizacoesTabPerfilAcesso = RelUsersTabOrganizacoesTabPerfilAcesso::where('cod_plano_de_acao', $this->cod_plano_de_acao)
+                            ->where('user_id', $idServidorSubstitutoAntigo)
+                            ->where('cod_organizacao', $this->cod_organizacao)
+                            ->where('cod_perfil', 'c00b9ebc-7014-4d37-97dc-7875e55fff5d')
+                            ->first();
 
                         $consultarRelUsersTabOrganizacoesTabPerfilAcesso->delete();
 
@@ -554,13 +557,13 @@ class PlanoAcaoLivewire extends Component
 
                         // Fim cadastrar o(a) novo servidor(a) substituto(a)
 
-                        $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado('user_id_substituto').'</b> de <span style="color:#CD3333;">( '.$servidorSubstitutoAntigo.' )</span> para <span style="color:#28a745;">( '.$consultarNovoServidorSubstituto->name.' )</span>;<br>';
+                        $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado('user_id_substituto') . '</b> de <span style="color:#CD3333;">( ' . $servidorSubstitutoAntigo . ' )</span> para <span style="color:#28a745;">( ' . $consultarNovoServidorSubstituto->name . ' )</span>;<br>';
 
                     }
 
                 } else {
 
-                    if(isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
+                    if (isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
 
                         $saveUsuarioSubstituto = new RelUsersTabOrganizacoesTabPerfilAcesso;
 
@@ -583,22 +586,22 @@ class PlanoAcaoLivewire extends Component
                 $servidorSubstitutoAntigo = '';
                 $idServidorSubstitutoAntigo = '';
 
-                foreach($editar->servidorSubstituto as $servidorSubstituto) {
+                foreach ($editar->servidorSubstituto as $servidorSubstituto) {
 
                     $servidorSubstitutoAntigo = $servidorSubstituto->name;
                     $idServidorSubstitutoAntigo = $servidorSubstituto->id;
 
                 }
 
-                if(isset($idServidorSubstitutoAntigo) && !is_null($idServidorSubstitutoAntigo) && $idServidorSubstitutoAntigo != '') {
+                if (isset($idServidorSubstitutoAntigo) && !is_null($idServidorSubstitutoAntigo) && $idServidorSubstitutoAntigo != '') {
 
                     // Início excluir o(a) atual servidor(a) substituto(a)
 
-                    $consultarRelUsersTabOrganizacoesTabPerfilAcesso = RelUsersTabOrganizacoesTabPerfilAcesso::where('cod_plano_de_acao',$this->cod_plano_de_acao)
-                    ->where('user_id',$idServidorSubstitutoAntigo)
-                    ->where('cod_organizacao',$this->cod_organizacao)
-                    ->where('cod_perfil','c00b9ebc-7014-4d37-97dc-7875e55fff5d')
-                    ->first();
+                    $consultarRelUsersTabOrganizacoesTabPerfilAcesso = RelUsersTabOrganizacoesTabPerfilAcesso::where('cod_plano_de_acao', $this->cod_plano_de_acao)
+                        ->where('user_id', $idServidorSubstitutoAntigo)
+                        ->where('cod_organizacao', $this->cod_organizacao)
+                        ->where('cod_perfil', 'c00b9ebc-7014-4d37-97dc-7875e55fff5d')
+                        ->first();
 
                     $consultarRelUsersTabOrganizacoesTabPerfilAcesso->delete();
 
@@ -612,7 +615,7 @@ class PlanoAcaoLivewire extends Component
 
             // --- x --- x --- x --- x --- x --- x ---
 
-            if(isset($modificacoes) && !is_null($modificacoes) && $modificacoes != '') {
+            if (isset($modificacoes) && !is_null($modificacoes) && $modificacoes != '') {
 
                 $editar->update($alteracao);
 
@@ -658,15 +661,16 @@ class PlanoAcaoLivewire extends Component
 
         $this->abrirFecharForm = 'none';
         $this->iconAbrirFechar = 'fas fa-plus text-xs';
-        
+
         $this->editarForm = false;
 
     }
 
-    public function editForm($cod_plano_de_acao = '') {
+    public function editForm($cod_plano_de_acao = '')
+    {
 
-        $singleData = PlanoAcao::with('servidorResponsavel','servidorSubstituto')
-        ->find($cod_plano_de_acao);
+        $singleData = PlanoAcao::with('servidorResponsavel', 'servidorSubstituto')
+            ->find($cod_plano_de_acao);
 
         $this->cod_plano_de_acao = $singleData->cod_plano_de_acao;
 
@@ -687,15 +691,15 @@ class PlanoAcaoLivewire extends Component
         $this->dte_inicio = $singleData->dte_inicio;
         $this->dte_fim = $singleData->dte_fim;
         $this->bln_status = $singleData->bln_status;
-        $this->vlr_orcamento_previsto = converteValor('MYSQL','PTBR',$singleData->vlr_orcamento_previsto);
+        $this->vlr_orcamento_previsto = converteValor('MYSQL', 'PTBR', $singleData->vlr_orcamento_previsto);
 
-        foreach($singleData->servidorResponsavel as $servidorResponsavel) {
+        foreach ($singleData->servidorResponsavel as $servidorResponsavel) {
 
             $this->user_id_responsavel = $servidorResponsavel->id;
 
         }
 
-        foreach($singleData->servidorSubstituto as $servidorSubstituto) {
+        foreach ($singleData->servidorSubstituto as $servidorSubstituto) {
 
             $this->user_id_substituto = $servidorSubstituto->id;
 
@@ -704,45 +708,45 @@ class PlanoAcaoLivewire extends Component
         $organizacoes = [];
 
         $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
-        ->get();
+            ->get();
 
         $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
-        ->orderBy('nom_organizacao')
-        ->get();
+            ->orderBy('nom_organizacao')
+            ->get();
 
         foreach ($organization as $result) {
 
-            $organizacoes[$result->cod_organizacao] = $result->nom_organizacao.$this->hierarquiaUnidade($result->cod_organizacao);
+            $organizacoes[$result->cod_organizacao] = $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
 
-            foreach($organizationChild as $resultChild1) {
+            foreach ($organizationChild as $resultChild1) {
 
-                if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
+                if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
 
-                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao.$this->hierarquiaUnidade($resultChild1->cod_organizacao);
+                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
 
                     foreach ($resultChild1->deshierarquia as $resultChild2) {
 
-                        if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
+                        if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
 
-                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao.$this->hierarquiaUnidade($resultChild2->cod_organizacao);
+                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
 
                             foreach ($resultChild2->deshierarquia as $resultChild3) {
 
-                                if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
+                                if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
 
-                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao.$this->hierarquiaUnidade($resultChild3->cod_organizacao);
+                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
 
                                     foreach ($resultChild3->deshierarquia as $resultChild4) {
 
-                                        if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
+                                        if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
 
-                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao.$this->hierarquiaUnidade($resultChild4->cod_organizacao);
+                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
 
                                             foreach ($resultChild4->deshierarquia as $resultChild5) {
 
-                                                if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
+                                                if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
-                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao.$this->hierarquiaUnidade($resultChild5->cod_organizacao);
+                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
 
                                                 }
 
@@ -775,12 +779,13 @@ class PlanoAcaoLivewire extends Component
 
     }
 
-    public function deleteForm($cod_plano_de_acao = '') {
+    public function deleteForm($cod_plano_de_acao = '')
+    {
 
         $this->cod_plano_de_acao = $cod_plano_de_acao;
 
-        $singleData = PlanoAcao::with('servidorResponsavel','servidorSubstituto')
-        ->find($cod_plano_de_acao);
+        $singleData = PlanoAcao::with('servidorResponsavel', 'servidorSubstituto')
+            ->find($cod_plano_de_acao);
 
         $consultarObjetivoEstrategico = ObjetivoEstrategico::find($singleData->cod_objetivo_estrategico);
 
@@ -788,13 +793,13 @@ class PlanoAcaoLivewire extends Component
 
         $consultarPei = Pei::find($consultarPerspectiva->cod_pei);
 
-        foreach($singleData->servidorResponsavel as $servidorResponsavel) {
+        foreach ($singleData->servidorResponsavel as $servidorResponsavel) {
 
             $name_responsavel = $servidorResponsavel->name;
 
         }
 
-        foreach($singleData->servidorSubstituto as $servidorSubstituto) {
+        foreach ($singleData->servidorSubstituto as $servidorSubstituto) {
 
             $name_substituto = $servidorSubstituto->name;
 
@@ -804,7 +809,7 @@ class PlanoAcaoLivewire extends Component
 
         $texto = '';
 
-        $texto .= '<p class="my-2 text-gray-500 text-xs leading-relaxed">Descrição: <strong>'.$singleData->tipoExecucao->dsc_tipo_execucao.' '.$singleData->num_nivel_hierarquico_apresentacao.'. '.$singleData->dsc_plano_de_acao.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>'.$consultarPei->dsc_pei.' ('.$consultarPei->num_ano_inicio_pei.' a '.$consultarPei->num_ano_fim_pei.')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">A Perspectiva: <strong>'.$consultarPerspectiva->num_nivel_hierarquico_apresentacao.'. '.$consultarPerspectiva->dsc_perspectiva.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">E ao Objetivo Estrategico: <strong>'.$consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao.'. '.$consultarObjetivoEstrategico->dsc_objetivo_estrategico.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade: <strong>'.$consultarOrganizacao->nom_organizacao.'</strong></p><p class="my-2 text-gray-500 text-xs font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
+        $texto .= '<p class="my-2 text-gray-500 text-xs leading-relaxed">Descrição: <strong>' . $singleData->tipoExecucao->dsc_tipo_execucao . ' ' . $singleData->num_nivel_hierarquico_apresentacao . '. ' . $singleData->dsc_plano_de_acao . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>' . $consultarPei->dsc_pei . ' (' . $consultarPei->num_ano_inicio_pei . ' a ' . $consultarPei->num_ano_fim_pei . ')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">A Perspectiva: <strong>' . $consultarPerspectiva->num_nivel_hierarquico_apresentacao . '. ' . $consultarPerspectiva->dsc_perspectiva . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">E ao Objetivo Estrategico: <strong>' . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->nom_objetivo_estrategico . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade: <strong>' . $consultarOrganizacao->nom_organizacao . '</strong></p><p class="my-2 text-gray-500 text-xs font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
 
         $this->mensagemDelete = $texto;
 
@@ -817,20 +822,21 @@ class PlanoAcaoLivewire extends Component
 
     }
 
-    public function audit($cod_plano_de_acao = '') {
+    public function audit($cod_plano_de_acao = '')
+    {
 
-        $result = PlanoAcao::with('servidorResponsavel','servidorSubstituto')
-        ->find($cod_plano_de_acao);
+        $result = PlanoAcao::with('servidorResponsavel', 'servidorSubstituto')
+            ->find($cod_plano_de_acao);
 
         $corpoModalAudit = '';
 
-        $corpoModalAudit .= '<p class="text-gray-500 pl-2">Em: <strong>'.$result->tipoExecucao->dsc_tipo_execucao.' '.$result->num_nivel_hierarquico_apresentacao.'. '.$result->dsc_plano_de_acao.'</strong></p><br><table class="divide-gray-300 min-w-full border-collapse" style="font-size: 0.8rem!Important;"><thead><tr class=""><td class="px-2 py-2 border border-gray-200">#</td><td class="px-2 py-2 border border-gray-200">Ação</td><td class="px-2 py-2 border border-gray-200">Quem?</td><td class="px-2 py-2 border border-gray-200">Quando?</td></tr></thead><tbody>';
+        $corpoModalAudit .= '<p class="text-gray-500 pl-2">Em: <strong>' . $result->tipoExecucao->dsc_tipo_execucao . ' ' . $result->num_nivel_hierarquico_apresentacao . '. ' . $result->dsc_plano_de_acao . '</strong></p><br><table class="divide-gray-300 min-w-full border-collapse" style="font-size: 0.8rem!Important;"><thead><tr class=""><td class="px-2 py-2 border border-gray-200">#</td><td class="px-2 py-2 border border-gray-200">Ação</td><td class="px-2 py-2 border border-gray-200">Quem?</td><td class="px-2 py-2 border border-gray-200">Quando?</td></tr></thead><tbody>';
 
         $contAcao = 1;
 
-        foreach($result->acoesRealizadas as $resultadoAcao) {
+        foreach ($result->acoesRealizadas as $resultadoAcao) {
 
-            $corpoModalAudit .= '<tr><td class="px-2 py-2 border border-gray-200">'.$contAcao.'</td><td class="px-2 py-2 border border-gray-200">'.$resultadoAcao->acao.'</td><td class="px-2 py-2 border border-gray-200">'.$resultadoAcao->usuario->name.'</td><td class="px-2 py-2 border border-gray-200">'.formatarDataComCarbonForHumans($resultadoAcao->created_at).' em '.formatarTimeStampComCarbonParaBR($resultadoAcao->created_at).'</td></tr>';
+            $corpoModalAudit .= '<tr><td class="px-2 py-2 border border-gray-200">' . $contAcao . '</td><td class="px-2 py-2 border border-gray-200">' . $resultadoAcao->acao . '</td><td class="px-2 py-2 border border-gray-200">' . $resultadoAcao->usuario->name . '</td><td class="px-2 py-2 border border-gray-200">' . formatarDataComCarbonForHumans($resultadoAcao->created_at) . ' em ' . formatarTimeStampComCarbonParaBR($resultadoAcao->created_at) . '</td></tr>';
 
             $contAcao = $contAcao + 1;
 
@@ -846,12 +852,13 @@ class PlanoAcaoLivewire extends Component
 
     }
 
-    public function delete($cod_plano_de_acao = '') {
+    public function delete($cod_plano_de_acao = '')
+    {
 
         $this->showModalDelete = false;
 
-        $singleData = PlanoAcao::with('servidorResponsavel','servidorSubstituto')
-        ->find($cod_plano_de_acao);
+        $singleData = PlanoAcao::with('servidorResponsavel', 'servidorSubstituto')
+            ->find($cod_plano_de_acao);
 
         $consultarObjetivoEstrategico = ObjetivoEstrategico::find($singleData->cod_objetivo_estrategico);
 
@@ -859,13 +866,13 @@ class PlanoAcaoLivewire extends Component
 
         $consultarPei = Pei::find($consultarPerspectiva->cod_pei);
 
-        foreach($singleData->servidorResponsavel as $servidorResponsavel) {
+        foreach ($singleData->servidorResponsavel as $servidorResponsavel) {
 
             $name_responsavel = $servidorResponsavel->name;
 
         }
 
-        foreach($singleData->servidorSubstituto as $servidorSubstituto) {
+        foreach ($singleData->servidorSubstituto as $servidorSubstituto) {
 
             $name_substituto = $servidorSubstituto->name;
 
@@ -875,7 +882,7 @@ class PlanoAcaoLivewire extends Component
 
         $texto = '';
 
-        $texto .= '<p class="my-2 text-gray-500 text-xs leading-relaxed">Excluiu com sucesso o Plano de Ação com a Descrição: <strong>'.$singleData->tipoExecucao->dsc_tipo_execucao.' '.$singleData->num_nivel_hierarquico_apresentacao.'. '.$singleData->dsc_plano_de_acao.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>'.$consultarPei->dsc_pei.' ('.$consultarPei->num_ano_inicio_pei.' a '.$consultarPei->num_ano_fim_pei.')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">A Perspectiva: <strong>'.$consultarPerspectiva->num_nivel_hierarquico_apresentacao.'. '.$consultarPerspectiva->dsc_perspectiva.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">E ao Objetivo Estrategico: <strong>'.$consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao.'. '.$consultarObjetivoEstrategico->dsc_objetivo_estrategico.'</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade: <strong>'.$consultarOrganizacao->nom_organizacao.'</strong></p>';
+        $texto .= '<p class="my-2 text-gray-500 text-xs leading-relaxed">Excluiu com sucesso o Plano de Ação com a Descrição: <strong>' . $singleData->tipoExecucao->dsc_tipo_execucao . ' ' . $singleData->num_nivel_hierarquico_apresentacao . '. ' . $singleData->dsc_plano_de_acao . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>' . $consultarPei->dsc_pei . ' (' . $consultarPei->num_ano_inicio_pei . ' a ' . $consultarPei->num_ano_fim_pei . ')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">A Perspectiva: <strong>' . $consultarPerspectiva->num_nivel_hierarquico_apresentacao . '. ' . $consultarPerspectiva->dsc_perspectiva . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">E ao Objetivo Estrategico: <strong>' . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->nom_objetivo_estrategico . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade: <strong>' . $consultarOrganizacao->nom_organizacao . '</strong></p>';
 
         $acao = Acoes::create(array(
             'table' => 'tab_plano_de_acao',
@@ -913,7 +920,8 @@ class PlanoAcaoLivewire extends Component
 
     }
 
-    public function cancelar() {
+    public function cancelar()
+    {
 
         $this->cod_plano_de_acao = null;
         $this->cod_objetivo_estrategico = null;
@@ -942,16 +950,16 @@ class PlanoAcaoLivewire extends Component
     {
 
         $this->pei = Pei::select(db::raw("dsc_pei||' ( '||num_ano_inicio_pei||' a '||num_ano_fim_pei||' )' as dsc_pei, cod_pei"))
-        ->where('dsc_pei','!=','')
-        ->whereNotNull('dsc_pei')
-        ->orderBy('dsc_pei')
-        ->pluck('dsc_pei', 'cod_pei');
+            ->where('dsc_pei', '!=', '')
+            ->whereNotNull('dsc_pei')
+            ->orderBy('dsc_pei')
+            ->pluck('dsc_pei', 'cod_pei');
 
         $perspectiva = Perspectiva::select(db::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_perspectiva as dsc_perspectiva, cod_perspectiva"));
 
-        if(isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '') {
+        if (isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '') {
 
-            $perspectiva = $perspectiva->where('cod_pei',$this->cod_pei);
+            $perspectiva = $perspectiva->where('cod_pei', $this->cod_pei);
 
         } else {
 
@@ -959,16 +967,17 @@ class PlanoAcaoLivewire extends Component
 
         }
 
-        $perspectiva = $perspectiva->orderBy('num_nivel_hierarquico_apresentacao','desc')
-        ->pluck('dsc_perspectiva','cod_perspectiva');
+        $perspectiva = $perspectiva->orderBy('num_nivel_hierarquico_apresentacao', 'desc')
+            ->pluck('dsc_perspectiva', 'cod_perspectiva');
 
-        $this->perspectiva = $perspectiva;
+        $perspectiva && isset($perspectiva) && !empty($perspectiva) ? $this->perspectiva = $perspectiva : $this->perspectiva = [];
+        ;
 
-        $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_objetivo_estrategico AS dsc_objetivo_estrategico, cod_objetivo_estrategico"));
+        $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||nom_objetivo_estrategico AS nom_objetivo_estrategico, cod_objetivo_estrategico"));
 
-        if(isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '' && isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '' && $perspectiva->count() > 0) {
+        if (isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '' && isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '' && $perspectiva->count() > 0) {
 
-            $objetivoEstrategico = $objetivoEstrategico->where('cod_perspectiva',$this->cod_perspectiva);
+            $objetivoEstrategico = $objetivoEstrategico->where('cod_perspectiva', $this->cod_perspectiva);
 
         } else {
 
@@ -977,23 +986,23 @@ class PlanoAcaoLivewire extends Component
         }
 
         $objetivoEstrategico = $objetivoEstrategico->orderBy('num_nivel_hierarquico_apresentacao')
-        ->with('perspectiva')
-        ->pluck('dsc_objetivo_estrategico','cod_objetivo_estrategico');
+            ->with('perspectiva')
+            ->pluck('nom_objetivo_estrategico', 'cod_objetivo_estrategico');
 
         $this->objetivoEstragico = $objetivoEstrategico;
 
-        if(isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '') {
+        if (isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '') {
 
-            $consultarPei = Pei::select('num_ano_inicio_pei','num_ano_fim_pei')
-            ->find($this->cod_pei);
+            $consultarPei = Pei::select('num_ano_inicio_pei', 'num_ano_fim_pei')
+                ->find($this->cod_pei);
 
             $primeiroAnoDoPeiSelecionado = $consultarPei->num_ano_inicio_pei;
 
             $ultimoAnoDoPeiSelecionado = $consultarPei->num_ano_fim_pei;
 
-            $this->primeiroAnoDoPeiSelecionado = $primeiroAnoDoPeiSelecionado.'-01-01';
+            $this->primeiroAnoDoPeiSelecionado = $primeiroAnoDoPeiSelecionado . '-01-01';
 
-            $this->ultimoAnoDoPeiSelecionado = $ultimoAnoDoPeiSelecionado.'-12-31';
+            $this->ultimoAnoDoPeiSelecionado = $ultimoAnoDoPeiSelecionado . '-12-31';
 
         } else {
 
@@ -1005,9 +1014,9 @@ class PlanoAcaoLivewire extends Component
 
         $this->estruturaTable = $this->estruturaTable();
 
-        if($this->editarForm == false) {
+        if ($this->editarForm == false) {
 
-            if(isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
+            if (isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
 
                 $this->num_nivel_hierarquico_apresentacao = $this->pesquisarCodigo($this->cod_objetivo_estrategico);
 
@@ -1015,7 +1024,7 @@ class PlanoAcaoLivewire extends Component
 
         } else {
 
-            if(isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '' && $this->editarForm == false) {
+            if (isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '' && $this->editarForm == false) {
 
                 $this->num_nivel_hierarquico_apresentacao = $this->num_nivel_hierarquico_apresentacao;
 
@@ -1023,97 +1032,97 @@ class PlanoAcaoLivewire extends Component
 
         }
 
-        $this->niveis_hierarquico_apresentacao = NumNivelHierarquico::pluck('num_nivel_hierarquico_apresentacao','num_nivel_hierarquico_apresentacao');
+        $this->niveis_hierarquico_apresentacao = NumNivelHierarquico::pluck('num_nivel_hierarquico_apresentacao', 'num_nivel_hierarquico_apresentacao');
 
         $this->tipoExecucao = TipoExecucao::orderBy('dsc_tipo_execucao')
-        ->pluck('dsc_tipo_execucao','cod_tipo_execucao');
+            ->pluck('dsc_tipo_execucao', 'cod_tipo_execucao');
 
         $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
-        ->get();
+            ->get();
 
         $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
-        ->orderBy('nom_organizacao')
-        ->get();
+            ->orderBy('nom_organizacao')
+            ->get();
 
         foreach ($organization as $result) {
 
-            if($this->editarForm == false) {
+            if ($this->editarForm == false) {
 
-                $organizacoes[$result->cod_organizacao] = $result->nom_organizacao.$this->hierarquiaUnidade($result->cod_organizacao);
+                $organizacoes[$result->cod_organizacao] = $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
 
             } else {
 
-                $organizacoes[$result->cod_organizacao] = $result->nom_organizacao.$this->hierarquiaUnidade($result->cod_organizacao);
+                $organizacoes[$result->cod_organizacao] = $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
 
             }
 
-            foreach($organizationChild as $resultChild1) {
+            foreach ($organizationChild as $resultChild1) {
 
-                if($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
+                if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
 
-                    if($this->editarForm == false) {
+                    if ($this->editarForm == false) {
 
-                        $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao.$this->hierarquiaUnidade($resultChild1->cod_organizacao);
+                        $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
 
                     } else {
 
-                        $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao.$this->hierarquiaUnidade($resultChild1->cod_organizacao);
+                        $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
 
                     }
 
                     foreach ($resultChild1->deshierarquia as $resultChild2) {
 
-                        if($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
+                        if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
 
-                            if($this->editarForm == false) {
+                            if ($this->editarForm == false) {
 
-                                $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao.$this->hierarquiaUnidade($resultChild2->cod_organizacao);
+                                $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
 
                             } else {
 
-                                $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao.$this->hierarquiaUnidade($resultChild2->cod_organizacao);
+                                $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
 
                             }
 
                             foreach ($resultChild2->deshierarquia as $resultChild3) {
 
-                                if($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
+                                if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
 
-                                    if($this->editarForm == false) {
+                                    if ($this->editarForm == false) {
 
-                                        $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao.$this->hierarquiaUnidade($resultChild3->cod_organizacao);
+                                        $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
 
                                     } else {
 
-                                        $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao.$this->hierarquiaUnidade($resultChild3->cod_organizacao);
+                                        $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
 
                                     }
 
                                     foreach ($resultChild3->deshierarquia as $resultChild4) {
 
-                                        if($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
+                                        if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
 
-                                            if($this->editarForm == false) {
+                                            if ($this->editarForm == false) {
 
-                                                $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao.$this->hierarquiaUnidade($resultChild4->cod_organizacao);
+                                                $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
 
                                             } else {
 
-                                                $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao.$this->hierarquiaUnidade($resultChild4->cod_organizacao);
+                                                $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
 
                                             }
 
                                             foreach ($resultChild4->deshierarquia as $resultChild5) {
 
-                                                if($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
+                                                if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
-                                                    if($this->editarForm == false) {
+                                                    if ($this->editarForm == false) {
 
-                                                        $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao.$this->hierarquiaUnidade($resultChild5->cod_organizacao);
+                                                        $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
 
                                                     } else {
 
-                                                        $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao.$this->hierarquiaUnidade($resultChild5->cod_organizacao);
+                                                        $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
 
                                                     }
 
@@ -1141,90 +1150,93 @@ class PlanoAcaoLivewire extends Component
 
         $this->organization = $organizacoes;
 
-        $planoAcao = PlanoAcao::with('objetivoEstrategico','tipoExecucao','unidade','servidorResponsavel','servidorSubstituto','acoesRealizadas')
-        ->orderBy('num_nivel_hierarquico_apresentacao');
+        $planoAcao = PlanoAcao::with('objetivoEstrategico', 'tipoExecucao', 'unidade', 'servidorResponsavel', 'servidorSubstituto', 'acoesRealizadas')
+            ->orderBy('num_nivel_hierarquico_apresentacao');
 
         $planoAcao = $planoAcao->whereHas('objetivoEstrategico', function ($query) {
             $query->orderBy('num_nivel_hierarquico_apresentacao');
         });
 
-        if(isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '') {
+        if (isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '') {
 
             $consultarPei = Pei::find($this->cod_pei);
 
-            $planoAcao = $planoAcao->where('dte_inicio','>=',$primeiroAnoDoPeiSelecionado.'-01-01');
+            $planoAcao = $planoAcao->where('dte_inicio', '>=', $primeiroAnoDoPeiSelecionado . '-01-01');
 
-            $planoAcao = $planoAcao->where('dte_fim','<=',$ultimoAnoDoPeiSelecionado.'-12-31');
+            $planoAcao = $planoAcao->where('dte_fim', '<=', $ultimoAnoDoPeiSelecionado . '-12-31');
 
         }
 
-        if(isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '') {
+        if (isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '') {
 
             $objetivosEstrategicos = ObjetivoEstrategico::select('cod_objetivo_estrategico')
-            ->where('cod_perspectiva',$this->cod_perspectiva)
-            ->get();
+                ->where('cod_perspectiva', $this->cod_perspectiva)
+                ->get();
 
             $cods_objetivo_estrategico = '';
 
-            foreach($objetivosEstrategicos as $result) {
+            foreach ($objetivosEstrategicos as $result) {
 
-                $cods_objetivo_estrategico = $cods_objetivo_estrategico.$result->cod_objetivo_estrategico.",";
+                if (isset($result->cod_objetivo_estrategico) && !empty($result->cod_objetivo_estrategico)) {
+                    $cods_objetivo_estrategico = $cods_objetivo_estrategico . $result->cod_objetivo_estrategico . ",";
+                }
 
             }
 
-            $cods_objetivo_estrategico = trim($cods_objetivo_estrategico,',');
+            if (isset($cods_objetivo_estrategico) && !empty($cods_objetivo_estrategico)) {
+                $cods_objetivo_estrategico = trim($cods_objetivo_estrategico, ',');
 
-            // dd($cods_objetivo_estrategico);
+                $cods_objetivo_estrategico = explode(',', $cods_objetivo_estrategico);
 
-            $cods_objetivo_estrategico = explode(',', $cods_objetivo_estrategico);
-
-            $planoAcao = $planoAcao->whereIn('cod_objetivo_estrategico',$cods_objetivo_estrategico);
-
-        }
-
-        if(isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
-
-            $planoAcao = $planoAcao->where('cod_objetivo_estrategico',$this->cod_objetivo_estrategico);
+                if (isset($cods_objetivo_estrategico) && !empty($cods_objetivo_estrategico) && is_array($cods_objetivo_estrategico) && count($cods_objetivo_estrategico) > 0) {
+                    $planoAcao = $planoAcao->whereIn('cod_objetivo_estrategico', $cods_objetivo_estrategico);
+                }
+            }
 
         }
 
-        if(isset($this->dte_inicio) && !is_null($this->dte_inicio) && $this->dte_inicio != '') {
+        if (isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
+
+            $planoAcao = $planoAcao->where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico);
+
+        }
+
+        if (isset($this->dte_inicio) && !is_null($this->dte_inicio) && $this->dte_inicio != '') {
 
             $this->primeiroAnoDoPeiSelecionado = $this->dte_inicio;
 
         }
 
-        $this->planoAcao = $planoAcao->get();
+        $planoAcao && isset($planoAcao) && !empty($planoAcao) ? $this->planoAcao = $planoAcao->get() : $this->planoAcao = [];
 
-        // dd($this->planoAcao);
+        $usuariosResponsaveis = User::where('ativo', 1)
+            ->orderBy('name');
 
-        $usuariosResponsaveis = User::where('ativo',1)
-        ->orderBy('name');
+        if (isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
 
-        if(isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
-
-            $usuariosResponsaveis = $usuariosResponsaveis->where('id','!=',$this->user_id_substituto);
+            $usuariosResponsaveis = $usuariosResponsaveis->where('id', '!=', $this->user_id_substituto);
 
         }
 
         $this->usuariosResponsaveis = $usuariosResponsaveis->pluck('name', 'id');
 
-        $usuariosSubstitutos = User::where('ativo',1)
-        ->orderBy('name');
+        $usuariosSubstitutos = User::where('ativo', 1)
+            ->orderBy('name');
 
-        if(isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
+        if (isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
 
-            $usuariosSubstitutos = $usuariosSubstitutos->where('id','!=',$this->user_id_responsavel);
+            $usuariosSubstitutos = $usuariosSubstitutos->where('id', '!=', $this->user_id_responsavel);
 
         }
 
         $this->usuariosSubstitutos = $usuariosSubstitutos->pluck('name', 'id');
 
         return view('livewire.plano-acao-livewire');
-        
+
     }
 
-    protected function estruturaTable() {
+    protected function estruturaTable()
+    {
 
         $estrutura = DB::select("SELECT
             column_name,ordinal_position,is_nullable,data_type
@@ -1232,14 +1244,15 @@ class PlanoAcaoLivewire extends Component
             information_schema.columns
             WHERE
             table_schema = 'pei'
-            AND table_name = 'tab_plano_de_acao' 
+            AND table_name = 'tab_plano_de_acao'
             AND column_name NOT IN ('cod_plano_de_acao','cod_objetivo_estrategico','cod_organizacao','created_at','updated_at','deleted_at');");
 
         return $estrutura;
 
     }
 
-    protected function estruturaTableParaEditar() {
+    protected function estruturaTableParaEditar()
+    {
 
         $estrutura = DB::select("SELECT
             column_name,ordinal_position,is_nullable,data_type
@@ -1247,64 +1260,65 @@ class PlanoAcaoLivewire extends Component
             information_schema.columns
             WHERE
             table_schema = 'pei'
-            AND table_name = 'tab_plano_de_acao' 
+            AND table_name = 'tab_plano_de_acao'
             AND column_name NOT IN ('cod_plano_de_acao','cod_ppa','cod_loa','created_at','updated_at','deleted_at');");
 
         return $estrutura;
 
     }
 
-    protected function hierarquiaUnidade($cod_organizacao) {
+    protected function hierarquiaUnidade($cod_organizacao)
+    {
 
         $organizacao = Organization::with('hierarquia')
-        ->where('cod_organizacao',$cod_organizacao)
-        ->get();
+            ->where('cod_organizacao', $cod_organizacao)
+            ->get();
 
         $hierarquiaSuperior = null;
 
-        foreach($organizacao as $result1) {
+        foreach ($organizacao as $result1) {
 
-            if($result1->hierarquia) {
+            if ($result1->hierarquia) {
 
-                foreach($result1->hierarquia as $result2) {
+                foreach ($result1->hierarquia as $result2) {
 
-                    $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result2->sgl_organizacao;
+                    $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result2->sgl_organizacao;
 
                     $organizacao2 = Organization::with('hierarquia')
-                    ->where('cod_organizacao',$result2->cod_organizacao)
-                    ->get();
+                        ->where('cod_organizacao', $result2->cod_organizacao)
+                        ->get();
 
-                    foreach($organizacao2 as $result3) {
+                    foreach ($organizacao2 as $result3) {
 
-                        if($result3->hierarquia) {
+                        if ($result3->hierarquia) {
 
-                            foreach($result3->hierarquia as $result4) {
+                            foreach ($result3->hierarquia as $result4) {
 
-                                $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result4->sgl_organizacao;
+                                $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result4->sgl_organizacao;
 
                                 $organizacao3 = Organization::with('hierarquia')
-                                ->where('cod_organizacao',$result4->cod_organizacao)
-                                ->get();
+                                    ->where('cod_organizacao', $result4->cod_organizacao)
+                                    ->get();
 
-                                foreach($organizacao3 as $result5) {
+                                foreach ($organizacao3 as $result5) {
 
-                                    if($result5->hierarquia) {
+                                    if ($result5->hierarquia) {
 
-                                        foreach($result5->hierarquia as $result6) {
+                                        foreach ($result5->hierarquia as $result6) {
 
-                                            $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result6->sgl_organizacao;
+                                            $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result6->sgl_organizacao;
 
                                             $organizacao4 = Organization::with('hierarquia')
-                                            ->where('cod_organizacao',$result6->cod_organizacao)
-                                            ->get();
+                                                ->where('cod_organizacao', $result6->cod_organizacao)
+                                                ->get();
 
-                                            foreach($organizacao4 as $result7) {
+                                            foreach ($organizacao4 as $result7) {
 
-                                                if($result7->hierarquia) {
+                                                if ($result7->hierarquia) {
 
-                                                    foreach($result7->hierarquia as $result8) {
+                                                    foreach ($result7->hierarquia as $result8) {
 
-                                                        $hierarquiaSuperior = $hierarquiaSuperior.'/'.$result8->sgl_organizacao;
+                                                        $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result8->sgl_organizacao;
 
                                                     }
 

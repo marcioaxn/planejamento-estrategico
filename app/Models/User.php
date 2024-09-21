@@ -48,6 +48,11 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function organizacao()
+    {
+        return $this->belongsToMany(Organization::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'user_id', 'cod_organizacao');
+    }
+
     public function servidorResponsavel()
     {
         return $this->belongsToMany(PlanoAcao::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'user_id', 'cod_plano_de_acao')

@@ -1,4 +1,4 @@
-@if (isset($this->missaoVisaoValores) && !is_null($this->missaoVisaoValores) && $this->missaoVisaoValores != '')
+@if (isset($this->MissaoVisao) && !is_null($this->MissaoVisao) && $this->MissaoVisao != '')
     <div class="w-full md:w-1/2 mb-1 p-2">
 
         <div class="bg-white rounded-lg overflow-hidden border-2 border-green-700">
@@ -8,7 +8,7 @@
             </div>
 
             <div class="bg-green-50 pt-2 pb-3 pl-3 pr-3 sm:h-24">
-                {{ $this->missaoVisaoValores->dsc_missao }}
+                {{ $this->MissaoVisao->dsc_missao }}
             </div>
 
         </div>
@@ -24,28 +24,14 @@
             </div>
 
             <div class="bg-yellow-50 pt-2 pb-3 pl-3 pr-3 sm:h-24">
-                {{ $this->missaoVisaoValores->dsc_visao }}
+                {{ $this->MissaoVisao->dsc_visao }}
             </div>
 
         </div>
 
     </div>
 
-    <div class="w-full md:w-1/1 mb-1 p-2">
-
-        <div class="bg-white rounded-lg overflow-hidden border-2 border-red-600">
-
-            <div class="bg-red-600 text-white text-lg px-1 pt-1 pb-1 pl-3 pr-3">
-                <i class="far fa-gem"></i> <strong>Valores</strong>
-            </div>
-
-            <div class="bg-red-50 pt-2 pb-3 pl-3 pr-3 sm:h-24">
-                {{ $this->missaoVisaoValores->dsc_valores }}
-            </div>
-
-        </div>
-
-    </div>
+    @include('livewire.valores.index')
 @else
     <div class="w-full md:w-1/2 mb-1 p-2">
 

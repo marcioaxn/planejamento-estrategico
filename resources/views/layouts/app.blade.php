@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,6 +29,9 @@
 
     <script src="{{ asset('js/jquery.mask.js') }}" type="text/javascript"></script>
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     @livewireStyles
@@ -38,26 +42,28 @@
             height: 0;
             border-left: 75px solid transparent;
             border-right: 275px solid transparent;
-            border-bottom: 17px solid rgba(238,238,238, var(--tw-bg-opacity));;
+            border-bottom: 17px solid rgba(238, 238, 238, var(--tw-bg-opacity));
+            ;
         }
     </style>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
+
 <body class="font-sans antialiased">
     <x-jet-banner />
 
     <div class="min-h-screen bg-white">
-        @livewire('navigation-menu',['ano' => session('ano')])
+        @livewire('navigation-menu', ['ano' => session('ano')])
 
         <!-- Page Heading -->
         @if (isset($header))
-        <header class="bg-white shadow-md">
-            <div class="max-w-34xl mx-auto pt-2 pb-2 sm:pl-3 sm:px-6 lg:px-8">
-                {{ $header }}
-            </div>
-        </header>
+            <header class="bg-white shadow-md">
+                <div class="max-w-34xl mx-auto pt-2 pb-2 sm:pl-3 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
         @endif
 
         <!-- Page Content -->
@@ -70,4 +76,5 @@
 
     @livewireScripts
 </body>
+
 </html>

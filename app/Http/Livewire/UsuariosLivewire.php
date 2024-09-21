@@ -43,6 +43,13 @@ class UsuariosLivewire extends Component
 
     public $maxWidth = 'xl';
 
+    public function getUsers()
+    {
+        return User::where('ativo', 1)
+            ->orderBy('name')
+            ->pluck('name', 'id');
+    }
+
     public function abrirFecharForm()
     {
 
@@ -53,7 +60,7 @@ class UsuariosLivewire extends Component
             $this->cod_organizacao = null;
             $this->dsc_missao = null;
             $this->dsc_visao = null;
-            $this->dsc_valores = null;
+            $this->nom_valor = null;
             $this->editarForm = false;
 
             $this->abrirFecharForm = 'block';
@@ -66,7 +73,7 @@ class UsuariosLivewire extends Component
             $this->cod_organizacao = null;
             $this->dsc_missao = null;
             $this->dsc_visao = null;
-            $this->dsc_valores = null;
+            $this->nom_valor = null;
             $this->editarForm = false;
 
             $this->abrirFecharForm = 'none';
@@ -83,11 +90,11 @@ class UsuariosLivewire extends Component
 
             if ($this->adm == 1) {
 
-                // dd($this->adm);
+                //
 
             } elseif ($this->adm == 2) {
 
-                // dd($this->adm);
+                //
 
             }
 
@@ -110,24 +117,24 @@ class UsuariosLivewire extends Component
                 // Consultar o usuário pelo ID
                 $consultaUsuario = User::find($this->user_id);
 
-                // dd($consultaUsuario->ativo, $this->ativo);
-
                 // Início do IF para verificar se houve alteração no nome de usuário
                 if ($consultaUsuario->name != $this->name) {
 
                     $alteracao['name'] = $this->name;
 
-                    $audit = Audit::create(array(
-                        'table' => 'users',
-                        'table_id' => $this->user_id,
-                        'column_name' => 'name',
-                        'data_type' => 'character varying',
-                        'ip' => $_SERVER['REMOTE_ADDR'],
-                        'user_id' => Auth::user()->id,
-                        'acao' => 'Editou',
-                        'antes' => $consultaUsuario->name,
-                        'depois' => $this->name
-                    ));
+                    $audit = Audit::create(
+                        array(
+                            'table' => 'users',
+                            'table_id' => $this->user_id,
+                            'column_name' => 'name',
+                            'data_type' => 'character varying',
+                            'ip' => $_SERVER['REMOTE_ADDR'],
+                            'user_id' => Auth::user()->id,
+                            'acao' => 'Editou',
+                            'antes' => $consultaUsuario->name,
+                            'depois' => $this->name
+                        )
+                    );
 
                     $modificacoes .= 'Alterou o(a) <b>Nome</b> de <span style="color:#CD3333;">( ' . $consultaUsuario->name . ' )</span> para <span style="color:#28a745;">( ' . $this->name . ' )</span>;<br>';
 
@@ -139,17 +146,19 @@ class UsuariosLivewire extends Component
 
                     $alteracao['email'] = $this->email;
 
-                    $audit = Audit::create(array(
-                        'table' => 'users',
-                        'table_id' => $this->user_id,
-                        'column_name' => 'email',
-                        'data_type' => 'character varying',
-                        'ip' => $_SERVER['REMOTE_ADDR'],
-                        'user_id' => Auth::user()->id,
-                        'acao' => 'Editou',
-                        'antes' => $consultaUsuario->email,
-                        'depois' => $this->email
-                    ));
+                    $audit = Audit::create(
+                        array(
+                            'table' => 'users',
+                            'table_id' => $this->user_id,
+                            'column_name' => 'email',
+                            'data_type' => 'character varying',
+                            'ip' => $_SERVER['REMOTE_ADDR'],
+                            'user_id' => Auth::user()->id,
+                            'acao' => 'Editou',
+                            'antes' => $consultaUsuario->email,
+                            'depois' => $this->email
+                        )
+                    );
 
                     $modificacoes .= 'Alterou o(a) <b>E-mail</b> de <span style="color:#CD3333;">( ' . $consultaUsuario->email . ' )</span> para <span style="color:#28a745;">( ' . $this->email . ' )</span>;<br>';
 
@@ -164,17 +173,19 @@ class UsuariosLivewire extends Component
                     $consultaUsuario->adm == 1 ? $perfilTabela = "Super administrador(a)" : $perfilTabela = "Gestor(a)";
                     $this->adm == 1 ? $perfilForm = "Super administrador(a)" : $perfilForm = "Gestor(a)";
 
-                    $audit = Audit::create(array(
-                        'table' => 'users',
-                        'table_id' => $this->user_id,
-                        'column_name' => 'adm',
-                        'data_type' => 'smallint',
-                        'ip' => $_SERVER['REMOTE_ADDR'],
-                        'user_id' => Auth::user()->id,
-                        'acao' => 'Editou',
-                        'antes' => $perfilTabela,
-                        'depois' => $perfilForm
-                    ));
+                    $audit = Audit::create(
+                        array(
+                            'table' => 'users',
+                            'table_id' => $this->user_id,
+                            'column_name' => 'adm',
+                            'data_type' => 'smallint',
+                            'ip' => $_SERVER['REMOTE_ADDR'],
+                            'user_id' => Auth::user()->id,
+                            'acao' => 'Editou',
+                            'antes' => $perfilTabela,
+                            'depois' => $perfilForm
+                        )
+                    );
 
                     $modificacoes .= 'Alterou o(a) <b>Perfil</b> de <span style="color:#CD3333;">( ' . $perfilTabela . ' )</span> para <span style="color:#28a745;">( ' . $perfilForm . ' )</span>;<br>';
 
@@ -192,17 +203,19 @@ class UsuariosLivewire extends Component
                     $consultaUsuario->ativo == 1 ? $ativoTabela = "Ativo" : $ativoTabela = "Inativo";
                     $this->ativo == 1 ? $ativoForm = "Ativo" : $ativoForm = "Inativo";
 
-                    $audit = Audit::create(array(
-                        'table' => 'users',
-                        'table_id' => $this->user_id,
-                        'column_name' => 'ativo',
-                        'data_type' => 'smallint',
-                        'ip' => $_SERVER['REMOTE_ADDR'],
-                        'user_id' => Auth::user()->id,
-                        'acao' => 'Editou',
-                        'antes' => $ativoTabela,
-                        'depois' => $ativoForm
-                    ));
+                    $audit = Audit::create(
+                        array(
+                            'table' => 'users',
+                            'table_id' => $this->user_id,
+                            'column_name' => 'ativo',
+                            'data_type' => 'smallint',
+                            'ip' => $_SERVER['REMOTE_ADDR'],
+                            'user_id' => Auth::user()->id,
+                            'acao' => 'Editou',
+                            'antes' => $ativoTabela,
+                            'depois' => $ativoForm
+                        )
+                    );
 
                     $modificacoes .= 'Alterou o(a) <b>Ativação do cadastro</b> de <span style="color:#CD3333;">( ' . $ativoTabela . ' )</span> para <span style="color:#28a745;">( ' . $ativoForm . ' )</span>;<br>';
 
@@ -214,12 +227,14 @@ class UsuariosLivewire extends Component
 
                     $consultaUsuario->update($alteracao);
 
-                    $acao = Acoes::create(array(
-                        'table' => 'users',
-                        'table_id' => $this->user_id,
-                        'user_id' => Auth::user()->id,
-                        'acao' => $modificacoes
-                    ));
+                    $acao = Acoes::create(
+                        array(
+                            'table' => 'users',
+                            'table_id' => $this->user_id,
+                            'user_id' => Auth::user()->id,
+                            'acao' => $modificacoes
+                        )
+                    );
 
                     $assunto = "Cadastro alterado no sistema " . config('app.name');
                     $header = config('app.name');
@@ -301,7 +316,7 @@ class UsuariosLivewire extends Component
                     $gravarNovoUsuario->adm = $this->adm;
 
                     // $this->senha = gerar_senha();
-                    $this->senha = '123456789';
+                    $this->senha = 'hHo=8C"_F';
 
                     $gravarNovoUsuario->password = Hash::make($this->senha);
 

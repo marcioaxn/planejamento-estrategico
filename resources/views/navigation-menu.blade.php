@@ -199,9 +199,16 @@
 
                                         <div class="border-t blue-gray-100"></div>
 
-                                        <x-jet-dropdown-link href="{{ url($ano . '/adm/missao-visao-valores') }}"
+                                        <x-jet-dropdown-link href="{{ url($ano . '/adm/missao-visao') }}"
                                             :active="request()->routeIs('missao')">
-                                            Missão, Visão e Valores
+                                            Missão e Visão
+                                        </x-jet-dropdown-link>
+
+                                        <div class="border-t blue-gray-100"></div>
+
+                                        <x-jet-dropdown-link href="{{ url($ano . '/adm/valores') }}"
+                                            :active="request()->routeIs('adm.valores')">
+                                            Valores
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>

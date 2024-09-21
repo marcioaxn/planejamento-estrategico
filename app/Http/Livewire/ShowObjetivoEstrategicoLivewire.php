@@ -3,12 +3,13 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
+use App\Models\User;
 use App\Models\Acoes;
 use App\Models\Audit;
 use App\Models\Pei;
 use App\Models\Organization;
 use App\Models\RelOrganization;
-use App\Models\MissaoVisaoValores;
+use App\Models\MissaoVisao;
 use App\Models\Perspectiva;
 use App\Models\ObjetivoEstrategico;
 use App\Models\IndicadorObjetivoEstrategico;
@@ -29,6 +30,9 @@ use App\Http\Livewire\CalculoLivewire;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 
+use App\Http\Livewire\PlanejamentoEstrategicoIntegrado;
+use App\Http\Livewire\PerspectivaLivewire;
+
 ini_set('memory_limit', '7096M');
 ini_set('max_execution_time', 9900);
 set_time_limit(900000000);
@@ -37,6 +41,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
 {
 
     use WithFileUploads;
+
+    public $cod_origem = null;
 
     public $formIncluirPdf = null;
     public $txt_assunto = null;
@@ -50,6 +56,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     public $anoSelecionado = null;
 
+    public $getUserAuth = null;
+
     public $metaAno = null;
 
     public $totalRealizado = null;
@@ -62,12 +70,13 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     public $linhaBase = null;
 
-    public $pei = [];
+    public $pei = null;
     public $cod_pei = null;
-    public $perspectiva = [];
+    public $perspectiva = null;
     public $cod_perspectiva = null;
-    public $planosAcao = [];
-    public $planoAcao = [];
+    public $collectionPlanosAcao = null;
+    public $planoAcao = null;
+    public $collectionPlanoAcao = null;
     public $cod_plano_de_acao = null;
 
     public $dsc_unidade_medida = null;
@@ -75,13 +84,15 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public $vlr_realizado = null;
     public $txt_avaliacao = null;
 
-    public $objetivoEstragico = [];
+    public $objetivoEstragicoPluck = null;
 
-    public $indicadoresObjetivoEstrategico = [];
+    public $objetivoEstragico = null;
+
+    public $indicadoresObjetivoEstrategico = null;
 
     public $cod_indicador_objetivo_estrategico_selecionado = null;
 
-    public $indicador = [];
+    public $indicador = null;
     public $cod_indicador_selecionado = null;
     public $cod_indicador = null;
 
@@ -124,11 +135,22 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public $iconAbrirFechar = 'fas fa-plus text-xs';
     public $iconFechar = 'fas fa-minus text-xs';
 
-    public function mount(SessionManager $session, Request $request, $ano, $cod_organizacao = '', $cod_perspectiva = '', $cod_objetivo_estrategico = '', $cod_plano_de_acao = '')
+    public function mount(SessionManager $session, Request $request, $ano, $cod_origem, $cod_organizacao = '', $cod_perspectiva = '', $cod_objetivo_estrategico = '', $cod_plano_de_acao = '')
     {
         $this->ano = $ano;
 
         $this->anoSelecionado = $ano;
+
+        /** $cod_origem:
+         * e37b40bf-4852-4fc7-8d0a-1cb6243ae9b6 a origem é indicadores do objetivo estratégico
+         * 3ac5e10e-8960-4b7c-a1cf-455597c875a7 a origem é plano de ação
+         */
+
+        if (isset($cod_origem) && !empty($cod_origem)) {
+
+            $this->cod_origem = $cod_origem;
+
+        }
 
         if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
 
@@ -180,6 +202,26 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         $session->put("ano", $this->ano);
 
+    }
+
+    public function getObjetivoEstrategico($codObjetivoEstrategico = null)
+    {
+        if (isset($codObjetivoEstrategico) && !empty($codObjetivoEstrategico)) {
+            return ObjetivoEstrategico::with('fututosAlmejados', 'primeiroIndicador', 'primeiroIndicador.linhaBase', 'primeiroIndicador.metaAno', 'primeiroIndicador.evolucaoIndicador')
+                ->find($codObjetivoEstrategico);
+        } else {
+            return null;
+        }
+    }
+
+    public function instanciarPlanejamentoEstrategicoIntegrado()
+    {
+        return new PlanejamentoEstrategicoIntegrado;
+    }
+
+    public function instanciarPerspectivaLivewire()
+    {
+        return new PerspectivaLivewire;
     }
 
     public function abrirModalIncluirPdf($cod_evolucao_indicador = '')
@@ -303,7 +345,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
             $consultarEvolucaoIndicador = EvolucaoIndicador::find($this->cod_evolucao_indicador);
 
-            $alteracao = [];
+            $alteracao = null;
             $modificacoes = '';
 
             if (is_null($consultarEvolucaoIndicador->vlr_realizado)) {
@@ -417,186 +459,50 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public function render()
     {
 
+        /**
+         * Nesta página será visualizada quatro partes necessárias:
+         * 1ª parte de cabeçalho contendo o título, a Unidade da Organização, a perspectiva e os atributos
+         * do objetivo estratégico selecionado;
+         *
+         * 2ª parte contendo o Plano de Ação e todos os seus atributos, que contempla as Ações, as Iniciativas e os Projetos relacionados
+         * ao Objetivo Estratégico;
+         *
+         * 3ª é uma sub parte dentro da 2ª parte e dentro dela estará contido os indicadores do Plano de Ação;
+         *
+         * 4ª parte contendo os indicadores relacionados ao Objetivo Estratégico e todos os atributos desses indicadores.
+         *
+         * Necessário garantir que a página e todos os componentes possam ser
+         * visualizados na maioria dos devices disponíveis.
+         */
+
+        /**
+         * Início da 1ª parte
+         */
 
         Session()->forget('cod_plano_de_acao_identificado');
 
-        $this->cod_plano_de_acao = $this->cod_plano_de_acao;
+        $perspectivaLivewire = $this->instanciarPerspectivaLivewire();
 
-        $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')
-            ->get();
+        $this->perspectiva = $perspectivaLivewire->getPerspectiva($this->cod_perspectiva);
 
-        $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')
-            ->orderBy('nom_organizacao')
-            ->get();
+        $pei = $this->instanciarPlanejamentoEstrategicoIntegrado();
+
+        $this->pei = $pei->getPei($this->perspectiva->cod_pei);
+
+        $organization = Organization::whereRaw('cod_organizacao = rel_cod_organizacao')->get();
+        $organizationChild = Organization::whereRaw('cod_organizacao != rel_cod_organizacao')->orderBy('nom_organizacao')->get();
+
+        $organizacoes = null;
 
         foreach ($organization as $result) {
-
-            $organizacoes[$result->cod_organizacao] = $result->sgl_organizacao . ' - ' . $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
-
-            foreach ($organizationChild as $resultChild1) {
-
-                if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
-
-                    $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->sgl_organizacao . ' - ' . $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
-
-                    foreach ($resultChild1->deshierarquia as $resultChild2) {
-
-                        if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
-
-                            $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->sgl_organizacao . ' - ' . $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
-
-                            foreach ($resultChild2->deshierarquia as $resultChild3) {
-
-                                if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
-
-                                    $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->sgl_organizacao . ' - ' . $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
-
-                                    foreach ($resultChild3->deshierarquia as $resultChild4) {
-
-                                        if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
-
-                                            $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->sgl_organizacao . ' - ' . $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
-
-                                            foreach ($resultChild4->deshierarquia as $resultChild5) {
-
-                                                if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
-
-                                                    $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->sgl_organizacao . ' - ' . $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
+            $this->processarOrganizacao($result, $organizacoes, $organizationChild);
         }
 
         $this->organization = $organizacoes;
 
-        if (isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
+        $objetivoEstrategico = ObjetivoEstrategico::select('nom_objetivo_estrategico', 'cod_objetivo_estrategico');
 
-            $organizacoes = [];
-
-            $organization = Organization::where('cod_organizacao', $this->cod_organizacao)
-                ->get();
-
-            $organizationChild = Organization::orderBy('nom_organizacao')
-                ->get();
-
-            foreach ($organization as $result) {
-
-                $organizacoes[$result->cod_organizacao] = $this->codOrganizacaoPorHieraquia($result->cod_organizacao);
-
-                foreach ($organizationChild as $resultChild1) {
-
-                    if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
-
-                        $organizacoes[$resultChild1->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild1->cod_organizacao);
-
-                        foreach ($resultChild1->deshierarquia as $resultChild2) {
-
-                            if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
-
-                                $organizacoes[$resultChild2->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild2->cod_organizacao);
-
-                                foreach ($resultChild2->deshierarquia as $resultChild3) {
-
-                                    if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
-
-                                        $organizacoes[$resultChild3->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild3->cod_organizacao);
-
-                                        foreach ($resultChild3->deshierarquia as $resultChild4) {
-
-                                            if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
-
-                                                $organizacoes[$resultChild4->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild4->cod_organizacao);
-
-                                                foreach ($resultChild4->deshierarquia as $resultChild5) {
-
-                                                    if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
-
-                                                        $organizacoes[$resultChild5->cod_organizacao] = $this->codOrganizacaoPorHieraquia($resultChild5->cod_organizacao);
-
-                                                    }
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-            Session()->put('cod_organizacao', $organizacoes);
-
-        } else {
-
-            Session()->forget('cod_organizacao');
-
-        }
-
-        $time = strtotime(date('Y-m-d'));
-        $this->mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
-
-        Session()->forget('anoSelecionado');
-
-        if (isset($this->anoSelecionado) && !is_null($this->anoSelecionado) && $this->anoSelecionado != '') {
-
-            Session()->put('anoSelecionado', $this->anoSelecionado);
-
-        } else {
-
-            Session()->forget('anoSelecionado');
-
-        }
-
-        $perspectiva = Perspectiva::find($this->cod_perspectiva);
-
-        $this->perspectiva = $perspectiva;
-
-        $pei = Pei::find($perspectiva->cod_pei);
-
-        $this->pei = $pei;
-
-        $indicadoresObjetivoEstrategico = IndicadorObjetivoEstrategico::with('linhaBase', 'metaAno', 'evolucaoIndicador', 'acoesRealizadas');
-
-        if (isset($this->cod_objetivo_estrategico) && !empty($this->cod_objetivo_estrategico)) {
-            $indicadoresObjetivoEstrategico = $indicadoresObjetivoEstrategico->where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico);
-        }
-
-        $indicadoresObjetivoEstrategico = $indicadoresObjetivoEstrategico->get();
-
-        $this->indicadoresObjetivoEstrategico = $indicadoresObjetivoEstrategico;
-
-        $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_objetivo_estrategico AS dsc_objetivo_estrategico, cod_objetivo_estrategico"));
-
-        if (isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '' && $perspectiva->count() > 0) {
+        if (isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '' && $this->perspectiva->count() > 0) {
 
             $objetivoEstrategico = $objetivoEstrategico->where('cod_perspectiva', $this->cod_perspectiva);
 
@@ -611,17 +517,23 @@ class ShowObjetivoEstrategicoLivewire extends Component
         // Tirar este trecho
         $objetivoEstrategico = $objetivoEstrategico->orderBy('num_nivel_hierarquico_apresentacao')
             ->with('perspectiva')
-            ->pluck('dsc_objetivo_estrategico', 'cod_objetivo_estrategico');
+            ->pluck('nom_objetivo_estrategico', 'cod_objetivo_estrategico');
         // Tirar esse trecho
 
-        $this->objetivoEstragico = $objetivoEstrategico;
+        $this->objetivoEstragicoPluck = $objetivoEstrategico;
 
-        $objetivoEstrategico = ObjetivoEstrategico::with('primeiroIndicador', 'primeiroIndicador.linhaBase', 'primeiroIndicador.metaAno', 'primeiroIndicador.evolucaoIndicador')
-        ->find($this->cod_objetivo_estrategico);
+        $this->objetivoEstrategico = $this->getObjetivoEstrategico($this->cod_objetivo_estrategico);
 
-        $this->objetivoEstrategico = $objetivoEstrategico;
+        /**
+         * Fim da 1ª parte
+         */
+
+        /**
+         * Início da 2ª parte
+         */
 
         $planosAcao = PlanoAcao::orderBy('num_nivel_hierarquico_apresentacao')
+            ->with('tipoExecucao', 'servidorResponsavel', 'servidorSubstituto', 'indicadores', 'indicadores.evolucaoIndicador')
             ->where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico)
             ->where('cod_organizacao', $this->cod_organizacao)
             ->whereYear('dte_inicio', '<=', $anoSelecionado)
@@ -646,13 +558,13 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         }
 
-        $this->planosAcao = $planosAcao;
+        $this->collectionPlanosAcao = $planosAcao;
 
-        if (!is_null($this->planosAcao)) {
+        if (!is_null($this->collectionPlanosAcao)) {
 
             $contPlanoAcaoInterno = 0;
 
-            foreach ($this->planosAcao as $resultPlanosAcao) {
+            foreach ($this->collectionPlanosAcao as $resultPlanosAcao) {
 
                 if ($contPlanoAcaoInterno == 0) {
 
@@ -681,13 +593,15 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
             $planoAcao = $planoAcao->find($this->cod_plano_de_acao);
 
+            $this->collectionPlanoAcao = $planoAcao;
+
         } else {
 
             $planoAcao = $planoAcao->first();
 
-        }
+            $this->collectionPlanoAcao = $planoAcao;
 
-        $this->planoAcao = $planoAcao;
+        }
 
         if ($planoAcao) {
 
@@ -750,7 +664,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                 } else {
 
-                    $this->indicador = [];
+                    $this->indicador = null;
 
                 }
 
@@ -795,6 +709,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                             $time = strtotime(date('Y-m-d'));
                             $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
+
+                            $this->mesAnterior = $mesAnterior;
 
                             foreach ($indicador->evolucaoIndicador as $evolucaoIndicador) {
 
@@ -862,15 +778,220 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
             } else {
 
-                $this->indicador = [];
+                $this->indicador = null;
 
             }
 
         }
 
+        /**
+         * Fim da 2ª parte
+         */
+
         $this->grau_satisfacao = $this->grauSatisfacao();
 
-        return view('livewire.show-objetivo-estrategico-livewire', ['ano' => $this->ano, 'cod_organizacao' => $this->cod_organizacao]);
+        if ($this->cod_origem === '3ac5e10e-8960-4b7c-a1cf-455597c875a7') {
+            return view('livewire.show-objetivo-estrategico-livewire', ['ano' => $this->ano, 'cod_organizacao' => $this->cod_organizacao]);
+        } elseif ($this->cod_origem === 'e37b40bf-4852-4fc7-8d0a-1cb6243ae9b6') {
+
+            if ($this->objetivoEstrategico) {
+
+                if ($this->objetivoEstrategico->indicadores->count() > 0) {
+
+                    $this->abrirIndicador = true;
+
+                }
+
+            }
+
+            if (!is_null($this->objetivoEstrategico) && !is_null($this->objetivoEstrategico->indicadores)) {
+
+                if (is_null($this->cod_indicador_selecionado)) {
+
+                    $contIndicador = 1;
+
+                    if (!is_null($planoAcao)) {
+
+                        foreach ($this->objetivoEstrategico->indicadores as $indicador) {
+
+                            if ($contIndicador == 1) {
+
+                                $this->cod_indicador = $indicador->cod_indicador;
+
+                            }
+
+                            $contIndicador = $contIndicador + 1;
+
+                        }
+
+                    }
+
+                } else {
+
+                    $this->cod_indicador = $this->cod_indicador_selecionado;
+
+                }
+
+                if (isset($this->cod_indicador) && !is_null($this->cod_indicador) && $this->cod_indicador != '') {
+
+                    $indicador = Indicador::with('linhaBase', 'metaAno', 'evolucaoIndicador', 'evolucaoIndicador.arquivos', 'organizacoes')
+                        ->orderBy('dsc_indicador');
+
+                    if (isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
+
+                        $indicador = $indicador->where('cod_plano_de_acao', $this->cod_plano_de_acao);
+
+                    }
+
+                }
+
+                $clienteLogado = Auth::user()->id;
+
+                $this->getUserAuth = User::with('organizacao')
+                    ->find(Auth::user()->id);
+
+                if (!is_null($this->cod_indicador)) {
+
+                    $indicador = $indicador->find($this->cod_indicador);
+
+                    if ($indicador) {
+
+                        $this->indicador = $indicador;
+
+                    } else {
+
+                        $this->indicador = null;
+
+                    }
+
+                    $num_linha_base = '';
+
+                    if ($indicador) {
+
+                        foreach ($indicador->linhaBase as $linhaBase) {
+
+                            $num_linha_base = $linhaBase->num_linha_base;
+
+                        }
+
+                    }
+
+                    $this->linhaBase = $num_linha_base;
+
+                    $dataChartMetaPrevista = '';
+                    $dataChartMetaRealizada = '';
+                    $dataChartLinhaBase = '';
+
+                    if (!is_null($planoAcao)) {
+
+                        if ($indicador) {
+
+                            if ($indicador->evolucaoIndicador->count() > 0) {
+
+                                foreach ($indicador->metaAno as $metaAno) {
+
+                                    if ($metaAno->num_ano == $this->ano) {
+
+                                        $this->metaAno = $metaAno->meta;
+
+                                    }
+
+                                }
+
+                                $somaPrevisto = 0;
+                                $somaRealizado = 0;
+
+                                $anoVigente = date('Y');
+
+                                $time = strtotime(date('Y-m-d'));
+                                $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
+
+                                $this->mesAnterior = $mesAnterior;
+
+                                foreach ($indicador->evolucaoIndicador as $evolucaoIndicador) {
+
+                                    if ($evolucaoIndicador->num_ano == $this->ano) {
+
+                                        $dataChartLinhaBase = $dataChartLinhaBase . $num_linha_base . ',';
+
+                                        if ($indicador->bln_acumulado === 'Sim') {
+
+                                            $somaPrevisto = $somaPrevisto + $evolucaoIndicador->vlr_previsto;
+
+                                            if ($anoVigente != $this->anoSelecionado) {
+
+                                                $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                                $dataChartMetaRealizada = $dataChartMetaRealizada . $somaRealizado . ',';
+
+                                            } else {
+
+                                                if ($evolucaoIndicador->num_mes <= $mesAnterior) {
+
+                                                    $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
+
+                                                    $dataChartMetaRealizada = $dataChartMetaRealizada . $somaRealizado . ',';
+
+                                                }
+
+                                            }
+
+                                            $dataChartMetaPrevista = $dataChartMetaPrevista . $somaPrevisto . ',';
+
+                                        } else {
+
+                                            if (isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto) && $evolucaoIndicador->vlr_previsto != '') {
+
+                                                $dataChartMetaPrevista = $dataChartMetaPrevista . $evolucaoIndicador->vlr_previsto . ',';
+
+                                            } else {
+                                                $dataChartMetaPrevista = $dataChartMetaPrevista . 0 . ',';
+                                            }
+
+                                            if (isset($evolucaoIndicador->vlr_realizado) && !is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado != '') {
+
+                                                $dataChartMetaRealizada = $dataChartMetaRealizada . $evolucaoIndicador->vlr_realizado . ',';
+
+                                            } else {
+                                                $dataChartMetaRealizada = $dataChartMetaRealizada . 0 . ',';
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                                $this->dataChartMetaPrevista = trim($dataChartMetaPrevista, ',');
+                                $this->dataChartMetaRealizada = trim($dataChartMetaRealizada, ',');
+                                $this->dataChartLinhaBase = trim($dataChartLinhaBase, ',');
+
+                            }
+
+                        }
+
+                    }
+
+                } else {
+
+                    $this->indicador = null;
+
+                }
+
+            }
+
+            if (Auth::check()) {
+                $clienteLogado = Auth::user()->id;
+
+                $this->getUserAuth = User::with('organizacao')
+                    ->find(Auth::user()->id);
+            } else {
+                $clienteLogado = null;
+            }
+
+            return view('livewire.indicador-objetivo-estrategico-livewire', ['ano' => $this->ano, 'cod_organizacao' => $this->cod_organizacao]);
+        }
+
     }
 
     protected function calcularAcumuladoPlanoDeAcao($cod_plano_de_acao = '', $anoSelecionado = '')
@@ -912,7 +1033,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
     protected function getGrauSatisfacao($percentual = 0)
     {
 
-        $resultado = [];
+        $resultado = null;
 
         $resultado['grau_de_satisfacao'] = 'gray';
 
@@ -1055,105 +1176,41 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     }
 
+    protected function processarOrganizacao($result, &$organizacoes, $organizationChild)
+    {
+        $organizacoes[$result->cod_organizacao] = $result->sgl_organizacao . ' - ' . $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
+
+        foreach ($organizationChild as $resultChild) {
+            if ($result->cod_organizacao == $resultChild->rel_cod_organizacao) {
+                $this->processarOrganizacao($resultChild, $organizacoes, $resultChild->deshierarquia);
+            }
+        }
+    }
+
     protected function codOrganizacaoPorHieraquia($cod_organizacao)
     {
+        $organizacao = Organization::with('hierarquia')->where('cod_organizacao', $cod_organizacao)->first();
+        if (!$organizacao)
+            return [];
 
-        return $cod_organizacao;
+        $hierarquiaSuperior = [$cod_organizacao];
 
-        $organizacao = Organization::with('hierarquia')
-            ->where('cod_organizacao', $cod_organizacao)
-            ->get();
-
-        $hierarquiaSuperior = [];
-
-        array_push($hierarquiaSuperior, $cod_organizacao);
-
-        foreach ($organizacao as $result1) {
-
-            if ($result1->hierarquia) {
-
-                foreach ($result1->hierarquia as $result2) {
-
-                    if (!in_array($result2->cod_organizacao, $hierarquiaSuperior)) {
-
-                        array_push($hierarquiaSuperior, $result2->cod_organizacao);
-
-                    }
-
-                    $organizacao2 = Organization::with('hierarquia')
-                        ->where('cod_organizacao', $result2->cod_organizacao)
-                        ->get();
-
-                    foreach ($organizacao2 as $result3) {
-
-                        if ($result3->hierarquia) {
-
-                            foreach ($result3->hierarquia as $result4) {
-
-                                if (!in_array($result4->cod_organizacao, $hierarquiaSuperior)) {
-
-                                    array_push($hierarquiaSuperior, $result4->cod_organizacao);
-
-                                }
-
-                                $organizacao3 = Organization::with('hierarquia')
-                                    ->where('cod_organizacao', $result4->cod_organizacao)
-                                    ->get();
-
-                                foreach ($organizacao3 as $result5) {
-
-                                    if ($result5->hierarquia) {
-
-                                        foreach ($result5->hierarquia as $result6) {
-
-                                            if (!in_array($result6->sgl_organizacao, $hierarquiaSuperior)) {
-
-                                                array_push($hierarquiaSuperior, $result6->sgl_organizacao);
-
-                                            }
-
-                                            $organizacao4 = Organization::with('hierarquia')
-                                                ->where('cod_organizacao', $result6->cod_organizacao)
-                                                ->get();
-
-                                            foreach ($organizacao4 as $result7) {
-
-                                                if ($result7->hierarquia) {
-
-                                                    foreach ($result7->hierarquia as $result8) {
-
-                                                        if (!in_array($result8->sgl_organizacao, $hierarquiaSuperior)) {
-
-                                                            array_push($hierarquiaSuperior, $result8->sgl_organizacao);
-
-                                                        }
-
-                                                    }
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
+        $this->adicionarHierarquia($organizacao->hierarquia, $hierarquiaSuperior);
 
         return $hierarquiaSuperior;
+    }
 
+    protected function adicionarHierarquia($hierarquias, &$hierarquiaSuperior)
+    {
+        foreach ($hierarquias as $hierarquia) {
+            if (!in_array($hierarquia->cod_organizacao, $hierarquiaSuperior)) {
+                array_push($hierarquiaSuperior, $hierarquia->cod_organizacao);
+                $organizacao = Organization::with('hierarquia')->where('cod_organizacao', $hierarquia->cod_organizacao)->first();
+                if ($organizacao) {
+                    $this->adicionarHierarquia($organizacao->hierarquia, $hierarquiaSuperior);
+                }
+            }
+        }
     }
 
     public function grauSatisfacao()
