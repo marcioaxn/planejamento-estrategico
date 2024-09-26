@@ -74,7 +74,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            'schema' => ['public','governanca_pr'],
+            'schema' => ['pei'],
             'sslmode' => 'prefer',
         ],
 
