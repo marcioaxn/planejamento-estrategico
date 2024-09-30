@@ -10,6 +10,7 @@ use App\Http\Livewire\{
     PlanejamentoEstrategicoIntegrado,
     MissaoVisaoLivewire,
     ValoresLivewire,
+    RelatorioLivewire,
     PerspectivaLivewire,
     ObjetivoEstrategicoLivewire,
     IndicadorObjetivoEstrategicoLivewire,
@@ -75,6 +76,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified', 'auth', 'trocarSenha'
 
     Route::get('{ano}/adm/grau-satisfacao', GrauSatisfacaoLivewire::class)->name('grauSatisfacao');
 });
+
+Route::get('relatorio/indicador-e-plano-acao/{periodo}/{ano}/{mes}', RelatorioLivewire::class)->name('relatorio.indicador-oe-e-plano-acao');
 
 Route::get('{ano}/{cod_origem}/{cod_organizacao}/{cod_perspectiva}/{cod_objetivo_estrategico}/{cod_plano_de_acao?}', ShowObjetivoEstrategicoLivewire::class)->name('objetivo-estrategico');
 

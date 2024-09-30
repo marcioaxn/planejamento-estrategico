@@ -895,50 +895,40 @@
                             <p class="px-3 px-2 pt-3"><strong>Indicadores</strong> (<span
                                     class="text-blue-400">{!! $resultObjetivosEstrategicos->indicadores->count() !!}</span>)</p>
 
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-1 mb-1 px-1 pt-2 pb-2 pl-2 pr-2">
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-1 mb-1 px-1 pt-2 pb-2 pl-2 pr-2">
 
-                                @foreach ($resultObjetivosEstrategicos->indicadores as $resultIndicadores)
-                                    <div
-                                        class="pt-2 pb-2 pl-3 pr-3 bg-white rounded-md border-2 border-gray-300 border-opacity-50 shadow ">
-
-                                        <p class="w-full text-sm text-left text-gray-600 h-10 "
-                                            style="width: 100%!Important;"><i
-                                                class="fa fa-chart-line text-blue-400"></i>
-                                            <strong>{!! $resultIndicadores->dsc_indicador !!}.</strong>
-                                        </p>
-
-                                        <div class="w-full pt-1" style="width: 100%!Important;">
-
-                                            <div class="flex mb-2 items-center justify-between"
-                                                style="width: 100%!Important;">
-
-                                                <div class="text-xs text-gray-500">&nbsp;</div>
-
-                                                <div class="text-right">
-
-                                                    <a href="javascript: void(0);"
-                                                        wire:click.prevent="editForm('{!! $resultIndicadores->cod_indicador !!}')"
-                                                        onclick="javascript: document.documentElement.scrollTop = 0;"><i
-                                                            class="fas fa-edit text-green-600"></i> <span
-                                                            class="text-xs">Editar</span></a>
-
-                                                    &nbsp;
-                                                    &nbsp;
-                                                    <button type="button"
-                                                        wire:click.prevent="deleteForm('{!! $resultIndicadores->cod_indicador !!}')"><i
-                                                            class="fas fa-trash-alt text-red-600"></i> <span
-                                                            class="text-xs">Excluir</span></button>
-
+                                        @foreach ($resultObjetivosEstrategicos->indicadores as $resultIndicadores)
+                                            <div id="cardIndicador{{ $resultIndicadores }}"
+                                                 class="flex flex-col justify-between pt-2 pb-2 pl-3 pr-3 h-full bg-white rounded-md border-2 border-gray-300 border-opacity-50 shadow">
+                                                <!-- Conteúdo da div -->
+                                                <p class="w-full text-sm text-left text-gray-600" style="width: 100%!Important;">
+                                                    <i class="fa fa-chart-line text-blue-400"></i>&nbsp;
+                                                    <strong>{!! $resultIndicadores->nom_indicador !!}.</strong>
+                                                </p>
+                                    
+                                                <!-- Ações ficam fixadas ao fundo -->
+                                                <div id="divAcoes{{ $resultIndicadores }}" class="mt-auto pt-1">
+                                                    <div class="flex mb-2 items-center justify-between">
+                                                        <div class="text-xs text-gray-500">&nbsp;</div>
+                                                        <div class="text-right">
+                                                            <a href="javascript: void(0);"
+                                                               wire:click.prevent="editForm('{!! $resultIndicadores->cod_indicador !!}')"
+                                                               onclick="javascript: document.documentElement.scrollTop = 0;">
+                                                                <i class="fas fa-edit text-green-600"></i> <span class="text-xs">Editar</span>
+                                                            </a>
+                                                            &nbsp;
+                                                            <button type="button"
+                                                                    wire:click.prevent="deleteForm('{!! $resultIndicadores->cod_indicador !!}')">
+                                                                <i class="fas fa-trash-alt text-red-600"></i> <span class="text-xs">Excluir</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-
                                             </div>
-
-                                        </div>
-
+                                        @endforeach
+                                    
                                     </div>
-                                @endforeach
-
-                            </div>
+                                    
 
                         </div>
                     @endforeach

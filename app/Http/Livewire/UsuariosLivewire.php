@@ -316,7 +316,7 @@ class UsuariosLivewire extends Component
                     $gravarNovoUsuario->adm = $this->adm;
 
                     // $this->senha = gerar_senha();
-                    $this->senha = 'hHo=8C"_F';
+                    $this->senha = 'L<Wx+UQ=$Im*HnBUrYLg1U@kx';
 
                     $gravarNovoUsuario->password = Hash::make($this->senha);
 
