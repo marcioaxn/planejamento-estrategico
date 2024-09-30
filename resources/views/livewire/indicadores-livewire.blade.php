@@ -883,7 +883,7 @@
 
                                             <p class="w-full text-sm text-left text-gray-600 h-10 "
                                                 style="width: 100%!Important;"><i
-                                                    class="fa fa-chart-line text-blue-400"></i>
+                                                    class="fa fa-chart-line text-blue-400"></i>&nbsp;
                                                 <strong>{!! $resultIndicadores->dsc_indicador !!}.</strong></p>
 
                                             <div class="w-full pt-1" style="width: 100%!Important;">

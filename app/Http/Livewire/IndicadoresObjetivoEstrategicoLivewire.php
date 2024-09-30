@@ -630,45 +630,89 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
                                 }
                             }
 
-                            if ($contAnos == 1) {
+                            if($this->bln_acumulado === 'Não') {
+                                
+                                if ($contAnos == 1) {
 
-                                if ($valor > 0) {
+                                    if ($valor > 0) {
+    
+                                        $contNaoVazio1 = $contNaoVazio1 + 1;
+    
+                                        $somaMetaAno1 = (($valor) * 1);
+                                    }
+                                }
+    
+                                if ($contAnos == 2) {
+    
+                                    if ($valor > 0) {
+    
+                                        $contNaoVazio2 = $contNaoVazio2 + 1;
+    
+                                        $somaMetaAno2 = (($valor) * 1);
+                                    }
+                                }
+    
+                                if ($contAnos == 3) {
+    
+                                    if ($valor > 0) {
+    
+                                        $contNaoVazio3 = $contNaoVazio3 + 1;
+    
+                                        $somaMetaAno3 = (($valor) * 1);
+                                    }
+                                }
+    
+                                if ($contAnos == 4) {
+    
+                                    if ($valor > 0) {
+    
+                                        $contNaoVazio4 = $contNaoVazio4 + 1;
+    
+                                        $somaMetaAno4 = (($valor) * 1);
+                                    }
+                                }
+                            } else {
+                                if ($contAnos == 1) {
 
-                                    $contNaoVazio1 = $contNaoVazio1 + 1;
-
-                                    $somaMetaAno1 = (($somaMetaAno1) * 1) + (($valor) * 1);
+                                    if ($valor > 0) {
+    
+                                        $contNaoVazio1 = $contNaoVazio1 + 1;
+    
+                                        $somaMetaAno1 = (($somaMetaAno1) * 1) + (($valor) * 1);
+                                    }
+                                }
+    
+                                if ($contAnos == 2) {
+    
+                                    if ($valor > 0) {
+    
+                                        $contNaoVazio2 = $contNaoVazio2 + 1;
+    
+                                        $somaMetaAno2 = (($somaMetaAno2) * 1) + (($valor) * 1);
+                                    }
+                                }
+    
+                                if ($contAnos == 3) {
+    
+                                    if ($valor > 0) {
+    
+                                        $contNaoVazio3 = $contNaoVazio3 + 1;
+    
+                                        $somaMetaAno3 = (($somaMetaAno3) * 1) + (($valor) * 1);
+                                    }
+                                }
+    
+                                if ($contAnos == 4) {
+    
+                                    if ($valor > 0) {
+    
+                                        $contNaoVazio4 = $contNaoVazio4 + 1;
+    
+                                        $somaMetaAno4 = (($somaMetaAno4) * 1) + (($valor) * 1);
+                                    }
                                 }
                             }
 
-                            if ($contAnos == 2) {
-
-                                if ($valor > 0) {
-
-                                    $contNaoVazio2 = $contNaoVazio2 + 1;
-
-                                    $somaMetaAno2 = (($somaMetaAno2) * 1) + (($valor) * 1);
-                                }
-                            }
-
-                            if ($contAnos == 3) {
-
-                                if ($valor > 0) {
-
-                                    $contNaoVazio3 = $contNaoVazio3 + 1;
-
-                                    $somaMetaAno3 = (($somaMetaAno3) * 1) + (($valor) * 1);
-                                }
-                            }
-
-                            if ($contAnos == 4) {
-
-                                if ($valor > 0) {
-
-                                    $contNaoVazio4 = $contNaoVazio4 + 1;
-
-                                    $somaMetaAno4 = (($somaMetaAno4) * 1) + (($valor) * 1);
-                                }
-                            }
                         }
                     }
 
@@ -676,22 +720,22 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                         if (isset($contNaoVazio1) && !is_null($contNaoVazio1) && $contNaoVazio1 != '' && $contNaoVazio1 > 0) {
 
-                            $somaMetaAno1 = ($somaMetaAno1) / $contNaoVazio1;
+                            $somaMetaAno1 = ($somaMetaAno1);
                         }
 
                         if (isset($contNaoVazio2) && !is_null($contNaoVazio2) && $contNaoVazio2 != '' && $contNaoVazio2 > 0) {
 
-                            $somaMetaAno2 = ($somaMetaAno2) / $contNaoVazio2;
+                            $somaMetaAno2 = ($somaMetaAno2);
                         }
 
                         if (isset($contNaoVazio3) && !is_null($contNaoVazio3) && $contNaoVazio3 != '' && $contNaoVazio3 > 0) {
 
-                            $somaMetaAno3 = ($somaMetaAno3) / $contNaoVazio3;
+                            $somaMetaAno3 = ($somaMetaAno3);
                         }
 
                         if (isset($contNaoVazio4) && !is_null($contNaoVazio4) && $contNaoVazio4 != '' && $contNaoVazio4 > 0) {
 
-                            $somaMetaAno4 = ($somaMetaAno4) / $contNaoVazio4;
+                            $somaMetaAno4 = ($somaMetaAno4);
                         }
                     }
 
@@ -2525,45 +2569,89 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
                             }
                         }
 
-                        if ($contAnos == 1) {
+                        if (isset($this->bln_acumulado) && !is_null($this->bln_acumulado) && $this->bln_acumulado != '' && $this->bln_acumulado === 'Não') {
+                            if ($contAnos == 1) {
 
-                            if ($valor > 0) {
+                                if ($valor > 0) {
+    
+                                    $contNaoVazio1 = $contNaoVazio1 + 1;
+    
+                                    $somaMetaAno1 = (($valor) * 1);
+                                }
+                            }
+    
+                            if ($contAnos == 2) {
+    
+                                if ($valor > 0) {
+    
+                                    $contNaoVazio2 = $contNaoVazio2 + 1;
+    
+                                    $somaMetaAno2 = (($valor) * 1);
+                                }
+                            }
+    
+                            if ($contAnos == 3) {
+    
+                                if ($valor > 0) {
+    
+                                    $contNaoVazio3 = $contNaoVazio3 + 1;
+    
+                                    $somaMetaAno3 = (($valor) * 1);
+                                }
+                            }
+    
+                            if ($contAnos == 4) {
+    
+                                if ($valor > 0) {
+    
+                                    $contNaoVazio4 = $contNaoVazio4 + 1;
+    
+                                    $somaMetaAno4 = (($valor) * 1);
+                                }
+                            }
+                        } else {
+                            if ($contAnos == 1) {
 
-                                $contNaoVazio1 = $contNaoVazio1 + 1;
-
-                                $somaMetaAno1 = (($somaMetaAno1) * 1) + (($valor) * 1);
+                                if ($valor > 0) {
+    
+                                    $contNaoVazio1 = $contNaoVazio1 + 1;
+    
+                                    $somaMetaAno1 = (($somaMetaAno1) * 1) + (($valor) * 1);
+                                }
+                            }
+    
+                            if ($contAnos == 2) {
+    
+                                if ($valor > 0) {
+    
+                                    $contNaoVazio2 = $contNaoVazio2 + 1;
+    
+                                    $somaMetaAno2 = (($somaMetaAno2) * 1) + (($valor) * 1);
+                                }
+                            }
+    
+                            if ($contAnos == 3) {
+    
+                                if ($valor > 0) {
+    
+                                    $contNaoVazio3 = $contNaoVazio3 + 1;
+    
+                                    $somaMetaAno3 = (($somaMetaAno3) * 1) + (($valor) * 1);
+                                }
+                            }
+    
+                            if ($contAnos == 4) {
+    
+                                if ($valor > 0) {
+    
+                                    $contNaoVazio4 = $contNaoVazio4 + 1;
+    
+                                    $somaMetaAno4 = (($somaMetaAno4) * 1) + (($valor) * 1);
+                                }
                             }
                         }
 
-                        if ($contAnos == 2) {
-
-                            if ($valor > 0) {
-
-                                $contNaoVazio2 = $contNaoVazio2 + 1;
-
-                                $somaMetaAno2 = (($somaMetaAno2) * 1) + (($valor) * 1);
-                            }
-                        }
-
-                        if ($contAnos == 3) {
-
-                            if ($valor > 0) {
-
-                                $contNaoVazio3 = $contNaoVazio3 + 1;
-
-                                $somaMetaAno3 = (($somaMetaAno3) * 1) + (($valor) * 1);
-                            }
-                        }
-
-                        if ($contAnos == 4) {
-
-                            if ($valor > 0) {
-
-                                $contNaoVazio4 = $contNaoVazio4 + 1;
-
-                                $somaMetaAno4 = (($somaMetaAno4) * 1) + (($valor) * 1);
-                            }
-                        }
+                        
                     }
                 }
 
@@ -2571,22 +2659,22 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                     if (isset($contNaoVazio1) && !is_null($contNaoVazio1) && $contNaoVazio1 != '' && $contNaoVazio1 > 0) {
 
-                        $somaMetaAno1 = ($somaMetaAno1) / $contNaoVazio1;
+                        $somaMetaAno1 = ($somaMetaAno1);
                     }
 
                     if (isset($contNaoVazio2) && !is_null($contNaoVazio2) && $contNaoVazio2 != '' && $contNaoVazio2 > 0) {
 
-                        $somaMetaAno2 = ($somaMetaAno2) / $contNaoVazio2;
+                        $somaMetaAno2 = ($somaMetaAno2);
                     }
 
                     if (isset($contNaoVazio3) && !is_null($contNaoVazio3) && $contNaoVazio3 != '' && $contNaoVazio3 > 0) {
 
-                        $somaMetaAno3 = ($somaMetaAno3) / $contNaoVazio3;
+                        $somaMetaAno3 = ($somaMetaAno3);
                     }
 
                     if (isset($contNaoVazio4) && !is_null($contNaoVazio4) && $contNaoVazio4 != '' && $contNaoVazio4 > 0) {
 
-                        $somaMetaAno4 = ($somaMetaAno4) / $contNaoVazio4;
+                        $somaMetaAno4 = ($somaMetaAno4);
                     }
                 }
 
