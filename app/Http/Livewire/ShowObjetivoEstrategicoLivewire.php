@@ -745,7 +745,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                     $contIndicador = 1;
 
-                    if (!is_null($planoAcao)) {
+                    if (!is_null($this->objetivoEstrategico->indicadores)) {
 
                         foreach ($this->objetivoEstrategico->indicadores as $indicador) {
 

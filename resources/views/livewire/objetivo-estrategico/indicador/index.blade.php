@@ -4,9 +4,9 @@
     @if ($this->indicador)
 
         <div class="w-full md:w-1/1 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
-            <span class="font-bold text-lg"><?php $this->collectionPlanoAcao->indicadores->count() > 1 ? print 'Indicadores' : print 'Indicador'; ?></span>
+            <span class="font-bold text-lg"><?php $this->objetivoEstrategico->indicadores->count() > 1 ? print 'Indicadores' : print 'Indicador'; ?></span>
 
-            <span>( <span class="text-sky-700">{{ $this->collectionPlanoAcao->indicadores->count() }}</span> )</span>
+            <span>( <span class="text-sky-700">{{ $this->objetivoEstrategico->indicadores->count() }}</span> )</span>
 
             <br />
 
@@ -106,7 +106,7 @@
         </div>
 
         <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
-            Observações: <strong>{{ $this->indicador->txt_observacao }}</strong>
+            Observações: <strong>{!! $this->indicador->txt_observacao !!}</strong>
         </div>
 
         <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
@@ -142,7 +142,7 @@
         </div>
 
         <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
-            Fórmula do Indicador: <strong>{{ nl2br($this->indicador->dsc_formula) }}</strong>
+            Fórmula do Indicador: <strong>{!! nl2br($this->indicador->dsc_formula) !!}</strong>
         </div>
 
         <div class="w-full md:w-2/6 border-b-2 border-gray-100 pt-2 pb-2 pl-1">
