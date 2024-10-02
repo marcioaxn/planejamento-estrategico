@@ -452,6 +452,13 @@ class ShowObjetivoEstrategicoLivewire extends Component
          * visualizados na maioria dos devices disponíveis.
          */
 
+         $anoVigente = date('Y');
+
+        $time = strtotime(date('Y-m-d'));
+        $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
+
+        $this->mesAnterior = $mesAnterior;
+
         /**
          * Início da 1ª parte
          */
@@ -656,14 +663,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                             $somaPrevisto = 0;
                             $somaRealizado = 0;
-
-                            $anoVigente = date('Y');
-
-                            $time = strtotime(date('Y-m-d'));
-                            $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
-
-                            $this->mesAnterior = $mesAnterior;
-
+                            
                             foreach ($indicador->evolucaoIndicador as $evolucaoIndicador) {
 
                                 if ($evolucaoIndicador->num_ano == $this->ano) {
@@ -809,7 +809,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
                     $dataChartMetaRealizada = '';
                     $dataChartLinhaBase = '';
 
-                    if (!is_null($planoAcao)) {
+                    if (!is_null($this->objetivoEstrategico)) {
 
                         if ($indicador) {
 
