@@ -19,6 +19,9 @@ class UsuariosLivewire extends Component
     public $user_id = null;
     public $organization = [];
 
+    public $organizacoes = [];
+    public $selected_organizations = null;
+
     public $name = null;
     public $email = null;
     public $adm = null;
@@ -42,6 +45,16 @@ class UsuariosLivewire extends Component
     public $iconFechar = 'fas fa-minus text-xs';
 
     public $maxWidth = 'xl';
+
+    public function hydrate()
+    {
+        $this->emit('select2Hydrate');
+    }
+
+    public function instanciarShowOrganization()
+    {
+        return new ShowOrganization;
+    }
 
     public function getUsers()
     {
@@ -401,6 +414,10 @@ class UsuariosLivewire extends Component
 
     public function render()
     {
+
+        $organizationLivewire = $this->instanciarShowOrganization();
+
+        $this->organizacoes = $organizationLivewire->getOrganizations();
 
         $this->users = User::orderBy('name')
             ->with('servidorResponsavel', 'servidorResponsavel.unidade', 'servidorSubstituto', 'servidorSubstituto.unidade')

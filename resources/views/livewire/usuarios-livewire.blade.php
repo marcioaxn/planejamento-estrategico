@@ -80,6 +80,50 @@
 
                     </div>
 
+                    <div class="w-full md:w-3/3 px-3 mb-1 md:mb-0 pt-0">
+
+                        <style>
+                            .select2-selection {
+                                border-color: #d1d5db !Important;
+                                min-height: 41px !Important;
+                            }
+                        </style>
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="organizations-select" value="Área responsável" />
+
+                            {!! Form::select('selected_organizations', $this->organizacoes, null, [
+                                'class' => 'w-full m-0 p-0',
+                                'style' => 'height: 40px!Important;',
+                                'id' => 'organizations-select',
+                                'multiple' => true,
+                                'required' => 'required',
+                                'wire:model' => 'selected_organizations',
+                            ]) !!}
+                            <x-jet-input-error for="organizations-select" class="mt-2" />
+
+                            <script>
+                                window.loadSelect2 = () => {
+                                    $('#organizations-select').select2({
+                                        // theme: "classic",
+                                    }).on('change', function() {
+                                        var data = $('#organizations-select').select2("val");
+                                        @this.set('selected_organizations', data);
+                                    });
+                                }
+
+                                document.addEventListener("livewire:load", () => {
+                                    loadSelect2();
+                                    window.livewire.on('select2Hydrate', () => {
+                                        loadSelect2();
+                                    });
+                                });
+                            </script>
+
+                        </div>
+
+                    </div>
+
                     @if($this->editarForm == true)
                         <div class="w-full md:w-1/3 px-3 mb-3 pt-1">
 
