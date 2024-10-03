@@ -939,7 +939,7 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-button wire:loading.attr="disabled" wire:click.prevent="$toggle('showModalInformacao')">
+            <x-jet-button wire:loading.attr="disabled" wire:click.prevent="$toggle('showModalInformacao')" onclick="javascript: location.reload();">
                 {{ __('Closer') }}
             </x-jet-button>
         </x-slot>
