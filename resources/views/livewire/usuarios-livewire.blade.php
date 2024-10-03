@@ -90,13 +90,12 @@
                         </style>
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="organizations-select" value="Área responsável" />
+                            <x-jet-labelpreenchimentoobrigatoriio for="organizations-select" value="Área de atuação do(a) servidor(a)" />
 
                             {!! Form::select('selected_organizations', $this->organizacoes, null, [
                                 'class' => 'w-full m-0 p-0',
                                 'style' => 'height: 40px!Important;',
                                 'id' => 'organizations-select',
-                                'multiple' => true,
                                 'required' => 'required',
                                 'wire:model' => 'selected_organizations',
                             ]) !!}
@@ -189,6 +188,9 @@
                             style="text-align: left!Important;">E-mail
                         </th>
                         <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
+                            style="text-align: left!Important;">Área de atuação
+                        </th>
+                        <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
                             style="text-align: left!Important;">Gestão
                         </th>
                         <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
@@ -215,6 +217,12 @@
 
                             <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">
                                 {{ $user->email }}
+                            </td>
+
+                            <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">
+                                @foreach ($user->atuacaoOrganizacao as $item)
+                                    {{ $item->sgl_organizacao }}
+                                @endforeach
                             </td>
 
                             <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">

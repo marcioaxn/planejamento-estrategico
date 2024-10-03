@@ -17,13 +17,13 @@ class CreateRelUsersTabOrganizacoesTable extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->references('id')->on('users');
             $table->foreignUuid('cod_organizacao')->references('cod_organizacao')->on('tab_organizacoes');
-            $table->foreignUuid('cod_perfil')->references('cod_perfil')->on('tab_perfil_acesso');
+            $table->foreignUuid('cod_perfil')->references('cod_perfil')->on('tab_perfil_acesso')->nullable(true);;
             $table->timestamps();
             $table->softDeletes();
         });
 
         DB::insert(
-            "INSERT INTO rel_users_tab_organizacoes (id, user_id, cod_organizacao, cod_perfil, created_at, updated_at) 
+            "INSERT INTO rel_users_tab_organizacoes (id, user_id, cod_organizacao, cod_perfil, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?)",
             [
                 'cfea2bdd-89c5-458f-b5fb-f4956f3280c0',

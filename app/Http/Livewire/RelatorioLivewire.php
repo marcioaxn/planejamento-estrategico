@@ -69,26 +69,6 @@ class RelatorioLivewire extends Component
         $this->mes = $mes;
     }
 
-    protected function calcularAcumuladoIndicadoresObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '', $anoSelecionado = '')
-    {
-
-        $calcular = new CalculoLivewire;
-
-        $result = $calcular->calcularAcumuladoIndicadoresObjetivoEstrategico($cod_organizacao, $cod_objetivo_estrategico, $anoSelecionado);
-
-        return $result;
-    }
-
-    protected function calcularAcumuladoObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '', $anoSelecionado = '')
-    {
-
-        $calcular = new CalculoLivewire;
-
-        $result = $calcular->calcularAcumuladoObjetivoEstrategico($cod_organizacao, $cod_objetivo_estrategico, $anoSelecionado);
-
-        return $result;
-    }
-
     public function render()
     {
 

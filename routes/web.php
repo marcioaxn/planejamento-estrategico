@@ -77,13 +77,13 @@ Route::group(['middleware' => ['auth:sanctum', 'verified', 'auth', 'trocarSenha'
     Route::get('{ano}/adm/grau-satisfacao', GrauSatisfacaoLivewire::class)->name('grauSatisfacao');
 });
 
+Route::get('relatorio/indicador-e-plano-acao/{periodo}/{ano}/{mes}', RelatorioLivewire::class)->name('relatorio.indicador-oe-e-plano-acao');
+
 Route::get('{ano}/{cod_origem}/{cod_organizacao}/{cod_perspectiva}/{cod_objetivo_estrategico}/{cod_plano_de_acao?}', ShowObjetivoEstrategicoLivewire::class)->name('objetivo-estrategico');
 
 Route::get('{ano}/indicador-objetivo-estrategico/{cod_organizacao}/{cod_perspectiva}/{cod_objetivo_estrategico}/{cod_plano_de_acao?}', IndicadorObjetivoEstrategicoLivewire::class)->name('objetivo-estrategico.indicador');
 
 Route::get('{ano}/evolucao-mensal-arquivo/{cod_arquivo}', 'App\Http\Controllers\ArquivosController@show')->name('showArquivoEvolucaoMensal');
-
-Route::get('relatorio/indicador-e-plano-acao/{periodo}/{ano}/{mes}', RelatorioLivewire::class)->name('relatorio.indicador-oe-e-plano-acao');
 
 Route::fallback(function () {
     $ano = date('Y');

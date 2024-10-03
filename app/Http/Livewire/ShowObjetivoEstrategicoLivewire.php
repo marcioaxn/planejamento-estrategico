@@ -452,7 +452,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
          * visualizados na maioria dos devices disponíveis.
          */
 
-         $anoVigente = date('Y');
+        $anoVigente = date('Y');
 
         $time = strtotime(date('Y-m-d'));
         $mesAnterior = (date("n", strtotime("-1 month", $time))) * 1;
@@ -663,7 +663,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                             $somaPrevisto = 0;
                             $somaRealizado = 0;
-                            
+
                             foreach ($indicador->evolucaoIndicador as $evolucaoIndicador) {
 
                                 if ($evolucaoIndicador->num_ano == $this->ano) {
@@ -777,8 +777,9 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                     $clienteLogado = Auth::user()->id;
 
-                    $this->getUserAuth = User::with('organizacao')
+                    $this->getUserAuth = User::with('atuacaoOrganizacao')
                         ->find(Auth::user()->id);
+
                 }
 
                 if (!is_null($this->cod_indicador)) {

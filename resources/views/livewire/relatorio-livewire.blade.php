@@ -81,6 +81,77 @@
 
                             <div>
                                 O.E. - {{ $resultPerspectiva->num_nivel_hierarquico_apresentacao . '.' . $resultObjetivoEstragico->num_nivel_hierarquico_apresentacao }}. <span style="font-weight: bold;">{{$resultObjetivoEstragico->nom_objetivo_estrategico }}</span>
+
+                                <div style="text-align: left;">
+                                    @if($resultObjetivoEstragico->indicadores->count() > 0)
+                                    <table class="table" style="width: 100%!Important;">
+                                        <thead>
+                                            <tr>
+                                                <th>Indicador</th>
+                                                <th>Resultado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                            @foreach ($resultObjetivoEstragico->indicadores as $indicador)
+
+                                            <?php
+                                            $contMes = 1;
+                                            $totalPrevisto = 0;
+                                            $totalRealizado = 0;
+                                            $temMeta = false;
+                                            ?>
+
+                                            <tr>
+                                                <td style="border-bottom: 1px solid gray;">
+                                                    {{ $indicador->nom_indicador }}
+                                                </td>
+
+                                                {{-- Início do cálculo do Indicador --}}
+                                                @foreach ($indicador->evolucaoIndicador as $evolucaoIndicador)
+                                                    
+                                                    @if ($evolucaoIndicador->num_ano == $this->ano)
+
+                                                        @if ($this->ano == date('Y'))
+
+                                                            @if ($evolucaoIndicador->num_mes == $this->mes)
+
+                                                                <td
+                                                                class="text-sm text-gray-900 font-light whitespace-nowrap text-right" style="width: 12%!Important; border-bottom: 1px solid gray;">
+
+                                                                    @if (!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+                                                                        <div
+                                                                            class="bg-pink-800 text-white rounded-md px-5 py-1">
+                                                                            &nbsp;-
+                                                                        </div>
+                                                                    @endif
+
+                                                                </td>
+
+                                                            @endif
+
+                                                        @else
+                                                        <td
+                                                        class="text-sm text-gray-900 font-light whitespace-nowrap text-right" style="width: 12%!Important; border-bottom: 1px solid gray;">-</td>
+                                                        @endif
+
+                                                    @else
+                                                        
+                                                    @endif
+                                                    
+                                                @endforeach
+
+                                            </tr>
+                                                
+                                            @endforeach
+                                    
+                                        </tbody>
+                                    </table>
+                                    @else
+                                        <span class="text-red-700">Não há cadastro de indicador ao Objetivo Estratégico</span>
+                                    @endif
+                                </div>
+
                             </div>
 
                         @endforeach

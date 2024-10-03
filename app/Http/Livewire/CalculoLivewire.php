@@ -886,6 +886,9 @@ class CalculoLivewire extends Component
                 if (isset($vlr_realizado) && !is_null($vlr_realizado) && $vlr_realizado != '') {
                     if ($dsc_tipo == '+') {
                         if ($vlr_previsto > 0) {
+                            $vlr_realizado = is_numeric($vlr_realizado) ? $vlr_realizado : 0;
+                            $vlr_previsto = is_numeric($vlr_previsto) && $vlr_previsto != 0 ? $vlr_previsto : 1; // evita divisão por zero
+
                             $prc_alcancado = ($vlr_realizado / $vlr_previsto) * 100;
                         }
                     }

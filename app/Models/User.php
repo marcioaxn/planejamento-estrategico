@@ -48,9 +48,16 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function atuacaoOrganizacao()
+    {
+        return $this->belongsToMany(Organization::class, 'rel_users_tab_organizacoes', 'user_id', 'cod_organizacao')
+        ->wherePivotNull('deleted_at');
+    }
+
     public function organizacao()
     {
-        return $this->belongsToMany(Organization::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'user_id', 'cod_organizacao');
+        return $this->belongsToMany(Organization::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'user_id', 'cod_organizacao')
+        ->wherePivotNull('deleted_at');
     }
 
     public function servidorResponsavel()

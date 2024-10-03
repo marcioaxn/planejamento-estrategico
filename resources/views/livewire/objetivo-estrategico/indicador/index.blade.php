@@ -489,7 +489,12 @@
             <div
                 class="bg-{!! $resultado['grau_de_satisfacao'] !!}-<?php $resultado['grau_de_satisfacao'] != 'pink' ? print '500' : print '800'; ?> text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
-                {!! formatarValorConformeUnidadeMedida($this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida, 'MYSQL', 'PTBR', $totalRealizado) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                {!! formatarValorConformeUnidadeMedida(
+                    $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
+                    'MYSQL',
+                    'PTBR',
+                    $totalRealizado,
+                ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
 
             </div>
 
@@ -497,323 +502,316 @@
     @endif
 
     </tr>
-                                                    {{-- Fim da linha de realizado --}}
+    {{-- Fim da linha de realizado --}}
 
-                                                    {{-- Início do IF para verificar se o cliente está logado para abrir a parte de atualização --}}
-                                                    @auth
+    {{-- Início do IF para verificar se o cliente está logado para abrir a parte de atualização --}}
+    @auth
 
-                                                        @php
+        @php
 
-                                                        if($this->getUserAuth->adm == 1) {
-                                                            $this->liberarAcessoParaAtualizar = true;
-                                                        }
+            foreach ($this->indicador->organizacoes as $organizacaoIndicador) {
+                foreach ($this->getUserAuth->atuacaoOrganizacao as $value) {
+                    if ($organizacaoIndicador->cod_organizacao == $value->cod_organizacao) {
+                        $this->liberarAcessoParaAtualizar = true;
+                        break;
+                    }
+                }
+            }
 
-                                                        @endphp
+        @endphp
 
-                                                        {{-- Início do IF para verificar se o cliente pode atualizar a evolução do indicador --}}
-                                                        @if ($this->liberarAcessoParaAtualizar)
-                                                            <tr class="border-b">
+        {{-- Início do IF para verificar se o cliente pode atualizar a evolução do indicador --}}
+        @if ($this->liberarAcessoParaAtualizar)
+            <tr class="border-b">
 
-                                                                <td
-                                                                    class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                                    <strong>Atualização</strong>
-                                                                </td>
+                <td class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
+                    <strong>Atualização</strong>
+                </td>
 
-                                                                @foreach ($this->indicador->evolucaoIndicador as $evolucaoIndicador)
-                                                                    @if ($evolucaoIndicador->num_ano == $this->ano)
-                                                                        @if (1 == 1)
-                                                                            @if ($evolucaoIndicador->num_mes <= $this->mesAnterior)
-                                                                                <td
-                                                                                    class="text-sm text-gray-900 px-6 py-4 font-light whitespace-nowrap text-right">
+                @foreach ($this->indicador->evolucaoIndicador as $evolucaoIndicador)
+                    @if ($evolucaoIndicador->num_ano == $this->ano)
+                        @if (1 == 1)
+                            @if ($evolucaoIndicador->num_mes <= $this->mesAnterior)
+                                <td class="text-sm text-gray-900 px-6 py-4 font-light whitespace-nowrap text-right">
 
-                                                                                    <span class="cursor-pointer"
-                                                                                        title="Incluir PDF para o mês de {!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}"
-                                                                                        wire:click.prevent="abrirModalIncluirPdf('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"><i
-                                                                                            class="fa-solid fa-file-pdf text-base text-red-600 "></i></span>
-                                                                                    &nbsp;&nbsp;
-                                                                                    <a href="javascript: void(0);"
-                                                                                        wire:click.prevent="editForm('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"
-                                                                                        title="Editar a informação do mês de {!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}"><i
-                                                                                            class="fas fa-edit text-base text-green-600"></i></a>
+                                    <span class="cursor-pointer" title="Incluir PDF para o mês de {!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}"
+                                        wire:click.prevent="abrirModalIncluirPdf('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"><i
+                                            class="fa-solid fa-file-pdf text-base text-red-600 "></i></span>
+                                    &nbsp;&nbsp;
+                                    <a href="javascript: void(0);" wire:click.prevent="editForm('{!! $evolucaoIndicador->cod_evolucao_indicador !!}')"
+                                        title="Editar a informação do mês de {!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}"><i
+                                            class="fas fa-edit text-base text-green-600"></i></a>
 
-                                                                                </td>
-                                                                            @else
-                                                                                <td
-                                                                                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+                                </td>
+                            @else
+                                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
-                                                                                    &nbsp;
+                                    &nbsp;
 
-                                                                                </td>
-                                                                            @endif
-                                                                        @endif
-                                                                    @endif
-                                                                @endforeach
+                                </td>
+                            @endif
+                        @endif
+                    @endif
+                @endforeach
 
-                                                                @if ($this->indicador->bln_acumulado == 'Sim')
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-                                                                        &nbsp;</td>
-                                                                @endif
+                @if ($this->indicador->bln_acumulado == 'Sim')
+                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+                        &nbsp;</td>
+                @endif
 
-                                                            </tr>
-                                                        @endif
-                                                        {{-- Fim do IF para verificar se o cliente pode atualizar a evolução do indicador --}}
+            </tr>
+        @endif
+        {{-- Fim do IF para verificar se o cliente pode atualizar a evolução do indicador --}}
 
-                                                    @endauth
-                                                    {{-- Fim do IF para verificar se o cliente está logado para abrir a parte de atualização --}}
+    @endauth
+    {{-- Fim do IF para verificar se o cliente está logado para abrir a parte de atualização --}}
 
-                                                </tbody>
+    </tbody>
 
-                                            </table>
-                                            {{-- Fim da tabela da evolução geral --}}
+    </table>
+    {{-- Fim da tabela da evolução geral --}}
 
-                                        </div>
+</div>
 
-                                    </div>
+</div>
 
-                                </div>
+</div>
 
-                            </div>
+</div>
 
-                        </div>
+</div>
 
-                    </div>
+</div>
 
-                </div>
+</div>
 
-            </div>
-            {{-- Fim da DIV que contém a Evolução mensal - Resumo --}}
+</div>
+{{-- Fim da DIV que contém a Evolução mensal - Resumo --}}
 
-            {{-- Início da DIV que contém a Evolução mensal - Detalhamento --}}
-            <div id="divConteudoTab3" style="display: none;">
+{{-- Início da DIV que contém a Evolução mensal - Detalhamento --}}
+<div id="divConteudoTab3" style="display: none;">
 
-                <p>Evolução mensal com as avaliações qualitativas e os arquivos anexos</p>
+    <p>Evolução mensal com as avaliações qualitativas e os arquivos anexos</p>
 
-                <div class=" flex flex-wrap -mx-3 mb-6">
+    <div class=" flex flex-wrap -mx-3 mb-6">
 
-                    <div class="w-full md:w-1/1 px-3 mb-6 md:mb-0 pt-3">
+        <div class="w-full md:w-1/1 px-3 mb-6 md:mb-0 pt-3">
 
-                        <div class="border-b border-gray-200 shadow rounded-md">
+            <div class="border-b border-gray-200 shadow rounded-md">
 
-                            @php
-                                $totalPrevisto = 0;
-                                $totalRealizado = 0;
-                            @endphp
+                @php
+                    $totalPrevisto = 0;
+                    $totalRealizado = 0;
+                @endphp
 
-                            <div class="flex flex-col">
+                <div class="flex flex-col">
 
-                                <div class="overflow-x-auto">
+                    <div class="overflow-x-auto">
 
-                                    <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                        <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
 
-                                        <div class="overflow-x-auto">
+                            <div class="overflow-x-auto">
 
-                                            {{-- Início da montagem da tabela contendo o detalhado da evolução do indicador --}}
-                                            <table class="min-w-full">
-                                                <thead class="border-b">
-            
-                                                    <tr class="border-b">
-            
-                                                        <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                            <strong></strong>Mês
-                                                        </th>
-                                                        <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                            <strong>Meta Prevista</strong>
-                                                        </th>
-                                                        <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                            <strong>Meta Realizada</strong>
-                                                        </th>
-            
-                                                        <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
-                                                            A<strong>valiação qualitativa</strong></th>
-                                                        <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
-                                                            <strong>Arquivos</strong>
-                                                        </th>
-            
-                                                    </tr>
-            
-                                                </thead>
-            
-                                                <tbody>
-            
-                                                    @foreach ($this->indicador->evolucaoIndicador as $evolucaoIndicador)
-                                                        @if ($evolucaoIndicador->num_ano == $this->ano)
-                                                            <tr class="border-b">
-            
-                                                                <td
-                                                                    class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                                    <strong>{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</strong>
-                                                                </td>
-            
-                                                                <?php
-            
-                                                                if ($this->ano == date('Y')) {
-                                                                    if ($evolucaoIndicador->num_mes <= $this->mesAnterior) {
-                                                                        $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
-            
-                                                                        $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
-                                                                    }
-                                                                } else {
-                                                                    $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
-            
-                                                                    $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
-                                                                }
-            
-                                                                ?>
-            
-                                                                @if (!is_null($evolucaoIndicador->vlr_previsto))
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-                                                                        {!! formatarValorConformeUnidadeMedida(
-                                                                            $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
-                                                                            'MYSQL',
-                                                                            'PTBR',
-                                                                            $evolucaoIndicador->vlr_previsto,
-                                                                        ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?></td>
-                                                                @else
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-                                                                        -</td>
-                                                                @endif
-            
-                                                                @if ($this->ano == date('Y'))
-                                                                    @if ($evolucaoIndicador->num_mes <= $this->mesAnterior)
-                                                                        <td
-                                                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-            
-                                                                            @if (!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-                                                                                <div
-                                                                                    class="bg-pink-800 text-white rounded-md px-5 py-1">
-                                                                                    &nbsp;-
-                                                                                </div>
-                                                                            @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-                                                                                <div
-                                                                                    class="bg-gray-500 text-white rounded-md px-5 py-1">
-                                                                                    &nbsp;-
-                                                                                </div>
-                                                                            @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-                                                                                {!! formatarValorConformeUnidadeMedida(
-                                                                                    $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
-                                                                                    'MYSQL',
-                                                                                    'PTBR',
-                                                                                    $evolucaoIndicador->vlr_realizado,
-                                                                                ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
-                                                                            @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-                                                                                @if (!is_null($evolucaoIndicador->vlr_realizado))
-                                                                                    <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->objetivoEstrategico->primeiroIndicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
-            
-            
-            
-                                                                                    <div
-                                                                                        class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
-            
-                                                                                        {!! formatarValorConformeUnidadeMedida(
-                                                                                            $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
-                                                                                            'MYSQL',
-                                                                                            'PTBR',
-                                                                                            $evolucaoIndicador->vlr_realizado,
-                                                                                        ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
-            
-                                                                                    </div>
-                                                                                @else
-                                                                                @endif
-            
-                                                                        </td>
-                                                                    @else
-                                                                        <td
-                                                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-            
-                                                                            &nbsp;
-            
-                                                                        </td>
-                                                                    @endif
-                                                                @else
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-            
-                                                                        &nbsp;
-            
-                                                                    </td>
-                                                                @endif
-                                                            @else
-                                                                <td
-                                                                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-            
-                                                                    @if (!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-                                                                        <div class="bg-pink-800 text-white rounded-md px-5 py-1">
-                                                                            &nbsp;-
-                                                                        </div>
-                                                                    @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-                                                                        <div class="bg-gray-500 text-white rounded-md px-5 py-1">
-                                                                            &nbsp;-
-                                                                        </div>
-                                                                    @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-                                                                        {!! formatarValorConformeUnidadeMedida(
-                                                                            $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
-                                                                            'MYSQL',
-                                                                            'PTBR',
-                                                                            $evolucaoIndicador->vlr_realizado,
-                                                                        ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
-                                                                    @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-                                                                        @if (!is_null($evolucaoIndicador->vlr_realizado))
-                                                                            <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->objetivoEstrategico->primeiroIndicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
-            
-            
-            
-                                                                            <div
-                                                                                class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
-            
-                                                                                {!! formatarValorConformeUnidadeMedida(
-                                                                                    $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
-                                                                                    'MYSQL',
-                                                                                    'PTBR',
-                                                                                    $evolucaoIndicador->vlr_realizado,
-                                                                                ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
-            
-                                                                            </div>
-                                                                        @else
-                                                                </td>
-                                                        @endif
-                                                    @endif
-                                                    @endif
-            
-                                                    <td class="text-sm text-gray-900 font-light px-6 py-4 break-words text-justify"
-                                                        style="width: 45%!Important;">
-            
-                                                        {!! nl2br($evolucaoIndicador->txt_avaliacao) !!}
-            
-                                                    </td>
-            
+                                {{-- Início da montagem da tabela contendo o detalhado da evolução do indicador --}}
+                                <table class="min-w-full">
+                                    <thead class="border-b">
+
+                                        <tr class="border-b">
+
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
+                                                <strong></strong>Mês
+                                            </th>
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
+                                                <strong>Meta Prevista</strong>
+                                            </th>
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
+                                                <strong>Meta Realizada</strong>
+                                            </th>
+
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
+                                                A<strong>valiação qualitativa</strong></th>
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
+                                                <strong>Arquivos</strong>
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        @foreach ($this->indicador->evolucaoIndicador as $evolucaoIndicador)
+                                            @if ($evolucaoIndicador->num_ano == $this->ano)
+                                                <tr class="border-b">
+
                                                     <td
-                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-left">
-            
-                                                        @foreach ($evolucaoIndicador->arquivos as $arquivo)
-                                                            <a class="px-1 py-1 mt-2 mt-1 mb-2 pt-3 pb-3"
-                                                                href="{!! url($this->anoSelecionado . '/evolucao-mensal-arquivo/' . $arquivo->cod_arquivo) !!}" target="_blank"><i
-                                                                    class="fas fa-file-pdf text-lg text-red-600"></i>
-                                                                {!! $arquivo->txt_assunto !!}</a>
-                                                            <br />
-                                                        @endforeach
-            
+                                                        class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
+                                                        <strong>{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</strong>
                                                     </td>
-            
-                                                    </tr>
-            
-                                                    <?php $contMes = $contMes + 1; ?>
+
+                                                    <?php
+
+                                                    if ($this->ano == date('Y')) {
+                                                        if ($evolucaoIndicador->num_mes <= $this->mesAnterior) {
+                                                            $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
+
+                                                            $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+                                                        }
+                                                    } else {
+                                                        $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
+
+                                                        $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+                                                    }
+
+                                                    ?>
+
+                                                    @if (!is_null($evolucaoIndicador->vlr_previsto))
+                                                        <td
+                                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+                                                            {!! formatarValorConformeUnidadeMedida(
+                                                                $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
+                                                                'MYSQL',
+                                                                'PTBR',
+                                                                $evolucaoIndicador->vlr_previsto,
+                                                            ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?></td>
+                                                    @else
+                                                        <td
+                                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+                                                            -</td>
                                                     @endif
-                                                    @endforeach
-            
-                                                </tbody>
-            
-                                            </table>
-                                            {{-- Fim da montagem da tabela contendo o detalhado da evolução do indicador --}}
+
+                                                    @if ($this->ano == date('Y'))
+                                                        @if ($evolucaoIndicador->num_mes <= $this->mesAnterior)
+                                                            <td
+                                                                class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+
+                                                                @if (!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+                                                                    <div
+                                                                        class="bg-pink-800 text-white rounded-md px-5 py-1">
+                                                                        &nbsp;-
+                                                                    </div>
+                                                                @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+                                                                    <div
+                                                                        class="bg-gray-500 text-white rounded-md px-5 py-1">
+                                                                        &nbsp;-
+                                                                    </div>
+                                                                @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+                                                                    {!! formatarValorConformeUnidadeMedida(
+                                                                        $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
+                                                                        'MYSQL',
+                                                                        'PTBR',
+                                                                        $evolucaoIndicador->vlr_realizado,
+                                                                    ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                                                                @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+                                                                    @if (!is_null($evolucaoIndicador->vlr_realizado))
+                                                                        <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->objetivoEstrategico->primeiroIndicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
 
 
-                                        </div>
 
-                                    </div>
+                                                                        <div
+                                                                            class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
-                                </div>
+                                                                            {!! formatarValorConformeUnidadeMedida(
+                                                                                $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
+                                                                                'MYSQL',
+                                                                                'PTBR',
+                                                                                $evolucaoIndicador->vlr_realizado,
+                                                                            ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+
+                                                                        </div>
+                                                                    @else
+                                                                    @endif
+
+                                                            </td>
+                                                        @else
+                                                            <td
+                                                                class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+
+                                                                &nbsp;
+
+                                                            </td>
+                                                        @endif
+                                                    @else
+                                                        <td
+                                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+
+                                                            &nbsp;
+
+                                                        </td>
+                                                    @endif
+                                                @else
+                                                    <td
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+
+                                                        @if (!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+                                                            <div class="bg-pink-800 text-white rounded-md px-5 py-1">
+                                                                &nbsp;-
+                                                            </div>
+                                                        @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+                                                            <div class="bg-gray-500 text-white rounded-md px-5 py-1">
+                                                                &nbsp;-
+                                                            </div>
+                                                        @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+                                                            {!! formatarValorConformeUnidadeMedida(
+                                                                $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
+                                                                'MYSQL',
+                                                                'PTBR',
+                                                                $evolucaoIndicador->vlr_realizado,
+                                                            ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                                                        @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+                                                            @if (!is_null($evolucaoIndicador->vlr_realizado))
+                                                                <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->objetivoEstrategico->primeiroIndicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
+
+
+
+                                                                <div
+                                                                    class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+
+                                                                    {!! formatarValorConformeUnidadeMedida(
+                                                                        $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
+                                                                        'MYSQL',
+                                                                        'PTBR',
+                                                                        $evolucaoIndicador->vlr_realizado,
+                                                                    ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+
+                                                                </div>
+                                                            @else
+                                                    </td>
+                                            @endif
+                                        @endif
+                                        @endif
+
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 break-words text-justify"
+                                            style="width: 45%!Important;">
+
+                                            {!! nl2br($evolucaoIndicador->txt_avaliacao) !!}
+
+                                        </td>
+
+                                        <td
+                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-left">
+
+                                            @foreach ($evolucaoIndicador->arquivos as $arquivo)
+                                                <a class="px-1 py-1 mt-2 mt-1 mb-2 pt-3 pb-3"
+                                                    href="{!! url($this->anoSelecionado . '/evolucao-mensal-arquivo/' . $arquivo->cod_arquivo) !!}" target="_blank"><i
+                                                        class="fas fa-file-pdf text-lg text-red-600"></i>
+                                                    {!! $arquivo->txt_assunto !!}</a>
+                                                <br />
+                                            @endforeach
+
+                                        </td>
+
+                                        </tr>
+
+                                        <?php $contMes = $contMes + 1; ?>
+                                        @endif
+                                        @endforeach
+
+                                    </tbody>
+
+                                </table>
+                                {{-- Fim da montagem da tabela contendo o detalhado da evolução do indicador --}}
+
 
                             </div>
 
@@ -824,212 +822,217 @@
                 </div>
 
             </div>
-            {{-- Fim da DIV que contém a Evolução mensal - Detalhamento --}}
-
-            {{-- Início da DIV que contém o Gráfico da Evolução Mensal --}}
-            <div class="w-full md:w-1/1 px-3 mt-2 mb-6 md:mb-0 pt-6">
-
-                <p>Gráfico da Evolução Mensal</p>
-
-                <canvas id="chart-<?php print $this->cod_indicador; ?>"
-                    style="width: 100%!Important; height: 333px!Important;"></canvas>
-
-                @if ($this->indicador->bln_acumulado === 'Não')
-                    <script type="text/javascript">
-                        new Chart(document.getElementById("chart-<?php print $this->cod_indicador; ?>"), {
-                            type: 'bar',
-                            data: {
-                                labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
-                                datasets: [{
-                                    label: "Meta prevista",
-                                    backgroundColor: "#3e95cd",
-                                    data: [<?php print $this->dataChartMetaPrevista; ?>]
-                                }, {
-                                    label: "Meta realizada",
-                                    backgroundColor: "#8e5ea2",
-                                    data: [<?php print $this->dataChartMetaRealizada; ?>]
-                                }]
-                            },
-                            options: {
-                                title: {
-                                    display: true,
-                                    text: 'Teste'
-                                },
-                                scales: {
-                                    y: {
-                                        suggestedMin: 0,
-                                        suggestedMax: <?php print $this->metaAno; ?> + 5,
-                                    }
-                                }
-                            }
-                        });
-                    </script>
-                @endif
-
-                @if ($this->indicador->bln_acumulado === 'Sim')
-                    <script type="text/javascript">
-                        new Chart(document.getElementById("chart-<?php print $this->cod_indicador; ?>"), {
-                            type: 'line',
-                            data: {
-                                labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
-                                datasets: [{
-                                    data: [<?php print $this->dataChartMetaPrevista; ?>],
-                                    label: "Meta Prevista",
-                                    backgroundColor: "#3e95cd",
-                                    borderColor: "#3e95cd",
-                                    fill: false
-                                }, {
-                                    data: [<?php print $this->dataChartMetaRealizada; ?>],
-                                    label: "Meta Realizada",
-                                    backgroundColor: "#9A3412",
-                                    borderColor: "#9A3412",
-                                    fill: false
-                                }, {
-                                    label: "Linha de base",
-                                    backgroundColor: "#696969",
-                                    borderColor: "#696969",
-                                    data: [<?php print $this->dataChartLinhaBase; ?>]
-                                }]
-                            },
-                            options: {
-                                title: {
-                                    display: true,
-                                    text: 'Teste'
-                                },
-                                scales: {
-                                    y: {
-                                        suggestedMin: 0,
-                                        suggestedMax: <?php print $this->linhaBase; ?> + 50,
-                                    }
-                                }
-                            }
-                        });
-                    </script>
-                @endif
-
-            </div>
-            {{-- Fim da DIV que contém o Gráfico da Evolução Mensal --}}
-
-        </div>
-    @else
-        <div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
-
-            Não há registro de indicadores para esse plano de ação
 
         </div>
 
-    @endif
-
-    <div class="px-3 py-2 pt-2 pl-2 pr-2">
-        &nbsp;
     </div>
 
-    <!-- Modal -->
-    <x-jet-dialog-modal wire:model="showModalInformacao">
-        <form wire:submit.prevent="create" method="post">
-            <x-slot name="title">
-                <strong>Importante</strong>
-            </x-slot>
+</div>
+{{-- Fim da DIV que contém a Evolução mensal - Detalhamento --}}
 
-            <x-slot name="content">
-                {!! $this->mensagemInformacao !!}
-            </x-slot>
+{{-- Início da DIV que contém o Gráfico da Evolução Mensal --}}
+<div class="w-full md:w-1/1 px-3 mt-2 mb-6 md:mb-0 pt-6">
 
-            <x-slot name="footer">
-                <x-jet-button wire:loading.attr="disabled" wire:click.prevent="$toggle('showModalInformacao')">
-                    {{ __('Closer') }}
-                </x-jet-button>
-            </x-slot>
-        </form>
-    </x-jet-dialog-modal>
+    <p>Gráfico da Evolução Mensal</p>
 
-    <!-- Modal -->
-    <x-jet-geral-modal wire:model="showModalIncluirPdf">
-        <form method="POST" enctype="multipart/form-data" wire:submit.prevent="">
-            <x-slot name="title">
-                <strong>Incluir PDF</strong>
-            </x-slot>
+    <canvas id="chart-<?php print $this->cod_indicador; ?>" style="width: 100%!Important; height: 333px!Important;"></canvas>
 
-            <x-slot name="content">
-                {!! $this->formIncluirPdf !!}
+    @if ($this->indicador->bln_acumulado === 'Não')
+        <script type="text/javascript">
+            new Chart(document.getElementById("chart-<?php print $this->cod_indicador; ?>"), {
+                type: 'bar',
+                data: {
+                    labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+                    datasets: [{
+                        label: "Meta prevista",
+                        backgroundColor: "#3e95cd",
+                        data: [<?php print $this->dataChartMetaPrevista; ?>]
+                    }, {
+                        label: "Meta realizada",
+                        backgroundColor: "#8e5ea2",
+                        data: [<?php print $this->dataChartMetaRealizada; ?>]
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Teste'
+                    },
+                    scales: {
+                        y: {
+                            suggestedMin: 0,
+                            suggestedMax: <?php print $this->metaAno; ?> + 5,
+                        }
+                    }
+                }
+            });
+        </script>
+    @endif
 
-                <x-jet-input-error for="pdf" class="mt-2" />
-                <x-jet-input-error for="txt_assunto" class="mt-2" />
-                <div wire:loading wire:target="pdf">Uploading...</div>
-            </x-slot>
+    @if ($this->indicador->bln_acumulado === 'Sim')
+        <script type="text/javascript">
+            new Chart(document.getElementById("chart-<?php print $this->cod_indicador; ?>"), {
+                type: 'line',
+                data: {
+                    labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+                    datasets: [{
+                        data: [<?php print $this->dataChartMetaPrevista; ?>],
+                        label: "Meta Prevista",
+                        backgroundColor: "#3e95cd",
+                        borderColor: "#3e95cd",
+                        fill: false
+                    }, {
+                        data: [<?php print $this->dataChartMetaRealizada; ?>],
+                        label: "Meta Realizada",
+                        backgroundColor: "#9A3412",
+                        borderColor: "#9A3412",
+                        fill: false
+                    }, {
+                        label: "Linha de base",
+                        backgroundColor: "#696969",
+                        borderColor: "#696969",
+                        data: [<?php print $this->dataChartLinhaBase; ?>]
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Teste'
+                    },
+                    scales: {
+                        y: {
+                            suggestedMin: 0,
+                            suggestedMax: <?php print $this->linhaBase; ?> + 50,
+                        }
+                    }
+                }
+            });
+        </script>
+    @endif
 
-            <x-slot name="footer">
-                <x-jet-button wire:click.prevent="$toggle('showModalIncluirPdf')" wire:loading.attr="disabled">
-                    {{ __('Closer') }}
-                </x-jet-button>
-                <x-jet-danger-button wire:click.prevent="$toggle('showModalIncluirPdf')" wire:loading.attr="disabled"
-                    wire:click.prevent="savePdf()">
-                    Salvar
-                </x-jet-danger-button>
-            </x-slot>
-        </form>
-    </x-jet-geral-modal>
+</div>
+{{-- Fim da DIV que contém o Gráfico da Evolução Mensal --}}
 
-    <!-- Modal -->
-    <x-jet-geral-modal wire:model="showModalResultadoEdicao">
-        <form wire:submit.prevent="create" method="post">
-            <x-slot name="title">
-                <strong>Editar</strong>
-            </x-slot>
+</div>
+@else
+<div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
 
-            <x-slot name="content">
-                {!! $this->mensagemResultadoEdicao !!}
-                <x-jet-input-error for="vlr_realizado" class="mt-2" />
-            </x-slot>
+    Não há registro de indicadores para esse plano de ação
 
-            <x-slot name="footer">
-                <x-jet-button wire:click.prevent="$toggle('showModalResultadoEdicao')" wire:loading.attr="disabled">
-                    {{ __('Closer') }}
-                </x-jet-button>
-                <x-jet-danger-button wire:click.prevent="$toggle('showModalResultadoEdicao')"
-                    wire:loading.attr="disabled" wire:click.prevent="create()">
-                    Salvar
-                </x-jet-danger-button>
-            </x-slot>
-        </form>
-    </x-jet-geral-modal>
+</div>
 
-    <!-- Modal -->
-    <x-jet-dialog-modal wire:model="showModalDelete">
+@endif
+
+<div class="px-3 py-2 pt-2 pl-2 pr-2">
+    &nbsp;
+</div>
+
+<!-- Modal -->
+<x-jet-dialog-modal wire:model="showModalInformacao">
+    <form wire:submit.prevent="create" method="post">
         <x-slot name="title">
-            <strong>Excluir</strong>
+            <strong>Importante</strong>
         </x-slot>
 
         <x-slot name="content">
-            {!! $this->mensagemDelete !!}
+            {!! $this->mensagemInformacao !!}
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled">
+            <x-jet-button wire:loading.attr="disabled" wire:click.prevent="$toggle('showModalInformacao')">
                 {{ __('Closer') }}
             </x-jet-button>
-            <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled"
-                wire:click.prevent="delete('{!! $this->cod_plano_de_acao !!}')">
-                Sim, quero excluir
+        </x-slot>
+    </form>
+</x-jet-dialog-modal>
+
+<!-- Modal -->
+<x-jet-geral-modal wire:model="showModalIncluirPdf">
+    <form method="POST" enctype="multipart/form-data" wire:submit.prevent="">
+        <x-slot name="title">
+            <strong>Incluir PDF</strong>
+        </x-slot>
+
+        <x-slot name="content">
+            {!! $this->formIncluirPdf !!}
+
+            <x-jet-input-error for="pdf" class="mt-2" />
+            <x-jet-input-error for="txt_assunto" class="mt-2" />
+            <div wire:loading wire:target="pdf">Uploading...</div>
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-button wire:click.prevent="$toggle('showModalIncluirPdf')" wire:loading.attr="disabled">
+                {{ __('Closer') }}
+            </x-jet-button>
+            <x-jet-danger-button wire:click.prevent="$toggle('showModalIncluirPdf')" wire:loading.attr="disabled"
+                wire:click.prevent="savePdf()">
+                Salvar
             </x-jet-danger-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </form>
+</x-jet-geral-modal>
 
-    <!-- Modal -->
-    <x-jet-geral-modal wire:model="showModalAudit">
+<!-- Modal -->
+<x-jet-geral-modal wire:model="showModalResultadoEdicao">
+    <form wire:submit.prevent="create" method="post">
         <x-slot name="title">
-            <strong>Ações Realizadas</strong>
+            <strong>Editar</strong>
         </x-slot>
 
         <x-slot name="content">
-            {!! $this->mensagemDelete !!}
+            {!! $this->mensagemResultadoEdicao !!}
+            <x-jet-input-error for="vlr_realizado" class="mt-2" />
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-button wire:click.prevent="$toggle('showModalAudit')" wire:loading.attr="disabled">
+            <x-jet-button wire:click.prevent="$toggle('showModalResultadoEdicao')" wire:loading.attr="disabled">
                 {{ __('Closer') }}
             </x-jet-button>
+            <x-jet-danger-button wire:click.prevent="$toggle('showModalResultadoEdicao')" wire:loading.attr="disabled"
+                wire:click.prevent="create()">
+                Salvar
+            </x-jet-danger-button>
         </x-slot>
-    </x-jet-geral-modal>
+    </form>
+</x-jet-geral-modal>
+
+<!-- Modal -->
+<x-jet-dialog-modal wire:model="showModalDelete">
+    <x-slot name="title">
+        <strong>Excluir</strong>
+    </x-slot>
+
+    <x-slot name="content">
+        {!! $this->mensagemDelete !!}
+    </x-slot>
+
+    <x-slot name="footer">
+        <x-jet-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled">
+            {{ __('Closer') }}
+        </x-jet-button>
+        <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled"
+            wire:click.prevent="delete('{!! $this->cod_plano_de_acao !!}')">
+            Sim, quero excluir
+        </x-jet-danger-button>
+    </x-slot>
+</x-jet-dialog-modal>
+
+<!-- Modal -->
+<x-jet-geral-modal wire:model="showModalAudit">
+    <x-slot name="title">
+        <strong>Ações Realizadas</strong>
+    </x-slot>
+
+    <x-slot name="content">
+        {!! $this->mensagemDelete !!}
+    </x-slot>
+
+    <x-slot name="footer">
+        <x-jet-button wire:click.prevent="$toggle('showModalAudit')" wire:loading.attr="disabled">
+            {{ __('Closer') }}
+        </x-jet-button>
+    </x-slot>
+</x-jet-geral-modal>
 
 </div>
