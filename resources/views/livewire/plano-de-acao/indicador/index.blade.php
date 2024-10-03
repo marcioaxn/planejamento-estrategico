@@ -358,7 +358,7 @@
 
                                                 {{-- Fim da linha de previsto --}}
 
-                                                {{-- Início da linha de previsto --}}
+                                                {{-- Início da linha de realizado --}}
                                                 <tr class="border-b">
 
                                                     <td
@@ -369,12 +369,8 @@
                                                     <?php $contMes = 1; ?>
 
                                                     @foreach ($this->indicador->evolucaoIndicador as $evolucaoIndicador)
-                                                        {{-- Início IF $evolucaoIndicador->num_ano == $this->ano --}}
                                                         @if ($evolucaoIndicador->num_ano == $this->ano)
-                                                            {{-- Início do IF $this->ano == date('Y') --}}
                                                             @if ($this->ano == date('Y'))
-                                                                {{-- Início do IF $evolucaoIndicador->num_mes <= $this->mesAnterior --}}
-
                                                                 @if ($evolucaoIndicador->num_mes <= $this->mesAnterior)
                                                                     <td
                                                                         class="text-sm text-gray-900 font-light whitespace-nowrap text-right">
@@ -391,44 +387,48 @@
                                                                             </div>
                                                                         @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
                                                                             {!! formatarValorConformeUnidadeMedida(
-                                                                                $this->indicador->dsc_unidade_medida,
+                                                                                $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
                                                                                 'MYSQL',
                                                                                 'PTBR',
                                                                                 $evolucaoIndicador->vlr_realizado,
-                                                                            ) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                                                                            ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
                                                                         @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
                                                                             @if (!is_null($evolucaoIndicador->vlr_realizado))
-                                                                                <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->indicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
+                                                                                <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->objetivoEstrategico->primeiroIndicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
+
+
 
                                                                                 <div
                                                                                     class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
                                                                                     {!! formatarValorConformeUnidadeMedida(
-                                                                                        $this->indicador->dsc_unidade_medida,
+                                                                                        $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
                                                                                         'MYSQL',
                                                                                         'PTBR',
                                                                                         $evolucaoIndicador->vlr_realizado,
-                                                                                    ) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                                                                                    ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
 
                                                                                 </div>
+                                                                            @else
                                                                             @endif
-                                                                        @endif
 
                                                                     </td>
                                                                 @else
                                                                     <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-                                                                        -
+                                                                        class="text-sm text-gray-900 font-light whitespace-nowrap text-right">
+
+                                                                        &nbsp;
+
                                                                     </td>
                                                                 @endif
-                                                                {{-- Fim do IF $evolucaoIndicador->num_mes <= $this->mesAnterior --}}
                                                             @else
                                                                 <td
-                                                                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-                                                                    -
+                                                                    class="text-sm text-gray-900 font-light whitespace-nowrap text-right">
+
+                                                                    &nbsp;
+
                                                                 </td>
                                                             @endif
-                                                            {{-- Fim do IF $this->ano == date('Y') --}}
                                                         @else
                                                             <td
                                                                 class="text-sm text-gray-900 font-light whitespace-nowrap text-right">
@@ -445,40 +445,39 @@
                                                                     </div>
                                                                 @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
                                                                     {!! formatarValorConformeUnidadeMedida(
-                                                                        $this->indicador->dsc_unidade_medida,
+                                                                        $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
                                                                         'MYSQL',
                                                                         'PTBR',
                                                                         $evolucaoIndicador->vlr_realizado,
-                                                                    ) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                                                                    ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
                                                                 @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
                                                                     @if (!is_null($evolucaoIndicador->vlr_realizado))
-                                                                        <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->indicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
+                                                                        <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->objetivoEstrategico->primeiroIndicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
+
+
 
                                                                         <div
                                                                             class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
                                                                             {!! formatarValorConformeUnidadeMedida(
-                                                                                $this->indicador->dsc_unidade_medida,
+                                                                                $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
                                                                                 'MYSQL',
                                                                                 'PTBR',
                                                                                 $evolucaoIndicador->vlr_realizado,
-                                                                            ) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                                                                            ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
 
                                                                         </div>
-                                                                    @endif
-                                                                @endif
-
+                                                                    @else
                                                             </td>
                                                         @endif
-                                                        {{-- Fim IF $evolucaoIndicador->num_ano == $this->ano --}}
+                                                    @endif
+@endif
 
-                                                        @php
-                                                            $contMes++;
-                                                        @endphp
+<?php $contMes = $contMes + 1; ?>
+@endif
+@endforeach
 
-                                                    @endforeach
-
-                                                    {{-- Início da montagem da última coluna, caso o indicador seja acumulável --}}
+{{-- Início da montagem da última coluna, caso o indicador seja acumulável --}}
                                                     @if ($this->indicador->bln_acumulado == 'Sim')
                                                         <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->indicador->dsc_tipo, $totalRealizado, $totalPrevisto);
                                                         $this->totalRealizado = $totalRealizado; ?>
@@ -497,8 +496,8 @@
                                                     @endif
                                                     {{-- Fim da montagem da última coluna, caso o indicador seja acumulável --}}
 
-                                                </tr>
-                                                {{-- Fim da linha de previsto --}}
+</tr>
+{{-- Fim da linha de realizado --}}
 
                                                 {{-- Início do IF para verificar se o cliente está logado para abrir a parte de atualização --}}
                                                 @auth
@@ -602,139 +601,75 @@
                                     <div class="overflow-x-auto">
 
                                         {{-- Início da montagem da tabela contendo o detalhado da evolução do indicador --}}
-                                        <table class="min-w-full">
-                                            <thead class="border-b">
+                                <table class="min-w-full">
+                                    <thead class="border-b">
 
+                                        <tr class="border-b">
+
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
+                                                <strong></strong>Mês
+                                            </th>
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
+                                                <strong>Meta Prevista</strong>
+                                            </th>
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
+                                                <strong>Meta Realizada</strong>
+                                            </th>
+
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
+                                                A<strong>valiação qualitativa</strong></th>
+                                            <th class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
+                                                <strong>Arquivos</strong>
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        @foreach ($this->indicador->evolucaoIndicador as $evolucaoIndicador)
+                                            @if ($evolucaoIndicador->num_ano == $this->ano)
                                                 <tr class="border-b">
 
-                                                    <th
+                                                    <td
                                                         class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                        <strong></strong>Mês
-                                                    </th>
-                                                    <th
-                                                        class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                        <strong>Meta Prevista</strong>
-                                                    </th>
-                                                    <th
-                                                        class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                        <strong>Meta Realizada</strong>
-                                                    </th>
+                                                        <strong>{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</strong>
+                                                    </td>
 
-                                                    <th
-                                                        class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
-                                                        A<strong>valiação qualitativa</strong></th>
-                                                    <th
-                                                        class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-left">
-                                                        <strong>Arquivos</strong>
-                                                    </th>
+                                                    <?php
 
-                                                </tr>
+                                                    if ($this->ano == date('Y')) {
+                                                        if ($evolucaoIndicador->num_mes <= $this->mesAnterior) {
+                                                            $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
 
-                                            </thead>
+                                                            $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+                                                        }
+                                                    } else {
+                                                        $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
 
-                                            <tbody>
+                                                        $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
+                                                    }
 
-                                                {{-- Início do FOREACH da evolução do indicador --}}
-                                                @foreach ($this->indicador->evolucaoIndicador as $evolucaoIndicador)
-                                                    @if ($evolucaoIndicador->num_ano == $this->ano)
-                                                        <tr class="border-b">
+                                                    ?>
 
-                                                            <td
-                                                                class="text-sm text-gray-900 px-6 py-4 whitespace-nowrap text-right">
-                                                                <strong>{!! mesNumeralParaExtensoCurto($evolucaoIndicador->num_mes) !!}</strong>
-                                                            </td>
+                                                    @if (!is_null($evolucaoIndicador->vlr_previsto))
+                                                        <td
+                                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+                                                            {!! formatarValorConformeUnidadeMedida(
+                                                                $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
+                                                                'MYSQL',
+                                                                'PTBR',
+                                                                $evolucaoIndicador->vlr_previsto,
+                                                            ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?></td>
+                                                    @else
+                                                        <td
+                                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+                                                            -</td>
+                                                    @endif
 
-                                                            <?php
-
-                                                            if ($this->ano == date('Y')) {
-                                                                if ($evolucaoIndicador->num_mes <= $this->mesAnterior) {
-                                                                    $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
-
-                                                                    $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
-                                                                }
-                                                            } else {
-                                                                $totalPrevisto = $totalPrevisto + $evolucaoIndicador->vlr_previsto;
-
-                                                                $totalRealizado = $totalRealizado + $evolucaoIndicador->vlr_realizado;
-                                                            }
-
-                                                            ?>
-
-                                                            @if (!is_null($evolucaoIndicador->vlr_previsto))
-                                                                <td
-                                                                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-                                                                    {!! formatarValorConformeUnidadeMedida(
-                                                                        $this->indicador->dsc_unidade_medida,
-                                                                        'MYSQL',
-                                                                        'PTBR',
-                                                                        $evolucaoIndicador->vlr_previsto,
-                                                                    ) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?></td>
-                                                            @else
-                                                                <td
-                                                                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-                                                                    -</td>
-                                                            @endif
-
-                                                            @if ($this->ano == date('Y'))
-                                                                @if ($evolucaoIndicador->num_mes <= $this->mesAnterior)
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-
-                                                                        @if (!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-                                                                            <div
-                                                                                class="bg-pink-800 text-white rounded-md px-5 py-1">
-                                                                                &nbsp;-
-                                                                            </div>
-                                                                        @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
-                                                                            <div
-                                                                                class="bg-gray-500 text-white rounded-md px-5 py-1">
-                                                                                &nbsp;-
-                                                                            </div>
-                                                                        @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-                                                                            {!! formatarValorConformeUnidadeMedida(
-                                                                                $this->indicador->dsc_unidade_medida,
-                                                                                'MYSQL',
-                                                                                'PTBR',
-                                                                                $evolucaoIndicador->vlr_realizado,
-                                                                            ) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
-                                                                        @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
-                                                                            @if (!is_null($evolucaoIndicador->vlr_realizado))
-                                                                                <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->indicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
-
-
-
-                                                                                <div
-                                                                                    class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
-
-                                                                                    {!! formatarValorConformeUnidadeMedida(
-                                                                                        $this->indicador->dsc_unidade_medida,
-                                                                                        'MYSQL',
-                                                                                        'PTBR',
-                                                                                        $evolucaoIndicador->vlr_realizado,
-                                                                                    ) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
-
-                                                                                </div>
-                                                                            @endif
-                                                                        @endif
-
-                                                                    </td>
-                                                                @else
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-
-                                                                        &nbsp;
-
-                                                                    </td>
-                                                                @endif
-                                                            @else
-                                                                <td
-                                                                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
-
-                                                                    &nbsp;
-
-                                                                </td>
-                                                            @endif
-                                                        @else
+                                                    @if ($this->ano == date('Y'))
+                                                        @if ($evolucaoIndicador->num_mes <= $this->mesAnterior)
                                                             <td
                                                                 class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
@@ -750,14 +685,14 @@
                                                                     </div>
                                                                 @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
                                                                     {!! formatarValorConformeUnidadeMedida(
-                                                                        $this->indicador->dsc_unidade_medida,
+                                                                        $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
                                                                         'MYSQL',
                                                                         'PTBR',
                                                                         $evolucaoIndicador->vlr_realizado,
-                                                                    ) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                                                                    ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
                                                                 @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
                                                                     @if (!is_null($evolucaoIndicador->vlr_realizado))
-                                                                        <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->indicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
+                                                                        <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->objetivoEstrategico->primeiroIndicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
 
 
 
@@ -765,50 +700,105 @@
                                                                             class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
 
                                                                             {!! formatarValorConformeUnidadeMedida(
-                                                                                $this->indicador->dsc_unidade_medida,
+                                                                                $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
                                                                                 'MYSQL',
                                                                                 'PTBR',
                                                                                 $evolucaoIndicador->vlr_realizado,
-                                                                            ) !!}<?php $this->indicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                                                                            ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
 
                                                                         </div>
+                                                                    @else
                                                                     @endif
-                                                                @endif
+
                                                             </td>
+                                                        @else
+                                                            <td
+                                                                class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+
+                                                                &nbsp;
+
+                                                            </td>
+                                                        @endif
+                                                    @else
+                                                        <td
+                                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
+
+                                                            &nbsp;
+
+                                                        </td>
                                                     @endif
-
-                                                    <td class="text-sm text-gray-900 font-light px-6 py-4 break-words text-justify"
-                                                        style="width: 45%!Important;">
-
-                                                        {!! nl2br($evolucaoIndicador->txt_avaliacao) !!}
-
-                                                    </td>
-
+                                                @else
                                                     <td
-                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-left">
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-right">
 
-                                                        @foreach ($evolucaoIndicador->arquivos as $arquivo)
-                                                            <a class="px-1 py-1 mt-2 mt-1 mb-2 pt-3 pb-3"
-                                                                href="{!! url($this->anoSelecionado . '/evolucao-mensal-arquivo/' . $arquivo->cod_arquivo) !!}" target="_blank"><i
-                                                                    class="fas fa-file-pdf text-lg text-red-600"></i>
-                                                                {!! $arquivo->txt_assunto !!}</a>
-                                                            <br />
-                                                        @endforeach
+                                                        @if (!is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+                                                            <div class="bg-pink-800 text-white rounded-md px-5 py-1">
+                                                                &nbsp;-
+                                                            </div>
+                                                        @elseif(is_null($evolucaoIndicador->vlr_previsto) && is_null($evolucaoIndicador->bln_atualizado))
+                                                            <div class="bg-gray-500 text-white rounded-md px-5 py-1">
+                                                                &nbsp;-
+                                                            </div>
+                                                        @elseif(is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+                                                            {!! formatarValorConformeUnidadeMedida(
+                                                                $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
+                                                                'MYSQL',
+                                                                'PTBR',
+                                                                $evolucaoIndicador->vlr_realizado,
+                                                            ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+                                                        @elseif(!is_null($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->bln_atualizado))
+                                                            @if (!is_null($evolucaoIndicador->vlr_realizado))
+                                                                <?php $resultado = $this->obterResultadoComValorRealizadoEValorPrevisto($this->objetivoEstrategico->primeiroIndicador->dsc_tipo, $evolucaoIndicador->vlr_realizado, $evolucaoIndicador->vlr_previsto); ?>
 
+
+
+                                                                <div
+                                                                    class="bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-{!! $resultado['color'] !!} rounded-md px-5 py-1">
+
+                                                                    {!! formatarValorConformeUnidadeMedida(
+                                                                        $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida,
+                                                                        'MYSQL',
+                                                                        'PTBR',
+                                                                        $evolucaoIndicador->vlr_realizado,
+                                                                    ) !!}<?php $this->objetivoEstrategico->primeiroIndicador->dsc_unidade_medida === 'Porcentagem' ? print '%' : print ''; ?>
+
+                                                                </div>
+                                                            @else
                                                     </td>
+                                            @endif
+                                        @endif
+                                        @endif
 
-                                                    </tr>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 break-words text-justify"
+                                            style="width: 45%!Important;">
 
-                                                    @php
-                                                        $contMes++;
-                                                    @endphp
-                                                @endforeach
-                                                {{-- Fim do FOREACH da evolução do indicador --}}
+                                            {!! nl2br($evolucaoIndicador->txt_avaliacao) !!}
 
-                                            </tbody>
+                                        </td>
 
-                                        </table>
-                                        {{-- Fim da montagem da tabela contendo o detalhado da evolução do indicador --}}
+                                        <td
+                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-left">
+
+                                            @foreach ($evolucaoIndicador->arquivos as $arquivo)
+                                                <a class="px-1 py-1 mt-2 mt-1 mb-2 pt-3 pb-3"
+                                                    href="{!! url($this->anoSelecionado . '/evolucao-mensal-arquivo/' . $arquivo->cod_arquivo) !!}" target="_blank"><i
+                                                        class="fas fa-file-pdf text-lg text-red-600"></i>
+                                                    {!! $arquivo->txt_assunto !!}</a>
+                                                <br />
+                                            @endforeach
+
+                                        </td>
+
+                                        </tr>
+
+                                        <?php $contMes = $contMes + 1; ?>
+                                        @endif
+                                        @endforeach
+
+                                    </tbody>
+
+                                </table>
+                                {{-- Fim da montagem da tabela contendo o detalhado da evolução do indicador --}}
 
 
                                     </div>

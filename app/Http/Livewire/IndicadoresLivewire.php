@@ -2357,7 +2357,7 @@ class IndicadoresLivewire extends Component
 
         $this->perspectiva = $perspectiva;
 
-        $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||dsc_objetivo_estrategico AS dsc_objetivo_estrategico, cod_objetivo_estrategico"));
+        $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||nom_objetivo_estrategico AS nom_objetivo_estrategico, cod_objetivo_estrategico"));
 
         if (isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '') {
 
@@ -2381,7 +2381,7 @@ class IndicadoresLivewire extends Component
 
         $objetivoEstrategico = $objetivoEstrategico->orderBy('num_nivel_hierarquico_apresentacao')
             ->with('perspectiva')
-            ->pluck('dsc_objetivo_estrategico', 'cod_objetivo_estrategico');
+            ->pluck('nom_objetivo_estrategico', 'cod_objetivo_estrategico');
 
         $this->objetivoEstragico = $objetivoEstrategico;
 

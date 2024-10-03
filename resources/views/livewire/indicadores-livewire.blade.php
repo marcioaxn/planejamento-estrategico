@@ -193,7 +193,6 @@
                                 'id' => 'txt_observacao',
                                 'placeholder' => 'Escreva, se necessário, as observações relacionadas a este indicador',
                                 'rows' => 2,
-                                'required' => 'required',
                                 'style' => 'width: 100%',
                                 'wire:model' => 'txt_observacao',
                             ]) !!}
@@ -231,7 +230,6 @@
                                 'id' => 'dsc_atributos',
                                 'placeholder' => 'Escreva os atributos deste indicador',
                                 'rows' => 2,
-                                'required' => 'required',
                                 'style' => 'width: 100%',
                                 'wire:model' => 'dsc_atributos',
                             ]) !!}
@@ -250,7 +248,6 @@
                                 'id' => 'dsc_referencial_comparativo',
                                 'placeholder' => 'Escreva o referencial comparativo deste indicador',
                                 'rows' => 2,
-                                'required' => 'required',
                                 'style' => 'width: 100%',
                                 'wire:model' => 'dsc_referencial_comparativo',
                             ]) !!}
@@ -859,7 +856,7 @@
                             <div class="bg-gray-200 bg-opacity-50 text-gray-600 text-lg px-1 pb-1 pl-3 pr-3"><span
                                     class="text-sm">OE: <span
                                         class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $resultObjetivosEstrategicos->num_nivel_hierarquico_apresentacao !!}.
-                                    </span><strong>{!! $resultObjetivosEstrategicos->dsc_objetivo_estrategico !!}</strong></span></div>
+                                    </span><strong>{!! $resultObjetivosEstrategicos->nom_objetivo_estrategico !!}</strong></span></div>
 
                         </div>
 
