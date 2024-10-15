@@ -528,7 +528,7 @@ class MissaoVisaoLivewire extends Component
 
         $this->mostrarHierarquia = $this->hierarquiaUnidade($this->cod_organizacao);
 
-        return view('livewire.MissaoVisao');
+        return view('livewire.missaoVisao');
     }
 
     protected function estruturaTable() {
