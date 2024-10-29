@@ -131,7 +131,7 @@ class UsuariosLivewire extends Component
         if (Auth::user()->adm == 1) {
 
             $atualizarOuCriarPorModeloDados = $this->instanciarAtualizarOuCriarPorModeloDadosController();
-            
+
             // Início do IF que verifica se existe o ID do usuário, pois se existir será a parte do update
             if (isset($this->user_id) && !is_null($this->user_id) && $this->user_id != '') {
 
@@ -255,7 +255,7 @@ class UsuariosLivewire extends Component
                 foreach ($consultaUsuario->atuacaoOrganizacao as $value) {
                     $selected_organizations = $value->cod_organizacao;
                 }
-                
+
                 if ($selected_organizations != $this->selected_organizations) {
 
                     if(isset($selected_organizations) && !empty($selected_organizations)) {
@@ -265,11 +265,11 @@ class UsuariosLivewire extends Component
                         $modificacoes = $modificacoes . "Área de atuação do(a) servidor(a) excluída: <span class='text-green-800'>" . nl2br($organizacao->nom_organizacao . '-' . $organizacao->sgl_organizacao . $this->hierarquiaUnidade($selected_organizations)) . "</span><br>";
 
                     }
-                    
+
                     $excluirRelacao = RelUsersTabOrganizacoes::where('user_id', $this->user_id)
                         ->where('cod_organizacao', $selected_organizations)
                         ->delete();
-                    
+
                     $table = 'rel_users_tab_organizacoes';
                     $model = 'App\Models\\' . transformarNomeTabelaParaNomeModel($table);
 
@@ -279,6 +279,7 @@ class UsuariosLivewire extends Component
                     $campos['id'] = uuid();
                     $campos['user_id'] = $this->user_id;
                     $campos['cod_organizacao'] = $this->selected_organizations;
+                    $campos['cod_perfil'] = 'c00b9ebc-7014-4d37-97dc-7875e55fff4c';
 
                     $atualizarOuCriarPorModeloDados->atualizarOuCriarPorModeloDados($model, $id, $campos);
 
@@ -425,6 +426,7 @@ class UsuariosLivewire extends Component
                     $campos['id'] = uuid();
                     $campos['user_id'] = $gravarNovoUsuario->id;
                     $campos['cod_organizacao'] = $this->selected_organizations;
+                    $campos['cod_perfil'] = 'c00b9ebc-7014-4d37-97dc-7875e55fff4c';
 
                     $atualizarOuCriarPorModeloDados->atualizarOuCriarPorModeloDados($model, $id, $campos);
 
@@ -472,7 +474,7 @@ class UsuariosLivewire extends Component
         $this->email = $singleData->email;
         $this->adm = $singleData->adm;
         $this->ativo = $singleData->ativo;
-        
+
         $selected_organizations = null;
 
         foreach ($singleData->atuacaoOrganizacao as $value) {
@@ -480,7 +482,7 @@ class UsuariosLivewire extends Component
         }
 
         $this->selected_organizations = $selected_organizations;
-        
+
         $this->abrirFecharForm = 'block';
         $this->iconAbrirFechar = 'fas fa-minus text-xs';
 
