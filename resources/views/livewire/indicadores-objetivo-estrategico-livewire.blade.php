@@ -206,7 +206,6 @@
                                 'id' => 'txt_observacao',
                                 'placeholder' => 'Escreva, se necessário, as observações relacionadas a este indicador',
                                 'rows' => 2,
-                                'required' => 'required',
                                 'style' => 'width: 100%',
                                 'wire:model' => 'txt_observacao',
                             ]) !!}
@@ -244,7 +243,6 @@
                                 'id' => 'dsc_atributos',
                                 'placeholder' => 'Escreva os atributos deste indicador',
                                 'rows' => 2,
-                                'required' => 'required',
                                 'style' => 'width: 100%',
                                 'wire:model' => 'dsc_atributos',
                             ]) !!}
@@ -263,7 +261,6 @@
                                 'id' => 'dsc_referencial_comparativo',
                                 'placeholder' => 'Escreva o referencial comparativo deste indicador',
                                 'rows' => 2,
-                                'required' => 'required',
                                 'style' => 'width: 100%',
                                 'wire:model' => 'dsc_referencial_comparativo',
                             ]) !!}
@@ -905,7 +902,7 @@
                                                     <i class="fa fa-chart-line text-blue-400"></i>&nbsp;
                                                     <strong>{!! $resultIndicadores->nom_indicador !!}.</strong>
                                                 </p>
-                                    
+
                                                 <!-- Ações ficam fixadas ao fundo -->
                                                 <div id="divAcoes{{ $resultIndicadores }}" class="mt-auto pt-1">
                                                     <div class="flex mb-2 items-center justify-between">
@@ -926,9 +923,9 @@
                                                 </div>
                                             </div>
                                         @endforeach
-                                    
+
                                     </div>
-                                    
+
 
                         </div>
                     @endforeach
