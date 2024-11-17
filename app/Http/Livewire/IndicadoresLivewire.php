@@ -2299,7 +2299,6 @@ class IndicadoresLivewire extends Component
 
     public function render()
     {
-
         if (isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
 
             $consultarPlanoDeAcao = PlanoAcao::find($this->cod_plano_de_acao);
