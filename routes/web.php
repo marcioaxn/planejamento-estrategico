@@ -20,7 +20,8 @@ use App\Http\Livewire\{
     GrauSatisfacaoLivewire,
     ShowObjetivoEstrategicoLivewire,
     UsuariosLivewire,
-    DashboardLivewire
+    DashboardLivewire,
+    EntregasLivewire
 };
 
 
@@ -71,6 +72,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified', 'auth', 'trocarSenha'
     Route::get('{ano}/adm/indicador-objetivo-estrategico', IndicadoresObjetivoEstrategicoLivewire::class)->name('indicadores.objetivo-estrategico');
 
     Route::get('{ano}/adm/plano-de-acao', PlanoAcaoLivewire::class)->name('planoAcao');
+
+    Route::get('{ano}/adm/entregas', EntregasLivewire::class)->name('entregas.adm');
 
     Route::get('{ano}/adm/indicador', IndicadoresLivewire::class)->name('indicadores');
 

@@ -496,8 +496,8 @@
                             valor(es) da Meta Mensal.<br><br>Esse modo de preecnhimento facilita para os casos onde a
                             Meta tenha início em um determinado ano e a conclusão em um outro. Por exemplo, uma meta de
                             percentual de 100% dividida em quatro partes iguais da seguinte forma: 25% para
-                            novembro/2021, 25% para dezembro/2021, 25% para janeiro/2022 e 25% para fevereiro/2022.
-                            Teremos então 50% da meta apurada em 2021 e os outros 50% em 2022, totalizando 100%.
+                            novembro/2023, 25% para dezembro/2023, 25% para janeiro/2024 e 25% para fevereiro/2024.
+                            Teremos então 50% da meta apurada em 2023 e os outros 50% em 2022, totalizando 100%.
                         </p>
 
                     </div>
@@ -639,19 +639,19 @@
                             <?php
 
                             if ($contAno == 1) {
-                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '' && $this->$column_name_meta_ano > 0) {
+                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '') {
                                     print $this->somaMetaAno1;
                                 }
                             } elseif ($contAno == 2) {
-                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '' && $this->$column_name_meta_ano > 0) {
+                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '') {
                                     print $this->somaMetaAno2;
                                 }
                             } elseif ($contAno == 3) {
-                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '' && $this->$column_name_meta_ano > 0) {
+                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '') {
                                     print $this->somaMetaAno3;
                                 }
                             } elseif ($contAno == 4) {
-                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '' && $this->$column_name_meta_ano > 0) {
+                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '') {
                                     print $this->somaMetaAno4;
                                 }
                             }
@@ -742,19 +742,19 @@
                             <?php
 
                             if ($contAno == 1) {
-                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '' && $this->$column_name_meta_ano > 0) {
+                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '') {
                                     print $this->somaMetaAno1;
                                 }
                             } elseif ($contAno == 2) {
-                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '' && $this->$column_name_meta_ano > 0) {
+                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '') {
                                     print $this->somaMetaAno2;
                                 }
                             } elseif ($contAno == 3) {
-                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '' && $this->$column_name_meta_ano > 0) {
+                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '') {
                                     print $this->somaMetaAno3;
                                 }
                             } elseif ($contAno == 4) {
-                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '' && $this->$column_name_meta_ano > 0) {
+                                if (isset($this->dsc_unidade_medida) && !is_null($this->dsc_unidade_medida) && $this->dsc_unidade_medida != '' && isset($this->$column_name_meta_ano) && !is_null($this->$column_name_meta_ano) && $this->$column_name_meta_ano != '') {
                                     print $this->somaMetaAno4;
                                 }
                             }

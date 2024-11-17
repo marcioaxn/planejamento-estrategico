@@ -158,7 +158,7 @@
                     @if (Auth::user()->adm == 1)
                         <div class="hidden sm:flex sm:items-center sm:ml-6 z-50">
                             <div class="ml-3 relative">
-                                <x-jet-dropdown align="right" width="48" :active="\Request()->routeIs('adm.*')">
+                                <x-jet-dropdown align="right" width="120" :active="\Request()->routeIs('adm.*')">
                                     <x-slot name="trigger">
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
@@ -182,33 +182,33 @@
                                         </div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/organization') }}" :active="request()->routeIs('organization')">
-                                            {{ __('Unidades da Organização') }}
+                                            {{ __('Organizational Units') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/usuarios') }}" :active="request()->routeIs('usuarios')">
-                                            Usuários
+                                            {{ __('Users') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/pei') }}" :active="request()->routeIs('PlanejamentoEstrategicoIntegrado')">
-                                            Planejamento Estratégico Integrado
+                                            {{ __('Integrated Strategic Planning') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/missao-visao') }}"
                                             :active="request()->routeIs('missao')">
-                                            Missão e Visão
+                                            {{ __('Mission and Vision') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/valores') }}"
                                             :active="request()->routeIs('adm.valores')">
-                                            Valores
+                                            {{ __('Values') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>
@@ -221,33 +221,40 @@
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/objetivo-estrategico') }}"
                                             :active="request()->routeIs('objetivoEstragico')">
-                                            {{ __('Objetivo Estratégico') }}
+                                            {{ __('Strategic Objective') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/indicador-objetivo-estrategico') }}" :active="request()->routeIs('indicadores.objetivo-estrategico')">
-                                            {{ __('Indicadores dos Objetivos Estratégicos') }}
+                                            {{ __('Strategic Objective Indicators') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/plano-de-acao') }}"
                                             :active="request()->routeIs('planoAcao')">
-                                            {{ __('Plano de Ação') }}
+                                            {{ __('Action Plan') }}
+                                        </x-jet-dropdown-link>
+
+                                        <div class="border-t blue-gray-100"></div>
+
+                                        <x-jet-dropdown-link href="{{ url($ano . '/adm/entregas') }}"
+                                            :active="request()->routeIs('entregas.adm')">
+                                            {{ __('Action Plan Deliverables') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/indicador') }}" :active="request()->routeIs('indicadores')">
-                                            {{ __('Indicadores do Plano de Ação') }}
+                                            {{ __('Action Plan Indicators') }}
                                         </x-jet-dropdown-link>
 
                                         <div class="border-t blue-gray-100"></div>
 
                                         <x-jet-dropdown-link href="{{ url($ano . '/adm/grau-satisfacao') }}"
                                             :active="request()->routeIs('grauSatisfacao')">
-                                            {{ __('Grau de Satisfação') }}
+                                            {{ __('Satisfaction Level (Percentage Coloring)') }}
                                         </x-jet-dropdown-link>
 
 

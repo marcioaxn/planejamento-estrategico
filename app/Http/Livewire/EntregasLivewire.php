@@ -27,9 +27,10 @@ use App\Http\Livewire\UsuariosLivewire;
 use App\Http\Livewire\ShowOrganization;
 
 use App\Http\Controllers\AtualizarOuCriarPorModeloDadosController;
+use App\Models\PlanoAcao;
 use App\Models\RelIndicadorObjetivoEstrategicoOrganizacao;
 
-class IndicadoresObjetivoEstrategicoLivewire extends Component
+class EntregasLivewire extends Component
 {
 
     public $cod_pei = null;
@@ -38,6 +39,9 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
     public $perspectiva = [];
     public $cod_objetivo_estrategico = null;
     public $objetivoEstragico = [];
+
+    public $cod_plano_de_acao = null;
+    public $planoAcao = [];
 
     public $organizacoes = [];
     public $selected_organizations = null;
@@ -712,7 +716,6 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
                                     }
                                 }
                             }
-
                         }
                     }
 
@@ -1661,7 +1664,6 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
                                 $modificacoes = $modificacoes . "Área responsável inserida: <span class='text-green-800'>" . nl2br($organizacao->nom_organizacao . '-' . $organizacao->sgl_organizacao . $this->hierarquiaUnidade($value)) . "</span><br>";
                             }
                         }
-
                     }
 
                     // Fim do trecho para gravar a Área Responsável
@@ -2275,7 +2277,6 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
             $dataInicioPlanoDeAcao = strtotime($consultarPlanoDeAcao->dte_inicio);
             $dataConclusaoPlanoDeAcao = strtotime($consultarPlanoDeAcao->dte_fim);
-
         }
 
         $indicadores = Pei::with('perspectivas', 'perspectivas.objetivosEstrategicos', 'perspectivas.objetivosEstrategicos.indicadores', 'perspectivas.objetivosEstrategicos.indicadores.linhaBase', 'perspectivas.objetivosEstrategicos.indicadores.metaAno', 'perspectivas.objetivosEstrategicos.indicadores.evolucaoIndicador', 'perspectivas.objetivosEstrategicos.indicadores.acoesRealizadas');
@@ -2304,7 +2305,6 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
             $perspectiva = $perspectiva->where('cod_pei', $this->cod_pei);
 
             $indicadores = $indicadores->where('cod_pei', $this->cod_pei);
-
         } else {
 
             $perspectiva = $perspectiva->whereNull('cod_pei');
@@ -2338,6 +2338,12 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
             ->pluck('dsc_objetivo_estrategico', 'cod_objetivo_estrategico');
 
         $this->objetivoEstragico = $objetivoEstrategico;
+
+        if (isset($this->cod_objetivo_estrategico) && !empty($this->cod_objetivo_estrategico)) {
+
+            $this->planoAcao = PlanoAcao::where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico)
+                ->pluck('dsc_plano_de_acao', 'cod_plano_de_acao');
+        }
 
         if (isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '') {
 
@@ -2626,8 +2632,6 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
                                 $somaMetaAno4 = (($somaMetaAno4) * 1) + (($valor) * 1);
                             }
                         }
-
-
                     }
                 }
 
@@ -2790,25 +2794,23 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                         $valorMetaOriginal1 = $this->$column_name;
                         $valorMeta1 = converteValor('PTBR', 'MYSQL', $this->$column_name);
-                    
+
                         if (abs($somaMetaAno1 - $valorMeta1) < $epsilon) { // verifica se a diferença é menor que epsilon
-                    
+
                             $texto1 = '<p class="break-words text-sm text-right subpixel-antialiased tracking-wide bg-green-600 border-green-600 text-white rounded-md shadow-md mt-3 pt-2 pb-2 pl-2 pr-3 h-10"> Subtotal: <strong>';
                             $texto1 .= converteValor('MYSQL', 'PTBR', $somaMetaAno1) . '</strong>%</p>';
-                    
                         } elseif ($somaMetaAno1 < $valorMeta1) {
-                    
+
                             $texto1 = '<p class="break-words text-sm text-right subpixel-antialiased tracking-wide bg-yellow-300 border-yellow-900 text-black rounded-md shadow-md mt-3 pt-2 pb-2 pl-2 pr-3 h-10"> Subtotal: <strong>';
                             $texto1 .= converteValor('MYSQL', 'PTBR', $somaMetaAno1) . '</strong>%</p>';
-                    
                         } elseif ($somaMetaAno1 > $valorMeta1) {
-                    
+
                             $texto1 = '<p class="break-words text-sm text-right subpixel-antialiased tracking-wide bg-yellow-50 border-red-600 text-red-600 rounded-md shadow-md mt-3 pt-2 pb-2 pl-2 pr-3 h-24">';
                             $texto1 .= '<i class="fas fa-exclamation-triangle text-red-900"></i> O subtotal <strong>' . converteValor('MYSQL', 'PTBR', $somaMetaAno1) . '</strong>% é maior que a Meta prevista anual de ' . $anoLoop . ' que é <strong>' . $valorMetaOriginal1 . '</strong>%.<br>É necessário corrigir.</p>';
                         }
-                    
+
                         $this->somaMetaAno1 = $texto1;
-                    }                    
+                    }
 
                     // Fim da parte de verificação se a soma já atingiu a meta proposta do Ano 1 com a unidade de medida porcentagem
 
@@ -3063,7 +3065,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
         $this->indicadores = $indicadores;
 
-        return view('livewire.indicadores-objetivo-estrategico-livewire', ['anoInicioDoPeiSelecionado' => $this->anoInicioDoPeiSelecionado, 'anoConclusaoDoPeiSelecionado' => $this->anoConclusaoDoPeiSelecionado]);
+        return view('livewire.entregas-livewire', ['anoInicioDoPeiSelecionado' => $this->anoInicioDoPeiSelecionado, 'anoConclusaoDoPeiSelecionado' => $this->anoConclusaoDoPeiSelecionado]);
     }
 
     protected function estruturaTable()
