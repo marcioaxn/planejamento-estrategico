@@ -6,11 +6,11 @@ use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Indicador extends Model
+class Indicador extends Model implements Auditable
 {
-    use Uuids;
-    use SoftDeletes;
+    use Uuids, \OwenIt\Auditing\Auditable, SoftDeletes;
 
     protected $keyType = 'string';
     public $incrementing = false;

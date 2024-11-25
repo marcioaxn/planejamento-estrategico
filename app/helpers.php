@@ -1218,7 +1218,7 @@ function abreviarSituacaoConvenio($situacao = '')
 
 function legenda()
 {
-    ?>
+?>
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
             <h6>Legenda:</h6>
@@ -1274,7 +1274,7 @@ function legenda()
             </ul>
         </div> -->
     </div>
-    <?php
+<?php
 }
 
 function url_exists($url)
@@ -1769,52 +1769,53 @@ function estadoPorUf($estado = '')
 function nomeCampoNormalizado($campo)
 {
 
-    $campos = ['instrumento_ativo', 'data_retirada_suspensiva', 'dia_fim_vigenc_conv', 'motivo_suspensao', 'percentual_financeiro_desbloqueado', 'percentual_fisico_aferido', 'permite_liberar_primeiro_repasse_projeto', 'status_analise_siconv', 'vl_empenhado_conv', 'vl_contrapartida_conv', 'vl_desembolsado_conv', 'motivo_suspensao', 'sit_convenio', 'subsituacao_conv'];
-
     $campoNormalizado = '';
 
     switch ($campo) {
-        case 'instrumento_ativo':
-            $campoNormalizado = 'Instrumento ativo';
+        case 'dsc_entrega':
+            $campoNormalizado = 'Detalhamento da Entrega';
             break;
-        case 'data_retirada_suspensiva':
-            $campoNormalizado = 'Data de retirada da suspensiva';
+        case 'dsc_unidade_medida':
+            $campoNormalizado = 'Unidade de Medida';
             break;
-        case 'dia_fim_vigenc_conv':
-            $campoNormalizado = 'Data fim da vigẽncia';
+        case 'dsc_item_entregue':
+            $campoNormalizado = 'Item Entregue';
             break;
-        case 'motivo_suspensao':
-            $campoNormalizado = 'Motivo da suspensão';
+        case 'num_quantidade_prevista':
+            $campoNormalizado = 'Quantidade Prevista';
             break;
-        case 'percentual_financeiro_desbloqueado':
-            $campoNormalizado = 'Percentual financeiro desbloqueado';
+        case 'bln_status':
+            $campoNormalizado = 'Status de Execução';
             break;
-        case 'percentual_fisico_aferido':
-            $campoNormalizado = 'Percentual físico aferido';
+        case 'dsc_periodo_medicao':
+            $campoNormalizado = 'Período de medição';
             break;
-        case 'permite_liberar_primeiro_repasse_projeto':
-            $campoNormalizado = 'Permite liberar primeiro repasse do projeto';
+        case '':
+            $campoNormalizado = '';
             break;
-        case 'status_analise_siconv':
-            $campoNormalizado = 'Status do SICONV após análise do MDR';
+        case '':
+            $campoNormalizado = '';
             break;
-        case 'vl_empenhado_conv':
-            $campoNormalizado = 'Valor empenhado';
+        case '':
+            $campoNormalizado = '';
             break;
-        case 'vl_contrapartida_conv':
-            $campoNormalizado = 'Valor da contrapartida';
+        case '':
+            $campoNormalizado = '';
             break;
-        case 'vl_desembolsado_conv':
-            $campoNormalizado = 'Valor desembolsado';
+        case '':
+            $campoNormalizado = '';
             break;
-        case 'motivo_suspensao':
-            $campoNormalizado = 'Motivo da suspensão';
+        case '':
+            $campoNormalizado = '';
             break;
-        case 'sit_convenio':
-            $campoNormalizado = 'Situação do convênio/contrato';
+        case '':
+            $campoNormalizado = '';
             break;
-        case 'subsituacao_conv':
-            $campoNormalizado = 'Subsituação do convênio/contrato';
+        case '':
+            $campoNormalizado = '';
+            break;
+        case '':
+            $campoNormalizado = '';
             break;
 
         default:
