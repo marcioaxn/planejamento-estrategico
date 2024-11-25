@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Session;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Pei extends Model
+class Pei extends Model implements Auditable
 {
-    use Uuids;
-    use SoftDeletes;
+    use Uuids, \OwenIt\Auditing\Auditable, SoftDeletes;
 
     protected $keyType = 'string';
     public $incrementing = false;

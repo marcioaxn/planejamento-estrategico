@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\Session;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
     use Uuids;
     use HasApiTokens;
@@ -20,6 +21,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use \OwenIt\Auditing\Auditable;
 
     protected $keyType = 'string';
     public $incrementing = false;
@@ -51,20 +53,20 @@ class User extends Authenticatable
     public function atuacaoOrganizacao()
     {
         return $this->belongsToMany(Organization::class, 'rel_users_tab_organizacoes', 'user_id', 'cod_organizacao')
-        ->wherePivotNull('deleted_at');
+            ->wherePivotNull('deleted_at');
     }
 
     public function organizacao()
     {
         return $this->belongsToMany(Organization::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'user_id', 'cod_organizacao')
-        ->wherePivotNull('deleted_at');
+            ->wherePivotNull('deleted_at');
     }
 
     public function servidorResponsavel()
     {
         return $this->belongsToMany(PlanoAcao::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'user_id', 'cod_plano_de_acao')
             ->where('cod_perfil', 'c00b9ebc-7014-4d37-97dc-7875e55fff4c')
-            ->whereYear('dte_fim','<=',\Session('ano'))
+            ->whereYear('dte_fim', '<=', \Session('ano'))
             ->whereNull('rel_users_tab_organizacoes_tab_perfil_acesso.deleted_at');
     }
 
@@ -72,7 +74,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(PlanoAcao::class, 'rel_users_tab_organizacoes_tab_perfil_acesso', 'user_id', 'cod_plano_de_acao')
             ->where('cod_perfil', 'c00b9ebc-7014-4d37-97dc-7875e55fff5d')
-            ->whereYear('dte_fim','<=',\Session('ano'))
+            ->whereYear('dte_fim', '<=', \Session('ano'))
             ->whereNull('rel_users_tab_organizacoes_tab_perfil_acesso.deleted_at');
     }
 }

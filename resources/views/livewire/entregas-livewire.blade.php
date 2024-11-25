@@ -32,11 +32,11 @@
 
                     </div>
 
-                    <div class="w-full md:w-2/3 px-3 mb-1 md:mb-0 pt-3">
+                    <div class="w-full md:w-2/3 px-3 mb-1 md:mb-1 pt-3">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="cod_pei"
-                                value="Planejamento Estratégico Integrado - PEI" />
+                                value="1. Planejamento Estratégico Integrado - PEI" />
                             {!! Form::select('cod_pei', $this->pei, null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0',
@@ -52,10 +52,10 @@
 
                     </div>
 
-                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="cod_perspectiva" value="Perspectiva" />
+                            <x-jet-labelpreenchimentoobrigatoriio for="cod_perspectiva" value="2. Perspectiva" />
                             {!! Form::select('cod_perspectiva', $this->perspectiva, null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0',
@@ -83,11 +83,11 @@
 
                     </div>
 
-                    <div class="w-full md:w-3/3 px-3 mb-1 md:mb-0 pt-0" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-3/3 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="cod_objetivo_estrategico"
-                                value="Objetivo Estratégico" />
+                                value="3. Objetivo Estratégico" />
                             {!! Form::select('cod_objetivo_estrategico', $this->objetivoEstragico, null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0',
@@ -115,16 +115,16 @@
 
                     </div>
 
-                    <div class="w-full md:w-3/3 px-3 mb-1 md:mb-0 pt-0" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-3/3 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="cod_plano_de_acao"
-                                value="Plano de Ação" />
+                                value="4. Selecionar Iniciativa/Ação/Projeto" />
                             {!! Form::select('cod_plano_de_acao', $this->planoAcao, null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0',
                                 'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;',
-                                'placeholder' => 'Selecione',
+                                'placeholder' => 'Selecione a iniciativa, ação ou projeto correspondente...',
                                 'autocomplete' => 'off',
                                 'required' => 'required',
                                 'wire:model' => 'cod_plano_de_acao',
@@ -147,49 +147,29 @@
 
                     </div>
                     
-                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-4/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_indicador" value="Descrição do Indicador" />
-                            {!! Form::textarea('dsc_indicador', null, [
+                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_entrega" value="5. Detalhamento da Entrega" />
+                            {!! Form::textarea('dsc_entrega', null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
-                                'id' => 'dsc_indicador',
-                                'placeholder' => 'Escreva a descrição do indicador',
+                                'id' => 'dsc_entrega',
+                                'placeholder' => 'Descreva detalhadamente o que será entregue, incluindo especificações e características técnicas..',
                                 'rows' => 2,
                                 'required' => 'required',
                                 'style' => 'width: 100%',
-                                'wire:model' => 'dsc_indicador',
+                                'wire:model' => 'dsc_entrega',
                             ]) !!}
-                            <x-jet-input-error for="dsc_indicador" class="mt-2" />
+                            <x-jet-input-error for="dsc_entrega" class="mt-2" />
                         </div>
 
                     </div>
 
-                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-1/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_meta" value="Descrição da Meta" />
-                            {!! Form::textarea('dsc_meta', null, [
-                                'class' =>
-                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
-                                'id' => 'dsc_meta',
-                                'placeholder' => 'Escreva a descrição da meta deste indicador',
-                                'rows' => 2,
-                                'required' => 'required',
-                                'style' => 'width: 100%',
-                                'wire:model' => 'dsc_meta',
-                            ]) !!}
-                            <x-jet-input-error for="dsc_meta" class="mt-2" />
-                        </div>
-
-                    </div>
-
-                    <div class="w-full md:w-1/3 px-3 mb-1 md:mb-0 pt-6" style="display: {!! $this->habilitarCampoInserirMetas !!};">
-
-                        <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_unidade_medida"
-                                value="Unidade de Medida do Indicador" />
+                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_unidade_medida" value="6. Unidade de Medida" />
                             {!! Form::select('dsc_unidade_medida', $this->unidadesMedida, null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0',
@@ -202,86 +182,108 @@
                                 'wire:model' => 'dsc_unidade_medida',
                                 'wire:click.prevent' => 'adequarMascara()',
                             ]) !!}
+                            <div class="p-2 text-gray-500 text-xs md:list-disc">
+                                Relativo ao Item que será Entregue
+                            </div>
                             <x-jet-input-error for="dsc_unidade_medida" class="mt-2" />
                         </div>
+
+                    </div>
+
+                    <div class="w-full md:w-3/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_item_entregue" value="7. Item Entregue" />
+                            {!! Form::text('dsc_item_entregue', null, [
+                                'class' =>
+                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
+                                'id' => 'dsc_item_entregue',
+                                'placeholder' => 'Ex.: Estações de trabalho de alto desempenho, Relatórios técnicos, Treinamentos realizados...',
+                                'required' => 'required',
+                                'style' => 'width: 100%',
+                                'wire:model' => 'dsc_item_entregue',
+                            ]) !!}
+                            <div class="p-2 text-gray-500 text-xs md:list-disc">
+                                É o produto resultante da entrega
+                            </div>
+                            <x-jet-input-error for="dsc_item_entregue" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-1/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="num_quantidade_prevista" value="8. Quantidade Prevista" />
+                            {!! Form::text('num_quantidade_prevista', null, [
+                                'class' =>
+                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm text-right mt-1 pt-2 pl-2',
+                                'id' => 'num_quantidade_prevista',
+                                'placeholder' => 'digite o valor da meta da Entrega',
+                                'required' => 'required',
+                                'style' => 'width: 100%',
+                                'wire:model' => 'num_quantidade_prevista',
+                            ]) !!}
+                            <x-jet-input-error for="num_quantidade_prevista" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-1/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-labelpreenchimentoobrigatoriio for="bln_status" value="9. Status de Execução" />
+                            {!! Form::select(
+                                'bln_status', 
+                                $this->status, 
+                                null,
+                                [
+                                    'class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 
+                                    'style' => 'height: 40px !important; padding-left: 10px !important; width: 100% !important;', 
+                                    'autocomplete' => 'off', 
+                                    'required' => 'required', 
+                                    'wire:model' => 'bln_status'
+                                ]
+                            ) !!}
+                            <x-jet-input-error for="bln_status" class="mt-2" />
+                        </div>                        
 
                     </div>
 
                     <script type='text/javascript'>
                         function adequarMascara(unidadeMedida = '') {
 
-                            inicio = @this.anoInicioDoPeiSelecionado;
+                            if (unidadeMedida == 'Quantidade') {
 
-                            fim = @this.anoConclusaoDoPeiSelecionado;
+                                $('#num_quantidade_prevista').mask('000.000.000.000.000', {
+                                        reverse: true,
+                                        selectOnFocus: true
+                                });
 
-                            // @this.tirarReadonly = true;
+                            } else if (unidadeMedida == 'Porcentagem') {
 
-                            for (ano = (inicio) * 1; ano <= (fim) * 1; ano++) {
+                                $('#num_quantidade_prevista').mask('000,00', {
+                                        reverse: true,
+                                        selectOnFocus: true
+                                });
 
-                                for (i = 1; i <= 12; i++) {
+                            } else if (unidadeMedida == 'Dinheiro') {
 
-                                    if (unidadeMedida == 'Quantidade') {
-
-                                        if (i <= 3) {
-
-                                            $('#num_linha_base_' + i).mask('000.000.000.000.000', {
-                                                reverse: true,
-                                                selectOnFocus: true
-                                            });
-
-                                        }
-
-                                        $('#metaMes_' + i + '_' + ano).mask('000.000.000.000.000', {
-                                            reverse: true,
-                                            selectOnFocus: true
-                                        });
-
-                                    } else if (unidadeMedida == 'Porcentagem') {
-
-                                        if (i <= 3) {
-
-                                            $('#num_linha_base_' + i).mask('000,00', {
-                                                reverse: true,
-                                                selectOnFocus: true
-                                            });
-
-                                        }
-
-                                        $('#metaMes_' + i + '_' + ano).mask('000,00', {
-                                            reverse: true,
-                                            selectOnFocus: true
-                                        });
-
-                                    } else if (unidadeMedida == 'Dinheiro') {
-
-                                        if (i <= 3) {
-
-                                            $('#num_linha_base_' + i).mask('000.000.000.000.000,00', {
-                                                reverse: true,
-                                                selectOnFocus: true
-                                            });
-
-                                        }
-
-                                        $('#metaMes_' + i + '_' + ano).mask('000.000.000.000.000,00', {
-                                            reverse: true,
-                                            selectOnFocus: true
-                                        });
-
-                                    }
-
-                                }
+                                $('#num_quantidade_prevista').mask('000.000.000.000.000,00', {
+                                        reverse: true,
+                                        selectOnFocus: true
+                                });
 
                             }
 
                         }
                     </script>
 
-                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-1/2 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="dsc_periodo_medicao"
-                                value="Período de medição" />
+                                value="10. Período de medição" />
                             {!! Form::select(
                                 'dsc_periodo_medicao',
                                 [
@@ -315,7 +317,7 @@
 
                     </div>
 
-                    <div class="w-full md:w-1/1 px-3 mt-6 mb-3 md:mb-0 pt-1 text-right">
+                    <div class="w-full md:w-1/1 px-3 mt-6 mb-3 md:mb-1 pt-1 text-right">
 
                         @if ($this->editarForm == true)
                             <a class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring focus:ring-red-300 disabled:opacity-25 transition"
@@ -340,82 +342,7 @@
 
     <div class=" flex flex-wrap -mx-3 mb-6">
 
-        <div class="w-full md:w-1/1 px-3 mb-6 md:mb-0 pt-3">
-
-            @foreach ($this->indicadores as $result)
-                <div class="bg-white rounded-lg overflow-hidden border-2 border-gray-200 border-opacity-50 mb-2">
-
-                    <div class="bg-gray-900 bg-opacity-50 text-white text-lg px-1 pb-1 pl-3 pr-3"><span
-                            class="text-sm">PEI: <strong>{{ $result->dsc_pei }} ( {!! $result->num_ano_inicio_pei !!} a
-                                {!! $result->num_ano_fim_pei !!})</strong></span></div>
-
-                </div>
-
-                @foreach ($result->perspectivas as $resultPerspectiva)
-                    <div class="bg-white rounded-lg overflow-hidden border-2 border-gray-200 border-opacity-50 mb-2">
-
-                        <div class="bg-gray-500 bg-opacity-50 text-white text-lg px-1 pb-1 pl-3 pr-3"><span
-                                class="text-sm">Perspectiva: <span class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}.
-                                </span><strong>{!! $resultPerspectiva->dsc_perspectiva !!}</strong></span></div>
-
-                    </div>
-
-                    @foreach ($resultPerspectiva->objetivosEstrategicos as $resultObjetivosEstrategicos)
-                        <div
-                            class="bg-white rounded-lg overflow-hidden border-2 border-gray-200 border-opacity-50 mb-2">
-
-                            <div class="bg-gray-200 bg-opacity-50 text-gray-600 text-lg px-1 pb-1 pl-3 pr-3"><span
-                                    class="text-sm">OE: <span
-                                        class="text-sm">{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $resultObjetivosEstrategicos->num_nivel_hierarquico_apresentacao !!}.
-                                    </span><strong>{!! $resultObjetivosEstrategicos->nom_objetivo_estrategico !!}</strong></span></div>
-
-                        </div>
-
-                        <div
-                            class="bg-white rounded-lg overflow-hidden border-2 border-gray-200 border-opacity-50 mb-2">
-
-                            <p class="px-3 px-2 pt-3"><strong>Indicadores</strong> (<span
-                                    class="text-blue-400">{!! $resultObjetivosEstrategicos->indicadores->count() !!}</span>)</p>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-1 mb-1 px-1 pt-2 pb-2 pl-2 pr-2">
-
-                                        @foreach ($resultObjetivosEstrategicos->indicadores as $resultIndicadores)
-                                            <div id="cardIndicador{{ $resultIndicadores }}"
-                                                 class="flex flex-col justify-between pt-2 pb-2 pl-3 pr-3 h-full bg-white rounded-md border-2 border-gray-300 border-opacity-50 shadow">
-                                                <!-- Conteúdo da div -->
-                                                <p class="w-full text-sm text-left text-gray-600" style="width: 100%!Important;">
-                                                    <i class="fa fa-chart-line text-blue-400"></i>&nbsp;
-                                                    <strong>{!! $resultIndicadores->nom_indicador !!}.</strong>
-                                                </p>
-
-                                                <!-- Ações ficam fixadas ao fundo -->
-                                                <div id="divAcoes{{ $resultIndicadores }}" class="mt-auto pt-1">
-                                                    <div class="flex mb-2 items-center justify-between">
-                                                        <div class="text-xs text-gray-500">&nbsp;</div>
-                                                        <div class="text-right">
-                                                            <a href="javascript: void(0);"
-                                                               wire:click.prevent="editForm('{!! $resultIndicadores->cod_indicador !!}')"
-                                                               onclick="javascript: document.documentElement.scrollTop = 0;">
-                                                                <i class="fas fa-edit text-green-600"></i> <span class="text-xs">Editar</span>
-                                                            </a>
-                                                            &nbsp;
-                                                            <button type="button"
-                                                                    wire:click.prevent="deleteForm('{!! $resultIndicadores->cod_indicador !!}')">
-                                                                <i class="fas fa-trash-alt text-red-600"></i> <span class="text-xs">Excluir</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-
-                                    </div>
-
-
-                        </div>
-                    @endforeach
-                @endforeach
-            @endforeach
+        <div class="w-full md:w-1/1 px-3 mb-6 md:mb-1 pt-3">
 
         </div>
 
@@ -472,7 +399,7 @@
             {{ __('Closer') }}
         </x-jet-button>
         <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled"
-            wire:click.prevent="delete('{!! $this->cod_indicador !!}')">
+            wire:click.prevent="delete('{!! $this->cod_entrega !!}')">
             Sim, quero excluir
         </x-jet-danger-button>
     </x-slot>
