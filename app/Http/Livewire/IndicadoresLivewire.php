@@ -1627,7 +1627,7 @@ class IndicadoresLivewire extends Component
 
                                 $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converterData('EN', 'PTBR', $editar->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . converterData('EN', 'PTBR', $this->$column_name) . ' )</span>;<br>';
 
-                                $audit = Audit::create(array(
+                                $audit = TabAudit::create(array(
                                     'table' => 'tab_indicador',
                                     'table_id' => $this->cod_plano_de_acao,
                                     'column_name' => $column_name,
@@ -1643,7 +1643,7 @@ class IndicadoresLivewire extends Component
 
                                 $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converteValor('MYSQL', 'PTBR', $editar->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . converteValor('MYSQL', 'PTBR', $this->$column_name) . ' )</span>;<br>';
 
-                                $audit = Audit::create(array(
+                                $audit = TabAudit::create(array(
                                     'table' => 'tab_indicador',
                                     'table_id' => $this->cod_plano_de_acao,
                                     'column_name' => $column_name,
@@ -1665,7 +1665,7 @@ class IndicadoresLivewire extends Component
 
                                     $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $consultarValorAntigo->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAntigo->dsc_plano_de_acao . ' )</span> para <span style="color:#28a745;">( ' . $consultarValorAtualizado->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAtualizado->dsc_plano_de_acao . ' )</span>;<br>';
 
-                                    $audit = Audit::create(array(
+                                    $audit = TabAudit::create(array(
                                         'table' => 'tab_indicador',
                                         'table_id' => $this->cod_plano_de_acao,
                                         'column_name' => $column_name,
@@ -1683,7 +1683,7 @@ class IndicadoresLivewire extends Component
 
                                 $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $editar->$column_name . ' )</span> para <span style="color:#28a745;">( ' . $this->$column_name . ' )</span>;<br>';
 
-                                $audit = Audit::create(array(
+                                $audit = TabAudit::create(array(
                                     'table' => 'tab_indicador',
                                     'table_id' => $this->cod_plano_de_acao,
                                     'column_name' => $column_name,
@@ -1720,7 +1720,7 @@ class IndicadoresLivewire extends Component
 
                                 $alteracaoLinhaBase['num_ano'] = $this->num_ano_base_1;
 
-                                $audit = Audit::create(array(
+                                $audit = TabAudit::create(array(
                                     'table' => 'tab_linha_base_indicador',
                                     'table_id' => $linhaBase->cod_linha_base,
                                     'column_name' => 'num_ano',
@@ -1740,7 +1740,7 @@ class IndicadoresLivewire extends Component
 
                                 $alteracaoLinhaBase['num_linha_base'] = $this->num_linha_base_1;
 
-                                $audit = Audit::create(array(
+                                $audit = TabAudit::create(array(
                                     'table' => 'tab_linha_base_indicador',
                                     'table_id' => $linhaBase->cod_linha_base,
                                     'column_name' => 'num_linha_base',
@@ -1813,7 +1813,7 @@ class IndicadoresLivewire extends Component
 
                                 $alteracaoMetaAno['meta'] = $this->$column_name;
 
-                                $audit = Audit::create(array(
+                                $audit = TabAudit::create(array(
                                     'table' => 'tab_meta_por_ano',
                                     'table_id' => $consultar->cod_meta_por_ano,
                                     'column_name' => 'meta',
@@ -1852,7 +1852,7 @@ class IndicadoresLivewire extends Component
 
                                 $saveMetaAno->save();
 
-                                $audit = Audit::create(array(
+                                $audit = TabAudit::create(array(
                                     'table' => 'tab_meta_por_ano',
                                     'table_id' => $saveMetaAno->cod_meta_por_ano,
                                     'column_name' => 'meta',
@@ -1926,7 +1926,7 @@ class IndicadoresLivewire extends Component
 
                                     $alteracaoMetaMes['vlr_previsto'] = $this->$column_name_mes;
 
-                                    $audit = Audit::create(array(
+                                    $audit = TabAudit::create(array(
                                         'table' => 'tab_evolucao_indicador',
                                         'table_id' => $consultar->cod_evolucao_indicador,
                                         'column_name' => 'vlr_previsto',
@@ -1969,7 +1969,7 @@ class IndicadoresLivewire extends Component
 
                                     $saveMetaMensal->save();
 
-                                    $audit = Audit::create(array(
+                                    $audit = TabAudit::create(array(
                                         'table' => 'tab_evolucao_indicador',
                                         'table_id' => $saveMetaMensal->cod_evolucao_indicador,
                                         'column_name' => 'vlr_previsto',

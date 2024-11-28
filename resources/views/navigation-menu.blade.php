@@ -187,7 +187,7 @@
 
                                         <div class="border-t blue-gray-100"></div>
 
-                                        <x-jet-dropdown-link href="{{ url($ano . '/adm/usuarios') }}" :active="request()->routeIs('usuarios')">
+                                        <x-jet-dropdown-link href="{{ url($ano . '/adm/usuarios') }}" :active="request()->routeIs('usuarios.adm')">
                                             {{ __('Users') }}
                                         </x-jet-dropdown-link>
 

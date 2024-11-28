@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TabLogErros;
+use App\Models\TabAudit;
 use Auth;
 use Response;
 use Illuminate\Support\Facades\DB;
@@ -146,4 +147,31 @@ class AtualizarOuCriarPorModeloDadosController extends Controller
             // TabLogErros::create(array('mensagem' => 'Erro ao gravar dados: ' . $e->getMessage()));
         }
     }
+
+    protected function getColumnTable($schema = null, $table = null, $columnName = null)
+    {
+
+        return DB::selectOne("SELECT
+            column_name,ordinal_position,is_nullable,data_type
+            FROM
+            information_schema.columns
+            WHERE
+            table_schema = '" . $schema . "'
+            AND table_name = '" . $table . "'
+            AND column_name = '" . $columnName . "';");
+    }
+
+    public function getEstruturaTable()
+    {
+
+        return DB::select("SELECT
+            column_name,ordinal_position,is_nullable,data_type
+            FROM
+            information_schema.columns
+            WHERE
+            table_schema = 'midr_gestao'
+            AND table_name = 'tab_atendimentos'
+            AND column_name NOT IN ('cod_parlamentar','created_at','updated_at','deleted_at');");
+    }
+
 }

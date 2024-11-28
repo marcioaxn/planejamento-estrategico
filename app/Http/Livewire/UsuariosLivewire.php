@@ -146,7 +146,7 @@ class UsuariosLivewire extends Component
 
                     $alteracao['name'] = $this->name;
 
-                    $audit = Audit::create(
+                    $audit = TabAudit::create(
                         array(
                             'table' => 'users',
                             'table_id' => $this->user_id,
@@ -170,7 +170,7 @@ class UsuariosLivewire extends Component
 
                     $alteracao['email'] = $this->email;
 
-                    $audit = Audit::create(
+                    $audit = TabAudit::create(
                         array(
                             'table' => 'users',
                             'table_id' => $this->user_id,
@@ -197,7 +197,7 @@ class UsuariosLivewire extends Component
                     $consultaUsuario->adm == 1 ? $perfilTabela = "Super administrador(a)" : $perfilTabela = "Gestor(a)";
                     $this->adm == 1 ? $perfilForm = "Super administrador(a)" : $perfilForm = "Gestor(a)";
 
-                    $audit = Audit::create(
+                    $audit = TabAudit::create(
                         array(
                             'table' => 'users',
                             'table_id' => $this->user_id,
@@ -227,7 +227,7 @@ class UsuariosLivewire extends Component
                     $consultaUsuario->ativo == 1 ? $ativoTabela = "Ativo" : $ativoTabela = "Inativo";
                     $this->ativo == 1 ? $ativoForm = "Ativo" : $ativoForm = "Inativo";
 
-                    $audit = Audit::create(
+                    $audit = TabAudit::create(
                         array(
                             'table' => 'users',
                             'table_id' => $this->user_id,

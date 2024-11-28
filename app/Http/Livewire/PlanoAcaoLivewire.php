@@ -367,7 +367,7 @@ class PlanoAcaoLivewire extends Component
 
                     $alteracao[$column_name] = $this->$column_name;
 
-                    $audit = Audit::create(array(
+                    $audit = TabAudit::create(array(
                         'table' => 'tab_plano_de_acao',
                         'table_id' => $this->cod_plano_de_acao,
                         'column_name' => $column_name,
@@ -443,7 +443,7 @@ class PlanoAcaoLivewire extends Component
 
                     $consultarNovoServidorResponsavel = User::find($this->user_id_responsavel);
 
-                    $audit = Audit::create(array(
+                    $audit = TabAudit::create(array(
                         'table' => 'tab_plano_de_acao',
                         'table_id' => $this->cod_plano_de_acao,
                         'column_name' => 'user_id_responsavel',
@@ -515,7 +515,7 @@ class PlanoAcaoLivewire extends Component
 
                         $consultarNovoServidorSubstituto = User::find($this->user_id_substituto);
 
-                        $audit = Audit::create(array(
+                        $audit = TabAudit::create(array(
                             'table' => 'tab_plano_de_acao',
                             'table_id' => $this->cod_plano_de_acao,
                             'column_name' => 'user_id_substituto',

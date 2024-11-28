@@ -61,6 +61,8 @@ class EntregasLivewire extends Component
         'Dinheiro' => 'Dinheiro R$ 0,00 (real)'
     ];
 
+    public $dsc_periodo_medicao = null;
+
     public $unidadeMedidaAnterior = null;
 
     public $dsc_unidade_medida = null;
@@ -100,10 +102,8 @@ class EntregasLivewire extends Component
 
         $this->ano = $ano;
 
-        $this->status = TabStatus::orderBy('dsc_status')
-            ->pluck('dsc_status', 'dsc_status');
-
         $this->unidadesMedida = ['Quantidade' => 'Quantidade', 'Porcentagem' => 'Porcentagem', 'Dinheiro' => 'Dinheiro R$ 0,00 (real)'];
+
     }
 
     public function hydrate()
@@ -156,9 +156,99 @@ class EntregasLivewire extends Component
 
         $planoAcao = PlanoAcao::find($this->cod_plano_de_acao);
 
-        if (isset($this->cod_entrega) && !empty($this->cod_entrega)) {
+        if ($this->editarForm) {
 
             /** Alterar */
+
+            $id['cod_entrega'] = $this->cod_entrega;
+
+            $entrega = TabEntregas::find($this->cod_entrega);
+
+            foreach ($this->estruturaTableParaEditar as $table) {
+
+                $column_name = $table->column_name;
+                $data_type = $table->data_type;
+
+                if ($column_name != 'num_quantidade_prevista') {
+
+                    if ($column_name === 'cod_plano_de_acao') {
+
+                        $consultarValorAntigo = PlanoAcao::find($entrega->$column_name);
+
+                        $consultarValorAtualizado = PlanoAcao::find($this->$column_name);
+
+                        $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $consultarValorAntigo->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAntigo->dsc_plano_de_acao . ' )</span> para <span style="color:#28a745;">( ' . $consultarValorAtualizado->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAtualizado->dsc_plano_de_acao . ' )</span>;<br>';
+
+                        $audit = TabAudit::create(array(
+                            'table' => 'tab_indicador',
+                            'table_id' => $this->cod_plano_de_acao,
+                            'column_name' => $column_name,
+                            'data_type' => $data_type,
+                            'ip' => $_SERVER['REMOTE_ADDR'],
+                            'user_id' => Auth::user()->id,
+                            'acao' => 'Editou',
+                            'antes' => $consultarValorAntigo->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAntigo->dsc_plano_de_acao,
+                            'depois' => $consultarValorAtualizado->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAtualizado->dsc_plano_de_acao
+                        ));
+
+                    } else {
+
+                        if ($this->$column_name != $entrega->$column_name) {
+
+                            $campos[$column_name] = $this->$column_name;
+
+                            $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $entrega->$column_name . ' )</span> para <span style="color:#28a745;">( ' . $this->$column_name . ' )</span>;<br>';
+
+                            $audit = TabAudit::create(array(
+                                'table' => 'tab_indicador',
+                                'table_id' => $this->cod_plano_de_acao,
+                                'column_name' => $column_name,
+                                'data_type' => $data_type,
+                                'ip' => $_SERVER['REMOTE_ADDR'],
+                                'user_id' => Auth::user()->id,
+                                'acao' => 'Editou',
+                                'antes' => $entrega->$column_name,
+                                'depois' => $this->$column_name
+                            ));
+
+                        }
+
+                    }
+
+                } else {
+
+                    if ($this->$column_name != $entrega->$column_name) {
+
+                        $campos['num_quantidade_prevista'] = $this->num_quantidade_prevista;
+
+                        $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converteValor('MYSQL', 'PTBR', $entrega->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . $this->num_quantidade_prevista_original . ' )</span>;<br>';
+
+                    }
+                }
+            }
+
+            if (isset($modificacoes) && !empty($modificacoes)) {
+
+                $cabecalhoModificacoes = '';
+
+                $cabecalhoModificacoes = 'Alterou os dados relacionados a seguir da Entrega (' . $this->dsc_entrega . ') relacionada com o Plano de Ação: <strong>' . $planoAcao->num_nivel_hierarquico_apresentacao . '. ' . $planoAcao->dsc_plano_de_acao . '</strong><br><br>';
+
+                $this->showModalResultadoEdicao = true;
+
+                $this->mensagemResultadoEdicao = $cabecalhoModificacoes . $modificacoes;
+
+                // dd($model, $id, $campos);
+
+                $atualizarOuCriarPorModeloDados->atualizarOuCriarPorModeloDados($model, $id, $campos);
+
+            } else {
+
+                $this->showModalResultadoEdicao = true;
+
+                $this->mensagemResultadoEdicao = 'Por não ter nenhuma modificação nada foi feito.';
+
+            }
+
         } else {
 
             /** Inserir */
@@ -192,9 +282,12 @@ class EntregasLivewire extends Component
                 $this->showModalResultadoEdicao = true;
 
                 $this->mensagemResultadoEdicao = $cabecalhoModificacoes . $modificacoes;
+
+                $atualizarOuCriarPorModeloDados->atualizarOuCriarPorModeloDados($model, $id, $campos);
+
             }
 
-            $atualizarOuCriarPorModeloDados->atualizarOuCriarPorModeloDados($model, $id, $campos);
+
         }
 
         $this->abrirFecharForm = 'none';
@@ -231,8 +324,45 @@ class EntregasLivewire extends Component
     public function editForm($cod_entrega = '')
     {
 
-        $singleData = TabEntregas::with('linhaBase', 'metaAno', 'evolucaoTabEntregas', 'codOrganizacoes', 'organizacoes')
-            ->find($cod_entrega);
+        $this->zerarVariaveis();
+
+        $this->cod_entrega = $cod_entrega;
+
+        $singleData = TabEntregas::with('planoAcao')
+            ->find($this->cod_entrega);
+
+        $this->cod_plano_de_acao = $singleData->cod_plano_de_acao;
+
+        $planoAcao = PlanoAcao::find($this->cod_plano_de_acao);
+
+        $this->cod_objetivo_estrategico = $planoAcao->cod_objetivo_estrategico;
+
+        $consultarObjetivoEstrategico = ObjetivoEstrategico::find($this->cod_objetivo_estrategico);
+
+        $consultarPerspectiva = Perspectiva::find($consultarObjetivoEstrategico->cod_perspectiva);
+
+        $this->cod_perspectiva = $consultarObjetivoEstrategico->cod_perspectiva;
+
+        $this->cod_pei = $consultarPerspectiva->cod_pei;
+
+        $this->dsc_entrega = $singleData->dsc_entrega;
+        $this->dsc_unidade_medida = $singleData->dsc_unidade_medida;
+        $this->dsc_item_entregue = $singleData->dsc_item_entregue;
+
+        if (
+            $this->dsc_unidade_medida === 'Porcentagem' ||
+            $this->dsc_unidade_medida === 'Dinheiro'
+        ) {
+
+            $this->num_quantidade_prevista = converteValor('MYSQL', 'PTBR', $singleData->num_quantidade_prevista);
+        } else {
+
+            $this->num_quantidade_prevista = $singleData->num_quantidade_prevista;
+        }
+
+
+        $this->bln_status = $singleData->bln_status;
+        $this->dsc_periodo_medicao = $singleData->dsc_periodo_medicao;
 
         $this->abrirFecharForm = 'block';
         $this->iconAbrirFechar = 'fas fa-minus text-xs';
@@ -243,12 +373,14 @@ class EntregasLivewire extends Component
     public function deleteForm($cod_entrega = '')
     {
 
-        $singleData = TabEntregas::with('linhaBase', 'metaAno', 'evolucaoTabEntregas')
+        $this->cod_entrega = $cod_entrega;
+
+        $singleData = TabEntregas::with('planoAcao')
             ->find($cod_entrega);
 
         $texto = '';
 
-        $texto .= '<p class="my-2 text-gray-900 text-xs leading-relaxed"><strong>Dados do TabEntregas para confirmar a exclusão</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Relacionado(a) ao PEI: <strong>' . $consultarPei->dsc_pei . ' (' . $consultarPei->num_ano_inicio_pei . ' a ' . $consultarPei->num_ano_fim_pei . ')</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Perspectiva: <strong>' . $consultarPerspectiva->num_nivel_hierarquico_apresentacao . '. ' . $consultarPerspectiva->dsc_perspectiva . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Objetivo Estratégico: <strong>' . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->nom_objetivo_estrategico . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Plano de Ação: <strong>' . $consultarPlanoDeAcao->num_nivel_hierarquico_apresentacao . '. ' . $consultarPlanoDeAcao->dsc_plano_de_acao . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">_________________________________</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Descrição do TabEntregas: <strong>' . $singleData->dsc_TabEntregas . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Unidade de Medida do TabEntregas: <strong>' . $singleData->dsc_unidade_medida . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Esse TabEntregas terá o resultado acumulado? <strong>' . $singleData->bln_acumulado . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Tipo de Análise do TabEntregas (Polaridade): <strong>' . tipoPolaridade($singleData->dsc_tipo) . '</strong></p><p class="my-2 text-gray-500 text-xs font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
+        $texto .= '<p class="my-2 text-gray-900 text-xs leading-relaxed"><strong>Dados da Entrega para confirmar a exclusão</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Plano de Ação: <strong>' . $singleData->planoAcao->num_nivel_hierarquico_apresentacao . '. ' . $singleData->planoAcao->dsc_plano_de_acao . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">_________________________________</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Detalhamento da Entrega: <strong>' . $singleData->dsc_entrega . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Status de Execução: <strong>' . $singleData->bln_status . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Período de medição <strong>' . $singleData->dsc_periodo_medicao . '</strong></p><p class="my-2 text-gray-500 text-xs font-semibold leading-relaxed text-red-600">Quer realmente excluir?</p>';
 
         $this->mensagemDelete = $texto;
 
@@ -264,10 +396,21 @@ class EntregasLivewire extends Component
 
         $this->showModalDelete = false;
 
-        $singleData = TabEntregas::with('linhaBase', 'metaAno', 'evolucaoTabEntregas')
+        $singleData = TabEntregas::with('planoAcao')
             ->find($cod_entrega);
 
+        $texto = '';
+
+        $texto .= '<p class="my-2 text-gray-900 text-xs leading-relaxed"><strong>Excluiu com sucesso a seguinte Entrega</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Plano de Ação: <strong>' . $singleData->planoAcao->num_nivel_hierarquico_apresentacao . '. ' . $singleData->planoAcao->dsc_plano_de_acao . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">_________________________________</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Detalhamento da Entrega: <strong>' . $singleData->dsc_entrega . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Status de Execução: <strong>' . $singleData->bln_status . '</strong></p><p class="my-2 text-gray-500 text-xs leading-relaxed">Período de medição <strong>' . $singleData->dsc_periodo_medicao . '</strong></p>';
+
         $this->cod_entrega = $singleData->cod_entrega;
+
+        $acao = Acoes::create(array(
+            'table' => 'tab_entregas',
+            'table_id' => $this->cod_entrega,
+            'user_id' => Auth::user()->id,
+            'acao' => $texto
+        ));
 
         $singleData->delete();
 
@@ -403,6 +546,14 @@ class EntregasLivewire extends Component
             $this->ultimoAnoDoPeiSelecionado = '2051-12-31';
         }
 
+        $this->status = TabStatus::orderBy('dsc_status')
+            ->pluck('dsc_status', 'dsc_status');
+
+        $this->tabEntregas = TabEntregas::with('planoAcao', 'acoesRealizadas')
+            ->join('tab_plano_de_acao', 'tab_entregas.cod_plano_de_acao', '=', 'tab_plano_de_acao.cod_plano_de_acao') // Ajuste o nome da tabela e chave se necessário
+            ->orderBy('tab_plano_de_acao.num_nivel_hierarquico_apresentacao', 'asc') // Ordena pela coluna desejada
+            ->select('tab_entregas.*') // Garante que você trará apenas os campos de TabEntregas
+            ->get();
 
         return view('livewire.entregas-livewire');
     }
@@ -477,88 +628,26 @@ class EntregasLivewire extends Component
         $this->cod_objetivo_estrategico = null;
         $this->objetivoEstragico = [];
 
-        $this->selected_organizations = null;
-
+        $this->cod_plano_de_acao = null;
+        $this->planoAcao = [];
+        $this->tabEntregas = [];
         $this->cod_entrega = null;
+        $this->dsc_entrega = null;
+        $this->status = [];
+        $this->bln_status = 'Não iniciado';
 
-        $this->cod_objetivo_estrategico = null;
-        $this->nom_TabEntregas = null;
-        $this->dsc_TabEntregas = null;
-        $this->txt_observacao = null;
-        $this->dsc_meta = null;
-        $this->dsc_atributos = null;
-        $this->dsc_referencial_comparativo = null;
+        $this->unidadesMedida = [
+            'Quantidade' => 'Quantidade',
+            'Porcentagem' => 'Porcentagem',
+            'Dinheiro' => 'Dinheiro R$ 0,00 (real)'
+        ];
 
-        $this->dsc_formula = null;
-        $this->tiposTabEntregas = ['+' => 'Quanto maior for o resultado melhor', '-' => 'Quanto menor for o resultado melhor', '=' => 'Quanto igual for o resultado melhor'];
-        $this->dsc_unidade_medida = null;
-
-
-        $this->dsc_tipo = null;
-        $this->dsc_fonte = null;
         $this->dsc_periodo_medicao = null;
-        $this->bln_acumulado = null;
-
+        $this->unidadeMedidaAnterior = null;
+        $this->dsc_unidade_medida = null;
+        $this->dsc_item_entregue = null;
+        $this->num_quantidade_prevista_original = null;
         $this->num_quantidade_prevista = null;
 
-        $this->tirarReadonly = false;
-
-        $this->adequarMascara = null;
-
-        $this->hierarquiaUnidade = null;
-
-        $this->anoInicioDoPeiSelecionado = null;
-        $this->anoConclusaoDoPeiSelecionado = null;
-
-        $this->habilitarCampoInserirMetas = 'none';
-
-        $this->primeiroAnoDoPeiSelecionado = null;
-        $this->ultimoAnoDoPeiSelecionado = null;
-
-        $this->anosLinhaBase = null;
-
-        $this->num_ano_base_1 = null;
-        $this->num_ano_base_2 = null;
-        $this->num_ano_base_3 = null;
-
-        $this->num_linha_base_1 = null;
-        $this->num_linha_base_2 = null;
-        $this->num_linha_base_3 = null;
-
-        for ($year = 2020; $year <= 2045; $year++) {
-
-            $metaAno = "metaAno_{$year}";
-            $this->$metaAno = null;
-
-            for ($month = 1; $month <= 12; $month++) {
-                $metaMes = "metaMes_{$month}_{$year}";
-                $this->$metaMes = null;
-            }
-            $requiredMetaAno = "requiredMetaAno_{$year}";
-            $this->$requiredMetaAno = null;
-        }
-
-        $this->ano1 = null;
-        $this->ano2 = null;
-        $this->ano3 = null;
-        $this->ano4 = null;
-
-        $this->somaMetaAno1 = null;
-        $this->somaMetaAno2 = null;
-        $this->somaMetaAno3 = null;
-        $this->somaMetaAno4 = null;
-
-        $this->erroInsercaoMetaMensal = false;
-        $this->textoErroInsercaoMetaMensal = null;
-
-        $this->inputAnoLinhaBaseClass = null;
-        $this->inputValorLinhaBaseClass = null;
-
-        $this->inputValorClass = null;
-
-        $this->inputValorMesAno1Class = null;
-        $this->inputValorMesAno2Class = null;
-        $this->inputValorMesAno3Class = null;
-        $this->inputValorMesAno4Class = null;
     }
 }
