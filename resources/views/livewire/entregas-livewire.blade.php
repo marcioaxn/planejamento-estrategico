@@ -135,9 +135,9 @@
                                 if(isset($this->objetivoEstragico) && !empty($this->objetivoEstragico) && $this->objetivoEstragico->count() >= 0 && $this->planoAcao) {
 
                                     ?>
-                                    <span class="text-green-600">Existe(m) <strong>{!! $this->planoAcao->count() !!}</strong>
-                                        elemento(s).</span>
-                                    <?php
+                                <span class="text-green-600">Existe(m) <strong>{!! $this->planoAcao->count() !!}</strong>
+                                    elemento(s).</span>
+                                <?php
 
                                 }
                                 ?>
@@ -146,16 +146,18 @@
                         </div>
 
                     </div>
-                    
-                    <div class="w-full md:w-4/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+
+                    <div class="w-full md:w-2/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_entrega" value="5. Detalhamento da Entrega" />
+                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_entrega"
+                                value="5. Detalhamento da Entrega" />
                             {!! Form::textarea('dsc_entrega', null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
                                 'id' => 'dsc_entrega',
-                                'placeholder' => 'Descreva detalhadamente o que será entregue, incluindo especificações e características técnicas..',
+                                'placeholder' =>
+                                    'Descreva detalhadamente o que será entregue, incluindo especificações e características técnicas..',
                                 'rows' => 2,
                                 'required' => 'required',
                                 'style' => 'width: 100%',
@@ -169,84 +171,17 @@
                     <div class="w-full md:w-1/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_unidade_medida" value="6. Unidade de Medida" />
-                            {!! Form::select('dsc_unidade_medida', $this->unidadesMedida, null, [
+                            <x-jet-labelpreenchimentoobrigatoriio for="bln_status" value="6. Status de Execução" />
+                            {!! Form::select('bln_status', $this->status, null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0',
-                                'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;',
-                                'id' => 'dsc_unidade_medida',
-                                'placeholder' => 'Selecione',
+                                'style' => 'height: 40px !important; padding-left: 10px !important; width: 100% !important;',
                                 'autocomplete' => 'off',
                                 'required' => 'required',
-                                'onchange' => 'javascript: adequarMascara(this.value);',
-                                'wire:model' => 'dsc_unidade_medida',
-                                'wire:click.prevent' => 'adequarMascara()',
+                                'wire:model' => 'bln_status',
                             ]) !!}
-                            <div class="p-2 text-gray-500 text-xs md:list-disc">
-                                Relativo ao Item que será Entregue
-                            </div>
-                            <x-jet-input-error for="dsc_unidade_medida" class="mt-2" />
-                        </div>
-
-                    </div>
-
-                    <div class="w-full md:w-3/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
-
-                        <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="dsc_item_entregue" value="7. Item Entregue" />
-                            {!! Form::text('dsc_item_entregue', null, [
-                                'class' =>
-                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
-                                'id' => 'dsc_item_entregue',
-                                'placeholder' => 'Ex.: Estações de trabalho de alto desempenho, Relatórios técnicos, Treinamentos realizados...',
-                                'required' => 'required',
-                                'style' => 'width: 100%',
-                                'wire:model' => 'dsc_item_entregue',
-                            ]) !!}
-                            <div class="p-2 text-gray-500 text-xs md:list-disc">
-                                É o produto resultante da entrega
-                            </div>
-                            <x-jet-input-error for="dsc_item_entregue" class="mt-2" />
-                        </div>
-
-                    </div>
-
-                    <div class="w-full md:w-1/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
-
-                        <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="num_quantidade_prevista" value="8. Quantidade Prevista" />
-                            {!! Form::text('num_quantidade_prevista', null, [
-                                'class' =>
-                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm text-right mt-1 pt-2 pl-2',
-                                'id' => 'num_quantidade_prevista',
-                                'placeholder' => 'digite o valor da meta da Entrega',
-                                'required' => 'required',
-                                'style' => 'width: 100%',
-                                'wire:model' => 'num_quantidade_prevista',
-                            ]) !!}
-                            <x-jet-input-error for="num_quantidade_prevista" class="mt-2" />
-                        </div>
-
-                    </div>
-
-                    <div class="w-full md:w-1/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
-
-                        <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="bln_status" value="9. Status de Execução" />
-                            {!! Form::select(
-                                'bln_status', 
-                                $this->status, 
-                                null,
-                                [
-                                    'class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0', 
-                                    'style' => 'height: 40px !important; padding-left: 10px !important; width: 100% !important;', 
-                                    'autocomplete' => 'off', 
-                                    'required' => 'required', 
-                                    'wire:model' => 'bln_status'
-                                ]
-                            ) !!}
                             <x-jet-input-error for="bln_status" class="mt-2" />
-                        </div>                        
+                        </div>
 
                     </div>
 
@@ -256,22 +191,22 @@
                             if (unidadeMedida == 'Quantidade') {
 
                                 $('#num_quantidade_prevista').mask('000.000.000.000.000', {
-                                        reverse: true,
-                                        selectOnFocus: true
+                                    reverse: true,
+                                    selectOnFocus: true
                                 });
 
                             } else if (unidadeMedida == 'Porcentagem') {
 
                                 $('#num_quantidade_prevista').mask('000,00', {
-                                        reverse: true,
-                                        selectOnFocus: true
+                                    reverse: true,
+                                    selectOnFocus: true
                                 });
 
                             } else if (unidadeMedida == 'Dinheiro') {
 
                                 $('#num_quantidade_prevista').mask('000.000.000.000.000,00', {
-                                        reverse: true,
-                                        selectOnFocus: true
+                                    reverse: true,
+                                    selectOnFocus: true
                                 });
 
                             }
@@ -279,11 +214,11 @@
                         }
                     </script>
 
-                    <div class="w-full md:w-1/2 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-1/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="dsc_periodo_medicao"
-                                value="10. Período de medição" />
+                                value="7. Período de medição" />
                             {!! Form::select(
                                 'dsc_periodo_medicao',
                                 [
@@ -342,7 +277,99 @@
 
     <div class=" flex flex-wrap -mx-3 mb-6">
 
-        <div class="w-full md:w-1/1 px-3 mb-6 md:mb-1 pt-3">
+        <div class="w-full md:w-3/3 px-3 mb-6 md:mb-0 pt-3">
+
+            <div class="border-b border-gray-200 shadow rounded-md">
+
+                <table class="divide-gray-300 min-w-full border-collapse block md:table ">
+                    <thead class="hidden shadow-lg inset-x-0 top-16 block md:table-header-group">
+                        <tr class="shadow-lg">
+                            <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
+                                style="text-align: left!Important;">Ação</th>
+                            <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
+                                style="text-align: left!Important;">Plano de Ação Vinculado</th>
+                            <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
+                                style="text-align: left!Important;">Detalhamento da Entrega</th>
+                            <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
+                                style="text-align: left!Important;">Status de Execução</th>
+                            <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell"
+                                style="text-align: left!Important;">Período de medição</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-300 block md:table-row-group">
+
+                        @foreach ($this->tabEntregas as $result)
+                            <tr class="border border-gray-500 md:border-none block md:table-row">
+                                <td
+                                    class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600 w-36 ">
+
+                                    @if ($result->acoesRealizadas->count() > 0)
+                                        <?php
+
+                                        $corpoModalAudit = '';
+
+                                        $corpoModalAudit .= '<p class="text-gray-500 pl-2">Em: <strong>' . $result->dsc_entrega . '</strong></p><br><table class="divide-gray-300 min-w-full border-collapse" style="font-size: 0.8rem!Important;"><thead><tr class=""><td class="px-2 py-2 border border-gray-200">#</td><td class="px-2 py-2 border border-gray-200">Ação</td><td class="px-2 py-2 border border-gray-200">Quem?</td><td class="px-2 py-2 border border-gray-200">Quando?</td></tr></thead><tbody>';
+
+                                        $contAcao = 1;
+
+                                        foreach ($result->acoesRealizadas as $resultadoAcao) {
+                                            $corpoModalAudit .= '<tr><td class="px-2 py-2 border border-gray-200">' . $contAcao . '</td><td class="px-2 py-2 border border-gray-200">' . $resultadoAcao->acao . '</td><td class="px-2 py-2 border border-gray-200">' . $resultadoAcao->usuario->name . '</td><td class="px-2 py-2 border border-gray-200">' . formatarDataComCarbonForHumans($resultadoAcao->created_at) . ' em ' . formatarTimeStampComCarbonParaBR($resultadoAcao->created_at) . '</td></tr>';
+
+                                            $contAcao = $contAcao + 1;
+                                        }
+
+                                        $corpoModalAudit .= '</tbody></table>';
+
+                                        ?>
+
+                                        <button type="button"
+                                            wire:click.prevent="audit('{!! $result->cod_entrega !!}')"><i
+                                                class="fas fa-eye text-gray-600"></i></button>
+                                        &nbsp;
+                                        &nbsp;
+                                    @endif
+
+                                    <a href="javascript: void(0);"
+                                        wire:click.prevent="editForm('{!! $result->cod_entrega !!}')"
+                                        onclick="javascript: document.documentElement.scrollTop = 0;"><i
+                                            class="fas fa-edit text-green-600"></i></a>
+
+                                    &nbsp;
+                                    &nbsp;
+                                    <button type="button"
+                                        wire:click.prevent="deleteForm('{!! $result->cod_entrega !!}')"><i
+                                            class="fas fa-trash-alt text-red-600"></i></button>
+
+                                </td>
+
+                                <td
+                                    class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600 bg-blue-50 ">
+                                    {{ $result->planoAcao->num_nivel_hierarquico_apresentacao }}.
+                                    {{ $result->planoAcao->dsc_plano_de_acao }}
+                                </td>
+
+                                <td
+                                    class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600 bg-blue-50 ">
+                                    {{ $result->dsc_entrega }}
+                                </td>
+
+                                <td
+                                    class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">
+                                    {{ $result->bln_status }}
+                                </td>
+                                <td
+                                    class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">
+                                    {{ $result->dsc_periodo_medicao }}
+                                </td>
+
+                            </tr>
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
@@ -399,7 +426,7 @@
             {{ __('Closer') }}
         </x-jet-button>
         <x-jet-danger-button wire:click.prevent="$toggle('showModalDelete')" wire:loading.attr="disabled"
-            wire:click.prevent="delete('{!! $this->cod_entrega !!}')">
+            wire:click.prevent="delete('{{ $this->cod_entrega }}')">
             Sim, quero excluir
         </x-jet-danger-button>
     </x-slot>
@@ -413,90 +440,6 @@
     });
 </script>
 
-<?php
 
-    if($this->editarForm && isset($this->dsc_periodo_medicao) && !is_null($this->dsc_periodo_medicao) && $this->dsc_periodo_medicao != '') {
-
-        for($ano = $anoInicioDoPeiSelecionadoProvisorio;$ano<=$anoConclusaoDoPlanoDeAcaoSelecionadoProvisorio;$ano++) {
-
-            $column_name = '';
-
-            $column_name = 'metaAno_'.$ano;
-
-            if(isset($this->$column_name) && !is_null($this->$column_name) && $this->$column_name != '') {
-
-                ?>
-<script type="text/javascript">
-    var unidadeMedida = '<?php print $this->dsc_unidade_medida; ?>';
-
-    if (unidadeMedida == 'Quantidade') {
-
-        $('#<?php print $column_name; ?>').mask('000.000.000.000.000', {
-            reverse: true,
-            selectOnFocus: true
-        });
-
-    } else if (unidadeMedida == 'Porcentagem') {
-
-        $('#<?php print $column_name; ?>').mask('000,00', {
-            reverse: true,
-            selectOnFocus: true
-        });
-
-    } else if (unidadeMedida == 'Dinheiro') {
-
-        $('#<?php print $column_name; ?>').mask('000.000.000.000.000,00', {
-            reverse: true,
-            selectOnFocus: true
-        });
-
-    }
-</script>
-<?php
-
-            }
-
-            for($contMes=1;$contMes<=12;$contMes++) {
-
-                $column_name_mes = '';
-
-                $column_name_mes = 'metaMes_'.$contMes.'_'.$ano;
-
-                ?>
-<script type="text/javascript">
-    var unidadeMedida = '<?php print $this->dsc_unidade_medida; ?>';
-
-    if (unidadeMedida == 'Quantidade') {
-
-        $('#<?php print $column_name_mes; ?>').mask('000.000.000.000.000', {
-            reverse: true,
-            selectOnFocus: true
-        });
-
-    } else if (unidadeMedida == 'Porcentagem') {
-
-        $('#<?php print $column_name_mes; ?>').mask('000,00', {
-            reverse: true,
-            selectOnFocus: true
-        });
-
-    } else if (unidadeMedida == 'Dinheiro') {
-
-        $('#<?php print $column_name_mes; ?>').mask('000.000.000.000.000,00', {
-            reverse: true,
-            selectOnFocus: true
-        });
-
-    }
-</script>
-<?php
-
-            }
-
-        }
-
-    }
-
-    ?>
 
 </div>

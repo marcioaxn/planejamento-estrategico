@@ -108,7 +108,7 @@ class ValoresLivewire extends Component
 
                     $alteracao[$column_name] = $this->$column_name;
 
-                    $audit = Audit::create(
+                    $audit = TabAudit::create(
                         array(
                             'table' => 'tab_valores',
                             'table_id' => $this->cod_valor,

@@ -1538,7 +1538,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                 $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converterData('EN', 'PTBR', $editar->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . converterData('EN', 'PTBR', $this->$column_name) . ' )</span>;<br>';
 
-                                $audit = Audit::create(
+                                $audit = TabAudit::create(
                                     array(
                                         'table' => 'tab_indicador',
                                         'table_id' => $this->cod_objetivo_estrategico,
@@ -1555,7 +1555,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                 $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converteValor('MYSQL', 'PTBR', $editar->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . converteValor('MYSQL', 'PTBR', $this->$column_name) . ' )</span>;<br>';
 
-                                $audit = Audit::create(
+                                $audit = TabAudit::create(
                                     array(
                                         'table' => 'tab_indicador',
                                         'table_id' => $this->cod_objetivo_estrategico,
@@ -1578,7 +1578,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                     $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $consultarValorAntigo->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAntigo->dsc_plano_de_acao . ' )</span> para <span style="color:#28a745;">( ' . $consultarValorAtualizado->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAtualizado->dsc_plano_de_acao . ' )</span>;<br>';
 
-                                    $audit = Audit::create(
+                                    $audit = TabAudit::create(
                                         array(
                                             'table' => 'tab_indicador',
                                             'table_id' => $this->cod_objetivo_estrategico,
@@ -1596,7 +1596,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                 $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $editar->$column_name . ' )</span> para <span style="color:#28a745;">( ' . $this->$column_name . ' )</span>;<br>';
 
-                                $audit = Audit::create(
+                                $audit = TabAudit::create(
                                     array(
                                         'table' => 'tab_indicador',
                                         'table_id' => $this->cod_objetivo_estrategico,
@@ -1684,7 +1684,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                     $alteracaoLinhaBase['num_ano'] = $this->num_ano_base_1;
 
-                                    $audit = Audit::create(
+                                    $audit = TabAudit::create(
                                         array(
                                             'table' => 'tab_linha_base_indicador',
                                             'table_id' => $linhaBase->cod_linha_base,
@@ -1705,7 +1705,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                     $alteracaoLinhaBase['num_linha_base'] = $this->num_linha_base_1;
 
-                                    $audit = Audit::create(
+                                    $audit = TabAudit::create(
                                         array(
                                             'table' => 'tab_linha_base_indicador',
                                             'table_id' => $linhaBase->cod_linha_base,
@@ -1797,7 +1797,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                 $alteracaoMetaAno['meta'] = $this->$column_name;
 
-                                $audit = Audit::create(
+                                $audit = TabAudit::create(
                                     array(
                                         'table' => 'tab_meta_por_ano',
                                         'table_id' => $consultar->cod_meta_por_ano,
@@ -1836,7 +1836,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                 $saveMetaAno->save();
 
-                                $audit = Audit::create(
+                                $audit = TabAudit::create(
                                     array(
                                         'table' => 'tab_meta_por_ano',
                                         'table_id' => $saveMetaAno->cod_meta_por_ano,
@@ -1906,7 +1906,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                     $alteracaoMetaMes['vlr_previsto'] = $this->$column_name_mes;
 
-                                    $audit = Audit::create(
+                                    $audit = TabAudit::create(
                                         array(
                                             'table' => 'tab_evolucao_indicador',
                                             'table_id' => $consultar->cod_evolucao_indicador,
@@ -1949,7 +1949,7 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                                     $saveMetaMensal->save();
 
-                                    $audit = Audit::create(
+                                    $audit = TabAudit::create(
                                         array(
                                             'table' => 'tab_evolucao_indicador',
                                             'table_id' => $saveMetaMensal->cod_evolucao_indicador,
@@ -2790,25 +2790,25 @@ class IndicadoresObjetivoEstrategicoLivewire extends Component
 
                         $valorMetaOriginal1 = $this->$column_name;
                         $valorMeta1 = converteValor('PTBR', 'MYSQL', $this->$column_name);
-                    
+
                         if (abs($somaMetaAno1 - $valorMeta1) < $epsilon) { // verifica se a diferença é menor que epsilon
-                    
+
                             $texto1 = '<p class="break-words text-sm text-right subpixel-antialiased tracking-wide bg-green-600 border-green-600 text-white rounded-md shadow-md mt-3 pt-2 pb-2 pl-2 pr-3 h-10"> Subtotal: <strong>';
                             $texto1 .= converteValor('MYSQL', 'PTBR', $somaMetaAno1) . '</strong>%</p>';
-                    
+
                         } elseif ($somaMetaAno1 < $valorMeta1) {
-                    
+
                             $texto1 = '<p class="break-words text-sm text-right subpixel-antialiased tracking-wide bg-yellow-300 border-yellow-900 text-black rounded-md shadow-md mt-3 pt-2 pb-2 pl-2 pr-3 h-10"> Subtotal: <strong>';
                             $texto1 .= converteValor('MYSQL', 'PTBR', $somaMetaAno1) . '</strong>%</p>';
-                    
+
                         } elseif ($somaMetaAno1 > $valorMeta1) {
-                    
+
                             $texto1 = '<p class="break-words text-sm text-right subpixel-antialiased tracking-wide bg-yellow-50 border-red-600 text-red-600 rounded-md shadow-md mt-3 pt-2 pb-2 pl-2 pr-3 h-24">';
                             $texto1 .= '<i class="fas fa-exclamation-triangle text-red-900"></i> O subtotal <strong>' . converteValor('MYSQL', 'PTBR', $somaMetaAno1) . '</strong>% é maior que a Meta prevista anual de ' . $anoLoop . ' que é <strong>' . $valorMetaOriginal1 . '</strong>%.<br>É necessário corrigir.</p>';
                         }
-                    
+
                         $this->somaMetaAno1 = $texto1;
-                    }                    
+                    }
 
                     // Fim da parte de verificação se a soma já atingiu a meta proposta do Ano 1 com a unidade de medida porcentagem
 

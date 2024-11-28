@@ -327,7 +327,7 @@ class IndicadorObjetivoEstrategicoLivewire extends Component
 
                     $alteracao['vlr_realizado'] = formatarValorConformeUnidadeMedida($this->dsc_unidade_medida, 'PTBR', 'MYSQL', $this->vlr_realizado);
 
-                    $audit = Audit::create(
+                    $audit = TabAudit::create(
                         array(
                             'table' => 'tab_evolucao_indicador',
                             'table_id' => $this->cod_evolucao_indicador,
@@ -363,7 +363,7 @@ class IndicadorObjetivoEstrategicoLivewire extends Component
 
                     $alteracao['txt_avaliacao'] = $this->txt_avaliacao;
 
-                    $audit = Audit::create(
+                    $audit = TabAudit::create(
                         array(
                             'table' => 'tab_evolucao_indicador',
                             'table_id' => $this->cod_evolucao_indicador,

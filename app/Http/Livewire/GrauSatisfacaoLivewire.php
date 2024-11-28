@@ -20,7 +20,7 @@ class GrauSatisfacaoLivewire extends Component
     public $cor = null;
     public $vlr_minimo = null;
     public $vlr_maximo = null;
-    
+
     public $abrirFecharForm = 'none';
     public $iconAbrirFechar = 'fas fa-plus text-xs';
     public $iconFechar = 'fas fa-minus text-xs';
@@ -165,7 +165,7 @@ class GrauSatisfacaoLivewire extends Component
 
                         $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.converteValor('MYSQL','PTBR',$editar->$column_name).' )</span> para <span style="color:#28a745;">( '.converteValor('MYSQL','PTBR',$this->$column_name).' )</span>;<br>';
 
-                        $audit = Audit::create(array(
+                        $audit = TabAudit::create(array(
                             'table' => 'tab_grau_satisfcao',
                             'table_id' => $this->cod_grau_satisfcao,
                             'column_name' => $column_name,
@@ -181,7 +181,7 @@ class GrauSatisfacaoLivewire extends Component
 
                         $modificacoes = $modificacoes.'Alterou o(a) <b>'.nomeCampoTabelaNormalizado($column_name).'</b> de <span style="color:#CD3333;">( '.$editar->$column_name.' )</span> para <span style="color:#28a745;">( '.$this->$column_name.' )</span>;<br>';
 
-                        $audit = Audit::create(array(
+                        $audit = TabAudit::create(array(
                             'table' => 'tab_grau_satisfcao',
                             'table_id' => $this->cod_grau_satisfcao,
                             'column_name' => $column_name,
@@ -236,7 +236,7 @@ class GrauSatisfacaoLivewire extends Component
 
         $this->abrirFecharForm = 'none';
         $this->iconAbrirFechar = 'fas fa-plus text-xs';
-        
+
         $this->editarForm = false;
 
     }
@@ -368,7 +368,7 @@ class GrauSatisfacaoLivewire extends Component
             information_schema.columns
             WHERE
             table_schema = 'pei'
-            AND table_name = 'tab_grau_satisfcao' 
+            AND table_name = 'tab_grau_satisfcao'
             AND column_name NOT IN ('cod_grau_satisfcao','created_at','updated_at','deleted_at');");
 
         return $estrutura;
@@ -383,7 +383,7 @@ class GrauSatisfacaoLivewire extends Component
             information_schema.columns
             WHERE
             table_schema = 'pei'
-            AND table_name = 'tab_grau_satisfcao' 
+            AND table_name = 'tab_grau_satisfcao'
             AND column_name NOT IN ('cod_grau_satisfcao','created_at','updated_at','deleted_at');");
 
         return $estrutura;

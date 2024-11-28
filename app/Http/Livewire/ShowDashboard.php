@@ -128,6 +128,7 @@ class ShowDashboard extends Component
         $nom_organizacao = $this->nom_organizacao;
 
         if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+            //
         } else {
 
             $consultarOrganizacaoDeVisualizacao = Organization::select('cod_organizacao')
@@ -198,11 +199,6 @@ class ShowDashboard extends Component
             $this->existePei = true;
 
             $MissaoVisao = MissaoVisao::where('cod_pei', $this->pei->cod_pei);
-
-            if (isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
-
-                $MissaoVisao = $MissaoVisao->where('cod_organizacao', $this->cod_organizacao);
-            }
 
             $this->MissaoVisao = $MissaoVisao->first();
 

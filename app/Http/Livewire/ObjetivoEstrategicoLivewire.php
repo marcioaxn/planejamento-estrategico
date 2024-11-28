@@ -225,7 +225,7 @@ class ObjetivoEstrategicoLivewire extends Component
 
                     $alteracao[$column_name] = $this->$column_name;
 
-                    $audit = Audit::create(
+                    $audit = TabAudit::create(
                         array(
                             'table' => 'tab_objetivo_estrategico',
                             'table_id' => $this->cod_objetivo_estrategico,

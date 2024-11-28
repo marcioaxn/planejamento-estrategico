@@ -105,7 +105,7 @@ class MissaoVisaoLivewire extends Component
 
                     $alteracao[$column_name] = $this->$column_name;
 
-                    $audit = Audit::create(array(
+                    $audit = TabAudit::create(array(
                         'table' => 'tab_missao_visao_valores',
                         'table_id' => $this->cod_missao_visao_valores,
                         'column_name' => $column_name,

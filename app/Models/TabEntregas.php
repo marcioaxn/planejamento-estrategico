@@ -11,7 +11,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class TabEntregas extends Model implements Auditable
 {
     use Uuids, \OwenIt\Auditing\Auditable, SoftDeletes;
-    
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -28,11 +28,17 @@ class TabEntregas extends Model implements Auditable
         return $this->hasMany(Arquivo::class, 'cod_entrega');
     }
 
-    public function acoesRealizadas() {
+    public function acoesRealizadas()
+    {
 
         return $this->hasMany(Acoes::class, 'table_id')
-        ->whereIn('table',['tab_entregas'])
-        ->orderBy('created_at','desc');
+            ->whereIn('table', ['tab_entregas'])
+            ->orderBy('created_at', 'desc');
 
+    }
+
+    public function planoAcao()
+    {
+        return $this->belongsTo(PlanoAcao::class, 'cod_plano_de_acao');
     }
 }
