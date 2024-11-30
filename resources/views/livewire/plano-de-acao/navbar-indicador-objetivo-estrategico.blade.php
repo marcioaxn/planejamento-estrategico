@@ -10,7 +10,7 @@
                 $this->cod_perspectiva,
                 $this->cod_objetivo_estrategico,
             ]) }}"
-                class="inline-block p-4 border-b-2 rounded-t-lg text-blue-600 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500"
+                class="inline-block p-4 border-b-2 rounded-t-lg text-blue-600 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500 text-lg"
                 id="profile-tab">Indicadores dos Objetivos Estratégicos</a>
         </li>
 
@@ -22,7 +22,7 @@
                 $this->cod_perspectiva,
                 $this->cod_objetivo_estrategico,
             ]) }}"
-                class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 text-lg"
                 id="dashboard-tab">Iniciativas/Ações/Projetos</a>
         </li>
 
@@ -30,7 +30,7 @@
 </div>
 <div id="default-tab-content">
 
-    <div class="p-4 rounded-lg" id="profile" role="tabpanel"
+    <div class="p-0 rounded-lg" id="profile" role="tabpanel"
         aria-labelledby="profile-tab">
 
         @include('livewire.objetivo-estrategico.indicador.index')

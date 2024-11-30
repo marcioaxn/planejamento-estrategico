@@ -636,18 +636,8 @@ class EntregasLivewire extends Component
         $this->status = [];
         $this->bln_status = 'Não iniciado';
 
-        $this->unidadesMedida = [
-            'Quantidade' => 'Quantidade',
-            'Porcentagem' => 'Porcentagem',
-            'Dinheiro' => 'Dinheiro R$ 0,00 (real)'
-        ];
-
         $this->dsc_periodo_medicao = null;
-        $this->unidadeMedidaAnterior = null;
-        $this->dsc_unidade_medida = null;
-        $this->dsc_item_entregue = null;
-        $this->num_quantidade_prevista_original = null;
-        $this->num_quantidade_prevista = null;
+
 
     }
 }
