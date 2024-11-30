@@ -79,14 +79,19 @@
 
                     <?php $resultado = $this->calcularAcumuladoIndicador($indicador->cod_indicador, $this->anoSelecionado); ?>
 
+                    <?php
+                    if (array_key_exists('grau_de_satisfacao', $resultado)) {
+                        ?>
                     <div class="pt-2 pb-1 pl-2 text-lg text-lef bg-white-500 text-{!! $resultado['grau_de_satisfacao'] !!}-<?php $resultado['grau_de_satisfacao'] != 'pink' ? print '600' : print '800'; ?> rounded-md border-2 border-gray-100 shadow cursor-pointer"
                         onclick="javascript: alterarIndicador('<?php print $indicador->cod_indicador; ?>');">
 
                         <?php is_null($this->cod_indicador) && $contIndicador == 1 ? print '<i class="fas fa-arrow-circle-right"></i>&nbsp;' : print ' &nbsp;'; ?><?php $indicador->cod_indicador == $this->cod_indicador ? print '<i class="fas fa-arrow-circle-right"></i>&nbsp;' : print ' &nbsp;'; ?><strong>&nbsp;{!! $indicador->nom_indicador !!}</strong>
 
                     </div>
-
-                    <?php $contIndicador = $contIndicador + 1; ?>
+                    <?php
+                    $contIndicador++;
+                    }
+                    ?>
                 @endforeach
 
                 <script>
@@ -939,7 +944,8 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-button wire:loading.attr="disabled" wire:click.prevent="$toggle('showModalInformacao')" onclick="javascript: location.reload();">
+            <x-jet-button wire:loading.attr="disabled" wire:click.prevent="$toggle('showModalInformacao')"
+                onclick="javascript: location.reload();">
                 {{ __('Closer') }}
             </x-jet-button>
         </x-slot>

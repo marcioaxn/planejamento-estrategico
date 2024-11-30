@@ -19,6 +19,7 @@ use App\Models\EvolucaoIndicador;
 use App\Models\GrauSatisfacao;
 use App\Models\Arquivo;
 use App\Models\RelArquivoOrigem;
+use App\Models\TabEntregas;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use \Illuminate\Session\SessionManager;
@@ -95,6 +96,10 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public $indicador = null;
     public $cod_indicador_selecionado = null;
     public $cod_indicador = null;
+
+    public $entrega = null;
+    public $cod_entrega_selecionado = null;
+    public $cod_entrega = null;
 
     public $mesAnterior = null;
 
@@ -515,7 +520,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
          */
 
         $planosAcao = PlanoAcao::orderBy('num_nivel_hierarquico_apresentacao')
-            ->with('tipoExecucao', 'servidorResponsavel', 'servidorSubstituto', 'indicadores', 'indicadores.evolucaoIndicador')
+            ->with('tipoExecucao', 'servidorResponsavel', 'servidorSubstituto', 'entregas')
             ->where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico)
             ->where('cod_organizacao', $this->cod_organizacao)
             ->whereYear('dte_inicio', '<=', $anoSelecionado)
@@ -559,7 +564,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
         }
 
         $planoAcao = PlanoAcao::orderBy('num_nivel_hierarquico_apresentacao')
-            ->with('tipoExecucao', 'servidorResponsavel', 'servidorSubstituto', 'indicadores', 'indicadores.evolucaoIndicador')
+            ->with('tipoExecucao', 'servidorResponsavel', 'servidorSubstituto', 'entregas')
             ->where('cod_organizacao', $this->cod_organizacao)
             ->where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico)
             ->whereYear('dte_inicio', '<=', $anoSelecionado)
@@ -577,149 +582,43 @@ class ShowObjetivoEstrategicoLivewire extends Component
             $this->collectionPlanoAcao = $planoAcao;
         }
 
-        if ($planoAcao) {
+        /** Início da parte de Entregas */
+        if (!is_null($planoAcao) && !is_null($planoAcao->entregas)) {
 
-            if ($planoAcao->indicadores->count() > 0) {
+            if (is_null($this->cod_entrega_selecionado)) {
 
-                $this->abrirIndicador = true;
-            }
-        }
-
-        if (!is_null($planoAcao) && !is_null($planoAcao->indicadores)) {
-
-            if (is_null($this->cod_indicador_selecionado)) {
-
-                $contIndicador = 1;
+                $contEntrega = 1;
 
                 if (!is_null($planoAcao)) {
 
-                    foreach ($planoAcao->indicadores as $indicador) {
+                    foreach ($planoAcao->entregas as $entrega) {
 
-                        if ($contIndicador == 1) {
+                        if ($contEntrega == 1) {
 
-                            $this->cod_indicador = $indicador->cod_indicador;
+                            $this->cod_entrega = $entrega->cod_entrega;
                         }
 
-                        $contIndicador = $contIndicador + 1;
+                        $contEntrega = $contEntrega + 1;
                     }
                 }
             } else {
 
-                $this->cod_indicador = $this->cod_indicador_selecionado;
+                $this->cod_entrega = $this->cod_entrega_selecionado;
             }
 
-            if (isset($this->cod_indicador) && !is_null($this->cod_indicador) && $this->cod_indicador != '') {
+            if (isset($this->cod_entrega) && !is_null($this->cod_entrega) && $this->cod_entrega != '') {
 
-                $indicador = Indicador::with('linhaBase', 'metaAno', 'evolucaoIndicador', 'evolucaoIndicador.arquivos')
-                    ->orderBy('dsc_indicador');
+                $entrega = TabEntregas::orderBy('dsc_entrega');
 
                 if (isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
 
-                    $indicador = $indicador->where('cod_plano_de_acao', $this->cod_plano_de_acao);
-                }
-            }
-
-            if (!is_null($this->cod_indicador)) {
-
-                $indicador = $indicador->find($this->cod_indicador);
-
-                if ($indicador) {
-
-                    $this->indicador = $indicador;
-                } else {
-
-                    $this->indicador = null;
+                    $entrega = $entrega->where('cod_plano_de_acao', $this->cod_plano_de_acao);
                 }
 
-                $num_linha_base = '';
-
-                if ($indicador) {
-
-                    foreach ($indicador->linhaBase as $linhaBase) {
-
-                        $num_linha_base = $linhaBase->num_linha_base;
-                    }
-                }
-
-                $this->linhaBase = $num_linha_base;
-
-                $dataChartMetaPrevista = '';
-                $dataChartMetaRealizada = '';
-                $dataChartLinhaBase = '';
-
-                if (!is_null($planoAcao)) {
-
-                    if ($indicador) {
-
-                        if ($indicador->evolucaoIndicador->count() > 0) {
-
-                            foreach ($indicador->metaAno as $metaAno) {
-
-                                if ($metaAno->num_ano == $this->ano) {
-
-                                    $this->metaAno = $metaAno->meta;
-                                }
-                            }
-
-                            $somaPrevisto = 0;
-                            $somaRealizado = 0;
-
-                            foreach ($indicador->evolucaoIndicador as $evolucaoIndicador) {
-
-                                if ($evolucaoIndicador->num_ano == $this->ano) {
-
-                                    $dataChartLinhaBase = $dataChartLinhaBase . $num_linha_base . ',';
-
-                                    if ($indicador->bln_acumulado === 'Sim') {
-
-                                        $somaPrevisto = $somaPrevisto + $evolucaoIndicador->vlr_previsto;
-
-                                        if ($anoVigente != $this->anoSelecionado) {
-
-                                            $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
-
-                                            $dataChartMetaRealizada = $dataChartMetaRealizada . $somaRealizado . ',';
-                                        } else {
-
-                                            if ($evolucaoIndicador->num_mes <= $mesAnterior) {
-
-                                                $somaRealizado = $somaRealizado + $evolucaoIndicador->vlr_realizado;
-
-                                                $dataChartMetaRealizada = $dataChartMetaRealizada . $somaRealizado . ',';
-                                            }
-                                        }
-
-                                        $dataChartMetaPrevista = $dataChartMetaPrevista . $somaPrevisto . ',';
-                                    } else {
-
-                                        if (isset($evolucaoIndicador->vlr_previsto) && !is_null($evolucaoIndicador->vlr_previsto) && $evolucaoIndicador->vlr_previsto != '') {
-
-                                            $dataChartMetaPrevista = $dataChartMetaPrevista . $evolucaoIndicador->vlr_previsto . ',';
-                                        } else {
-                                            $dataChartMetaPrevista = $dataChartMetaPrevista . 0 . ',';
-                                        }
-
-                                        if (isset($evolucaoIndicador->vlr_realizado) && !is_null($evolucaoIndicador->vlr_realizado) && $evolucaoIndicador->vlr_realizado != '') {
-
-                                            $dataChartMetaRealizada = $dataChartMetaRealizada . $evolucaoIndicador->vlr_realizado . ',';
-                                        } else {
-                                            $dataChartMetaRealizada = $dataChartMetaRealizada . 0 . ',';
-                                        }
-                                    }
-                                }
-                            }
-
-                            $this->dataChartMetaPrevista = trim($dataChartMetaPrevista, ',');
-                            $this->dataChartMetaRealizada = trim($dataChartMetaRealizada, ',');
-                            $this->dataChartLinhaBase = trim($dataChartLinhaBase, ',');
-                        }
-                    }
-                }
-            } else {
-
-                $this->indicador = null;
+                $this->entrega = $entrega->find($this->cod_entrega);
             }
         }
+        /** Fim da parte de Entregas */
 
         /**
          * Fim da 2ª parte
@@ -779,7 +678,6 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
                     $this->getUserAuth = User::with('atuacaoOrganizacao')
                         ->find(Auth::user()->id);
-
                 }
 
                 if (!is_null($this->cod_indicador)) {

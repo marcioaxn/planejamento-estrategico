@@ -26,6 +26,7 @@
                     <a
                         href="{{ route('objetivo-estrategico', [
                             $this->ano,
+                            '3ac5e10e-8960-4b7c-a1cf-455597c875a7',
                             $this->cod_organizacao,
                             $this->cod_perspectiva,
                             $this->cod_objetivo_estrategico,
@@ -161,9 +162,9 @@
 
         </div>
 
-        {{-- Início do(s) Indicador(es) ligados ao Plano de Ação --}}
-        @include('livewire.plano-de-acao.indicador.index')
-        {{-- Fim do(s) Indicador(es) ligados ao Plano de Ação --}}
+        {{-- Início das Entregas ligadas ao Plano de Ação --}}
+        @include('livewire.plano-de-acao.entregas.index')
+        {{-- Fim das Entregas ligadas ao Plano de Ação --}}
     @else
         <div class="w-full md:w-1/1 text-red-700 border-b-2 border-red-300 pt-3 pb-3 pl-1">
 
@@ -189,7 +190,8 @@
             </x-slot>
 
             <x-slot name="footer">
-                <x-jet-button wire:loading.attr="disabled" wire:click.prevent="$toggle('showModalInformacao')" onclick="javascript: location.reload();">
+                <x-jet-button wire:loading.attr="disabled" wire:click.prevent="$toggle('showModalInformacao')"
+                    onclick="javascript: location.reload();">
                     {{ __('Closer') }}
                 </x-jet-button>
             </x-slot>

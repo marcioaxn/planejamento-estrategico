@@ -21,11 +21,8 @@ class CreateTabEntregasTable extends Migration
 
             // Campos para a entrega
             $table->text('dsc_entrega');  // Descrição da entrega
-            $table->text('dsc_unidade_medida')->nullable(false);
-            $table->text('dsc_item_entregue')->nullable(false);
-            $table->text('num_quantidade_prevista')->nullable(false);
             $table->string('bln_status')->nullable(false);
-            $table->string('dsc_periodo_medicao')->nullable(false);            
+            $table->string('dsc_periodo_medicao')->nullable(false);
 
             // Timestamps e SoftDeletes
             $table->timestamps();
