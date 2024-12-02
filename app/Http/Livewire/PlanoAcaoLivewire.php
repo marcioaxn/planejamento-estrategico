@@ -24,7 +24,7 @@ class PlanoAcaoLivewire extends Component
     public $planoAcao = null;
     public $cod_plano_de_acao = null;
     public $cod_objetivo_estrategico = null;
-    public $cod_tipo_execucao = null;
+    public $cod_tipo_execucao = 'ecef6a50-c010-4cda-afc3-cbda245b55b0';
     public $cod_organizacao = null;
     public $num_nivel_hierarquico_apresentacao = null;
     public $dsc_plano_de_acao = null;

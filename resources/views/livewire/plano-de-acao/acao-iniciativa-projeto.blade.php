@@ -87,9 +87,9 @@
                 {!! $this->collectionPlanoAcao->dsc_plano_de_acao !!}</strong>
         </div>
 
-        <div class="w-full md:w-1/1 text-lg border-b-2 border-gray-100 pt-2 pb-2 pl-1">
+        {{-- <div class="w-full md:w-1/1 text-lg border-b-2 border-gray-100 pt-2 pb-2 pl-1">
             Principais entregas: <strong>{{ $this->collectionPlanoAcao->txt_principais_entregas }}</strong>
-        </div>
+        </div> --}}
 
         <div class="w-full md:w-3/6 text-lg border-b-2 border-gray-100 pt-2 pb-2 pl-1">Data de início em
             <strong>{{ converterData('EN', 'PTBR', $this->collectionPlanoAcao->dte_inicio) }}</strong><span
