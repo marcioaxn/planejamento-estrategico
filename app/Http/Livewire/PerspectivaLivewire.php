@@ -8,6 +8,7 @@ use App\Models\Pei;
 use Livewire\WithPagination;
 use App\Models\Acoes;
 use App\Models\Audit;
+use App\Models\TabAudit;
 use DB;
 use Auth;
 

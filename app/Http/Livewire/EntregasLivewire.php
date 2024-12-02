@@ -65,13 +65,13 @@ class EntregasLivewire extends Component
 
     public $unidadeMedidaAnterior = null;
 
-    public $dsc_unidade_medida = null;
+    // public $dsc_unidade_medida = null;
 
-    public $dsc_item_entregue = null;
+    // public $dsc_item_entregue = null;
 
-    public $num_quantidade_prevista_original = null;
+    // public $num_quantidade_prevista_original = null;
 
-    public $num_quantidade_prevista = null;
+    // public $num_quantidade_prevista = null;
 
     public $estruturaTable = null;
 
@@ -106,11 +106,6 @@ class EntregasLivewire extends Component
 
     }
 
-    public function hydrate()
-    {
-        $this->emit('select2Hydrate');
-    }
-
     public function instanciarShowOrganization()
     {
         return new ShowOrganization;
@@ -128,20 +123,20 @@ class EntregasLivewire extends Component
 
         $this->cod_plano_de_acao;
         $this->dsc_entrega;
-        $this->dsc_unidade_medida;
-        $this->dsc_item_entregue;
-        $this->num_quantidade_prevista;
+        // $this->dsc_unidade_medida;
+        // $this->dsc_item_entregue;
+        // $this->num_quantidade_prevista;
         $this->bln_status;
         $this->dsc_periodo_medicao;
 
         /** Início do IF para limpar o conteúdo de $this->num_quantidade_prevista */
-        if ($this->dsc_unidade_medida === 'Porcentagem' || $this->dsc_unidade_medida === 'Dinheiro') {
+        // if ($this->dsc_unidade_medida === 'Porcentagem' || $this->dsc_unidade_medida === 'Dinheiro') {
 
-            // Início da parte de verificação se a soma já atingiu a meta proposta do Ano 1 com a unidade de medida porcentagem
+        //     // Início da parte de verificação se a soma já atingiu a meta proposta do Ano 1 com a unidade de medida porcentagem
 
-            $this->num_quantidade_prevista_original = $this->num_quantidade_prevista;
-            $this->num_quantidade_prevista = converteValor('PTBR', 'MYSQL', $this->num_quantidade_prevista);
-        }
+        //     $this->num_quantidade_prevista_original = $this->num_quantidade_prevista;
+        //     $this->num_quantidade_prevista = converteValor('PTBR', 'MYSQL', $this->num_quantidade_prevista);
+        // }
         /** Fim do IF para limpar o conteúdo de $this->num_quantidade_prevista */
 
         $table = 'tab_entregas';
@@ -217,13 +212,13 @@ class EntregasLivewire extends Component
 
                 } else {
 
-                    if ($this->$column_name != $entrega->$column_name) {
+                    // if ($this->$column_name != $entrega->$column_name) {
 
-                        $campos['num_quantidade_prevista'] = $this->num_quantidade_prevista;
+                    //     $campos['num_quantidade_prevista'] = $this->num_quantidade_prevista;
 
-                        $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converteValor('MYSQL', 'PTBR', $entrega->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . $this->num_quantidade_prevista_original . ' )</span>;<br>';
+                    //     $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converteValor('MYSQL', 'PTBR', $entrega->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . $this->num_quantidade_prevista_original . ' )</span>;<br>';
 
-                    }
+                    // }
                 }
             }
 
@@ -267,9 +262,9 @@ class EntregasLivewire extends Component
                     $modificacoes = $modificacoes . nomeCampoNormalizado($column_name) . ": <span class='text-green-800'>" . $this->$column_name . "</span><br>";
                 } else {
 
-                    $campos['num_quantidade_prevista'] = $this->num_quantidade_prevista;
+                    // $campos['num_quantidade_prevista'] = $this->num_quantidade_prevista;
 
-                    $modificacoes = $modificacoes . nomeCampoNormalizado($column_name) . ": <span class='text-green-800'>" . $this->num_quantidade_prevista_original . "</span><br>";
+                    // $modificacoes = $modificacoes . nomeCampoNormalizado($column_name) . ": <span class='text-green-800'>" . $this->num_quantidade_prevista_original . "</span><br>";
                 }
             }
 
@@ -298,27 +293,27 @@ class EntregasLivewire extends Component
 
     public function adequarMascara()
     {
-        if (
-            isset($this->num_quantidade_prevista) &&
-            !is_null($this->num_quantidade_prevista) &&
-            $this->num_quantidade_prevista != ''
-        ) {
-            if (
-                is_null($this->dsc_unidade_medida) ||
-                $this->dsc_unidade_medida == '' ||
-                $this->dsc_unidade_medida !== $this->unidadeMedidaAnterior
-            ) {
-                $valorOriginalVlrMeta = $this->num_quantidade_prevista;
+        // if (
+        //     isset($this->num_quantidade_prevista) &&
+        //     !is_null($this->num_quantidade_prevista) &&
+        //     $this->num_quantidade_prevista != ''
+        // ) {
+        //     if (
+        //         is_null($this->dsc_unidade_medida) ||
+        //         $this->dsc_unidade_medida == '' ||
+        //         $this->dsc_unidade_medida !== $this->unidadeMedidaAnterior
+        //     ) {
+        //         $valorOriginalVlrMeta = $this->num_quantidade_prevista;
 
-                $this->num_quantidade_prevista = null;
+        //         $this->num_quantidade_prevista = null;
 
-                $this->mensagemResultadoEdicao = "Você alterou a Unidade de Medida.<br>Dessa forma o valor informado da Meta que era (" . $valorOriginalVlrMeta . ") será apagado para que digite o valor correspondente a Unidade de Medida selecionada (" . $this->dsc_unidade_medida . ")";
+        //         $this->mensagemResultadoEdicao = "Você alterou a Unidade de Medida.<br>Dessa forma o valor informado da Meta que era (" . $valorOriginalVlrMeta . ") será apagado para que digite o valor correspondente a Unidade de Medida selecionada (" . $this->dsc_unidade_medida . ")";
 
-                $this->showModalResultadoEdicao = true;
-            }
-        }
+        //         $this->showModalResultadoEdicao = true;
+        //     }
+        // }
 
-        $this->unidadeMedidaAnterior = $this->dsc_unidade_medida;
+        // $this->unidadeMedidaAnterior = $this->dsc_unidade_medida;
     }
 
     public function editForm($cod_entrega = '')
@@ -346,19 +341,19 @@ class EntregasLivewire extends Component
         $this->cod_pei = $consultarPerspectiva->cod_pei;
 
         $this->dsc_entrega = $singleData->dsc_entrega;
-        $this->dsc_unidade_medida = $singleData->dsc_unidade_medida;
-        $this->dsc_item_entregue = $singleData->dsc_item_entregue;
+        // $this->dsc_unidade_medida = $singleData->dsc_unidade_medida;
+        // $this->dsc_item_entregue = $singleData->dsc_item_entregue;
 
-        if (
-            $this->dsc_unidade_medida === 'Porcentagem' ||
-            $this->dsc_unidade_medida === 'Dinheiro'
-        ) {
+        // if (
+        //     $this->dsc_unidade_medida === 'Porcentagem' ||
+        //     $this->dsc_unidade_medida === 'Dinheiro'
+        // ) {
 
-            $this->num_quantidade_prevista = converteValor('MYSQL', 'PTBR', $singleData->num_quantidade_prevista);
-        } else {
+        //     $this->num_quantidade_prevista = converteValor('MYSQL', 'PTBR', $singleData->num_quantidade_prevista);
+        // } else {
 
-            $this->num_quantidade_prevista = $singleData->num_quantidade_prevista;
-        }
+        //     $this->num_quantidade_prevista = $singleData->num_quantidade_prevista;
+        // }
 
 
         $this->bln_status = $singleData->bln_status;
@@ -573,7 +568,7 @@ class EntregasLivewire extends Component
         return $estrutura;
     }
 
-    protected function estruturaTableParaEditar()
+    public function estruturaTableParaEditar()
     {
 
         $estrutura = DB::select("SELECT

@@ -91,7 +91,7 @@
 
                     </div>
 
-                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-1">
+                    <div class="w-full md:w-2/2 px-3 mb-1 md:mb-0 pt-1">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-label for="dsc_plano_de_acao" value="Descrição" />
@@ -101,7 +101,7 @@
 
                     </div>
 
-                    <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-1">
+                    {{-- <div class="w-full md:w-1/2 px-3 mb-1 md:mb-0 pt-1">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-label for="txt_principais_entregas" value="Principais entregas" />
@@ -109,7 +109,7 @@
                             <x-jet-input-error for="txt_principais_entregas" class="mt-2" />
                         </div>
 
-                    </div>
+                    </div> --}}
 
                     <div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3">
 
@@ -209,7 +209,7 @@
                         <thead class="hidden shadow-lg inset-x-0 top-16 block md:table-header-group">
                             <tr class="shadow-lg">
                                 <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Descrição</th>
-                                <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Principais entregas</th>
+                                {{-- <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Principais entregas</th> --}}
                                 <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Unidade Responsável</th>
                                 <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Data de Início e de Conclusão</th>
                                 <th class="bg-gray-400 px-1 py-2 text-xs text-white font-bold md:border md:border-gray-100 text-left block md:table-cell" style="text-align: left!Important;">Status</th>
@@ -227,9 +227,9 @@
                                 <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600 bg-blue-50 ">
                                     {{ $result->tipoExecucao->dsc_tipo_execucao }} {{ $result->num_nivel_hierarquico_apresentacao }}. {{ $result->dsc_plano_de_acao }}
                                 </td>
-                                <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">
+                                {{-- <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">
                                     {{ $result->txt_principais_entregas }}
-                                </td>
+                                </td> --}}
                                 <td class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600">
                                     {{ $result->unidade->sgl_organizacao }}<span class="text-gray-400">{!! $this->hierarquiaUnidade($result->unidade->cod_organizacao) !!}</span>
                                 </td>

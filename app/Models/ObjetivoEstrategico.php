@@ -28,7 +28,6 @@ class ObjetivoEstrategico extends Model implements Auditable
     {
 
         return $this->belongsTo(Perspectiva::class, 'cod_perspectiva');
-
     }
 
     public function fututosAlmejados()
@@ -36,7 +35,6 @@ class ObjetivoEstrategico extends Model implements Auditable
 
         return $this->hasMany(FuturoAlmejado::class, 'cod_objetivo_estrategico')
             ->orderBy('dsc_futuro_almejado');
-
     }
 
     public function fututoAlmejadoParaEdicao()
@@ -44,7 +42,6 @@ class ObjetivoEstrategico extends Model implements Auditable
 
         return $this->hasMany(FuturoAlmejado::class, 'cod_objetivo_estrategico')
             ->orderBy('created_at', 'ASC');
-
     }
 
     public function primeiroIndicador()
@@ -52,7 +49,6 @@ class ObjetivoEstrategico extends Model implements Auditable
 
         return $this->hasOne(Indicador::class, 'cod_objetivo_estrategico')
             ->orderBy('created_at', 'DESC');
-
     }
 
     public function indicadores()
@@ -60,7 +56,13 @@ class ObjetivoEstrategico extends Model implements Auditable
 
         return $this->hasMany(Indicador::class, 'cod_objetivo_estrategico')
             ->orderBy('dsc_indicador');
+    }
 
+    public function primeiroPlanoAcao()
+    {
+
+        return $this->hasOne(PlanoAcao::class, 'cod_objetivo_estrategico')
+            ->orderBy('num_nivel_hierarquico_apresentacao');
     }
 
     public function planosDeAcao()
@@ -73,13 +75,10 @@ class ObjetivoEstrategico extends Model implements Auditable
             return $this->hasMany(PlanoAcao::class, 'cod_objetivo_estrategico')
                 ->with('tipoExecucao')
                 ->where('cod_plano_de_acao', '=', $cod_plano_de_acao);
-
         } else {
 
             return $this->hasMany(PlanoAcao::class, 'cod_objetivo_estrategico');
-
         }
-
     }
 
     public function planosDeAcaoPorArea()
@@ -94,13 +93,9 @@ class ObjetivoEstrategico extends Model implements Auditable
                 ->whereIn('cod_organizacao', $cod_organizacao)
                 ->whereYear('dte_inicio', '<=', Session::get('anoSelecionado'))
                 ->whereYear('dte_fim', '>=', Session::get('anoSelecionado'));
-
         } else {
 
             return $this->hasMany(PlanoAcao::class, 'cod_objetivo_estrategico');
-
         }
-
     }
-
 }

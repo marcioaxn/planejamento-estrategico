@@ -7,6 +7,7 @@ use App\Models\MetaAno;
 use App\Models\Indicador;
 use App\Models\Acoes;
 use App\Models\Audit;
+use App\Models\TabAudit;
 use DB;
 Use Auth;
 use Illuminate\Support\Str;
@@ -52,7 +53,7 @@ class MetaPorAnoLivewire extends Component
 
         // Retorno com o resultado da função
         return $meta;
-        
+
 
     }
 

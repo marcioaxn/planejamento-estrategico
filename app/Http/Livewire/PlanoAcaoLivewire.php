@@ -13,7 +13,7 @@ use App\Models\Organization;
 use App\Models\User;
 use App\Models\RelUsersTabOrganizacoesTabPerfilAcesso;
 use App\Models\Acoes;
-use App\Models\Audit;
+use App\Models\TabAudit;
 use DB;
 use Auth;
 use Illuminate\Support\Str;
@@ -24,12 +24,12 @@ class PlanoAcaoLivewire extends Component
     public $planoAcao = null;
     public $cod_plano_de_acao = null;
     public $cod_objetivo_estrategico = null;
-    public $cod_tipo_execucao = null;
+    public $cod_tipo_execucao = 'ecef6a50-c010-4cda-afc3-cbda245b55b0';
     public $cod_organizacao = null;
     public $num_nivel_hierarquico_apresentacao = null;
     public $dsc_plano_de_acao = null;
     public $periodicidade_medicao = null;
-    public $txt_principais_entregas = null;
+    // public $txt_principais_entregas = null;
     public $vlr_orcamento_previsto = null;
     public $dte_inicio = null;
     public $dte_fim = null;
@@ -240,13 +240,13 @@ class PlanoAcaoLivewire extends Component
 
             }
 
-            if (isset($this->txt_principais_entregas) && !is_null($this->txt_principais_entregas) && $this->txt_principais_entregas != '') {
+            // if (isset($this->txt_principais_entregas) && !is_null($this->txt_principais_entregas) && $this->txt_principais_entregas != '') {
 
-                $save->txt_principais_entregas = $this->txt_principais_entregas;
+            //     $save->txt_principais_entregas = $this->txt_principais_entregas;
 
-                $modificacoes = $modificacoes . "Principais entregas: <span class='text-green-800'>" . $this->txt_principais_entregas . "</span><br>";
+            //     $modificacoes = $modificacoes . "Principais entregas: <span class='text-green-800'>" . $this->txt_principais_entregas . "</span><br>";
 
-            }
+            // }
 
             if (isset($this->dte_inicio) && !is_null($this->dte_inicio) && $this->dte_inicio != '') {
 
@@ -647,7 +647,7 @@ class PlanoAcaoLivewire extends Component
         $this->num_nivel_hierarquico_apresentacao = null;
         $this->dsc_plano_de_acao = null;
         $this->periodicidade_medicao = null;
-        $this->txt_principais_entregas = null;
+        // $this->txt_principais_entregas = null;
         $this->vlr_orcamento_previsto = null;
         $this->dte_inicio = null;
         $this->dte_fim = null;
@@ -687,7 +687,7 @@ class PlanoAcaoLivewire extends Component
         $this->num_nivel_hierarquico_apresentacao = $singleData->num_nivel_hierarquico_apresentacao;
         $this->cod_organizacao = $singleData->cod_organizacao;
         $this->dsc_plano_de_acao = $singleData->dsc_plano_de_acao;
-        $this->txt_principais_entregas = $singleData->txt_principais_entregas;
+        // $this->txt_principais_entregas = $singleData->txt_principais_entregas;
         $this->dte_inicio = $singleData->dte_inicio;
         $this->dte_fim = $singleData->dte_fim;
         $this->bln_status = $singleData->bln_status;
@@ -900,7 +900,7 @@ class PlanoAcaoLivewire extends Component
         $this->num_nivel_hierarquico_apresentacao = null;
         $this->dsc_plano_de_acao = null;
         $this->periodicidade_medicao = null;
-        $this->txt_principais_entregas = null;
+        // $this->txt_principais_entregas = null;
         $this->vlr_orcamento_previsto = null;
         $this->dte_inicio = null;
         $this->dte_fim = null;
@@ -930,7 +930,7 @@ class PlanoAcaoLivewire extends Component
         $this->num_nivel_hierarquico_apresentacao = null;
         $this->dsc_plano_de_acao = null;
         $this->periodicidade_medicao = null;
-        $this->txt_principais_entregas = null;
+        // $this->txt_principais_entregas = null;
         $this->vlr_orcamento_previsto = null;
         $this->dte_inicio = null;
         $this->dte_fim = null;
