@@ -97,6 +97,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public $cod_indicador_selecionado = null;
     public $cod_indicador = null;
 
+    public $entregas = [];
+
     public $entrega = null;
     public $cod_entrega_selecionado = null;
     public $cod_entrega = null;
@@ -575,6 +577,11 @@ class ShowObjetivoEstrategicoLivewire extends Component
             $planoAcao = $planoAcao->find($this->cod_plano_de_acao);
 
             $this->collectionPlanoAcao = $planoAcao;
+
+            $this->entregas = TabEntregas::where('cod_plano_de_acao', $this->cod_plano_de_acao)
+                ->get();
+
+            // dd($this->entregas);
         } else {
 
             $planoAcao = $planoAcao->first();
@@ -627,6 +634,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
         $this->grau_satisfacao = $this->grauSatisfacao();
 
         if ($this->cod_origem === '3ac5e10e-8960-4b7c-a1cf-455597c875a7') {
+            // dd("Aqui 8", $this->entregas);
             return view('livewire.show-objetivo-estrategico-livewire', ['ano' => $this->ano, 'cod_organizacao' => $this->cod_organizacao]);
         } elseif ($this->cod_origem === 'e37b40bf-4852-4fc7-8d0a-1cb6243ae9b6') {
 
