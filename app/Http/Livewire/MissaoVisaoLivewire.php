@@ -9,6 +9,7 @@ use App\Models\MissaoVisao;
 use Livewire\WithPagination;
 use App\Models\Acoes;
 use App\Models\Audit;
+use App\Models\TabAudit;
 use DB;
 Use Auth;
 

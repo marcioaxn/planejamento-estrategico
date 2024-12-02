@@ -568,7 +568,7 @@ class EntregasLivewire extends Component
         return $estrutura;
     }
 
-    protected function estruturaTableParaEditar()
+    public function estruturaTableParaEditar()
     {
 
         $estrutura = DB::select("SELECT

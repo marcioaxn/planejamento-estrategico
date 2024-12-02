@@ -48,6 +48,7 @@
                     <a
                         href="{{ route('objetivo-estrategico', [
                             $this->ano,
+                            '3ac5e10e-8960-4b7c-a1cf-455597c875a7',
                             $this->cod_organizacao,
                             $this->cod_perspectiva,
                             $this->cod_objetivo_estrategico,

@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\User;
 use App\Models\Acoes;
 use App\Models\Audit;
+use App\Models\TabAudit;
 use App\Models\Pei;
 use App\Models\Organization;
 use App\Models\RelOrganization;

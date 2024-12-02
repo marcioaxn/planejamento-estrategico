@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Acoes;
 use App\Models\Audit;
+use App\Models\TabAudit;
 use Mail;
 use App\Models\User;
 use App\Models\RelUsersTabOrganizacoes;

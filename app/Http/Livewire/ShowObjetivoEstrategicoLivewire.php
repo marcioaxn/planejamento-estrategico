@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\User;
 use App\Models\Acoes;
 use App\Models\Audit;
+use App\Models\TabAudit;
 use App\Models\Pei;
 use App\Models\Organization;
 use App\Models\RelOrganization;
@@ -13,6 +14,7 @@ use App\Models\MissaoVisao;
 use App\Models\Perspectiva;
 use App\Models\ObjetivoEstrategico;
 use App\Models\IndicadorObjetivoEstrategico;
+use App\Models\TabStatus;
 use App\Models\PlanoAcao;
 use App\Models\Indicador;
 use App\Models\EvolucaoIndicador;
@@ -33,6 +35,7 @@ use Illuminate\Support\Facades\Response;
 
 use App\Http\Livewire\PlanejamentoEstrategicoIntegrado;
 use App\Http\Livewire\PerspectivaLivewire;
+use App\Http\Livewire\EntregasLivewire;
 
 ini_set('memory_limit', '7096M');
 ini_set('max_execution_time', 9900);
@@ -87,7 +90,7 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
     public $objetivoEstragicoPluck = null;
 
-    public $objetivoEstragico = null;
+    public $objetivoEstrategico = null;
 
     public $indicadoresObjetivoEstrategico = null;
 
@@ -96,6 +99,8 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public $indicador = null;
     public $cod_indicador_selecionado = null;
     public $cod_indicador = null;
+
+    public $estruturaTableParaEditar = null;
 
     public $entregas = [];
 
@@ -141,6 +146,10 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public $abrirFecharForm = 'none';
     public $iconAbrirFechar = 'fas fa-plus text-xs';
     public $iconFechar = 'fas fa-minus text-xs';
+
+    public $status = [];
+
+    public $bln_status = null;
 
     public function mount(SessionManager $session, Request $request, $ano, $cod_origem, $cod_organizacao = '', $cod_perspectiva = '', $cod_objetivo_estrategico = '', $cod_plano_de_acao = '')
     {
@@ -199,12 +208,15 @@ class ShowObjetivoEstrategicoLivewire extends Component
         }
 
         $session->put("ano", $this->ano);
+
+        $this->status = TabStatus::orderBy('dsc_status')
+            ->pluck('dsc_status', 'dsc_status');
     }
 
     public function getObjetivoEstrategico($codObjetivoEstrategico = null)
     {
         if (isset($codObjetivoEstrategico) && !empty($codObjetivoEstrategico)) {
-            return ObjetivoEstrategico::with('fututosAlmejados', 'primeiroIndicador', 'primeiroIndicador.linhaBase', 'primeiroIndicador.metaAno', 'primeiroIndicador.evolucaoIndicador')
+            return ObjetivoEstrategico::with('fututosAlmejados', 'primeiroIndicador', 'primeiroIndicador.linhaBase', 'primeiroIndicador.metaAno', 'primeiroIndicador.evolucaoIndicador', 'primeiroPlanoAcao')
                 ->find($codObjetivoEstrategico);
         } else {
             return null;
@@ -219,6 +231,11 @@ class ShowObjetivoEstrategicoLivewire extends Component
     public function instanciarPerspectivaLivewire()
     {
         return new PerspectivaLivewire;
+    }
+
+    public function instanciarEntregasLivewire()
+    {
+        return new EntregasLivewire;
     }
 
     public function abrirModalIncluirPdf($cod_evolucao_indicador = '')
@@ -542,7 +559,14 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
         if (!in_array($this->cod_plano_de_acao, $cods_plano_de_acao)) {
 
-            $this->cod_plano_de_acao = null;
+            // $this->cod_plano_de_acao = null;
+
+            if ($this->objetivoEstrategico) {
+
+                if ($this->objetivoEstrategico->primeiroPlanoAcao) {
+                    $this->cod_plano_de_acao = $this->objetivoEstrategico->primeiroPlanoAcao->cod_plano_de_acao;
+                }
+            }
         }
 
         $this->collectionPlanosAcao = $planosAcao;
@@ -580,8 +604,6 @@ class ShowObjetivoEstrategicoLivewire extends Component
 
             $this->entregas = TabEntregas::where('cod_plano_de_acao', $this->cod_plano_de_acao)
                 ->get();
-
-            // dd($this->entregas);
         } else {
 
             $planoAcao = $planoAcao->first();
@@ -630,6 +652,10 @@ class ShowObjetivoEstrategicoLivewire extends Component
         /**
          * Fim da 2ª parte
          */
+
+        $entregasComponent = $this->instanciarEntregasLivewire();
+
+        $this->estruturaTableParaEditar = $entregasComponent->estruturaTableParaEditar();
 
         $this->grau_satisfacao = $this->grauSatisfacao();
 
