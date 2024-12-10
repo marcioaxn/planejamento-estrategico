@@ -147,11 +147,32 @@
 
                     </div>
 
-                    <div class="w-full md:w-2/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-1/4 px-3 mb-1 md:mb-0 pt-3">
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <x-jet-label for="num_nivel_hierarquico_apresentacao" value="5. Ordem" />
+                            {!! Form::select('num_nivel_hierarquico_apresentacao', $this->niveis_hierarquico_apresentacao, null, [
+                                'class' =>
+                                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0',
+                                'style' => 'height: 40px!Important; padding-left: 10px!Important; width: 100% !Important;',
+                                'placeholder' => 'Selecione',
+                                'autocomplete' => 'off',
+                                'required' => 'required',
+                                'wire:model' => 'num_nivel_hierarquico_apresentacao',
+                            ]) !!}
+                            <div class="p-2 text-gray-500 text-xs md:list-disc">Este campo será preenchido
+                                automaticamente após a escolha do Plano de Ação, mas pode ser alterado se
+                                necessário.</div>
+                            <x-jet-input-error for="num_nivel_hierarquico_apresentacao" class="mt-2" />
+                        </div>
+
+                    </div>
+
+                    <div class="w-full md:w-3/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="dsc_entrega"
-                                value="5. Detalhamento da Entrega" />
+                                value="6. Detalhamento da Entrega" />
                             {!! Form::textarea('dsc_entrega', null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-2 pl-2',
@@ -168,10 +189,10 @@
 
                     </div>
 
-                    <div class="w-full md:w-1/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-2/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
-                            <x-jet-labelpreenchimentoobrigatoriio for="bln_status" value="6. Status de Execução" />
+                            <x-jet-labelpreenchimentoobrigatoriio for="bln_status" value="7. Status de Execução" />
                             {!! Form::select('bln_status', $this->status, null, [
                                 'class' =>
                                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 pt-0',
@@ -214,11 +235,11 @@
                         }
                     </script>
 
-                    <div class="w-full md:w-1/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
+                    <div class="w-full md:w-2/4 px-3 mb-2 md:mb-1 pt-3" style="display: {!! $this->habilitarCampoInserirMetas !!};">
 
                         <div class="col-span-6 sm:col-span-4">
                             <x-jet-labelpreenchimentoobrigatoriio for="dsc_periodo_medicao"
-                                value="7. Período de medição" />
+                                value="8. Período de medição" />
                             {!! Form::select(
                                 'dsc_periodo_medicao',
                                 [
@@ -350,7 +371,7 @@
 
                                 <td
                                     class="p-2 md:border md:border-gray-100 text-left block md:table-cell py-3 text-sm text-gray-600 bg-blue-50 ">
-                                    {{ $result->dsc_entrega }}
+                                    {{ $result->num_nivel_hierarquico_apresentacao }}. {{ $result->dsc_entrega }}
                                 </td>
 
                                 <td

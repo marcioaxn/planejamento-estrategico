@@ -1790,6 +1790,9 @@ function nomeCampoNormalizado($campo)
         case 'dsc_periodo_medicao':
             $campoNormalizado = 'Período de medição';
             break;
+        case 'num_nivel_hierarquico_apresentacao':
+            $campoNormalizado = 'Ordem';
+            break;
         case '':
             $campoNormalizado = '';
             break;
@@ -3147,4 +3150,109 @@ function transformarNomeTabelaParaNomeModel($nomeTabela = null)
     $nomeTabela = str_replace(' ', '', $nomeTabela); // Remove os espaços
 
     return $nomeTabela;
+}
+
+function getGrauSatisfacaoEntregas()
+{
+    $status = [
+        'Iniciado' => 'blue',
+        'Em andamento/Merece atenção' => 'yellow',
+        'Concluído' => 'green',
+        'Não iniciado' => 'gray',
+        'Cancelado' => 'purple',
+        'Suspenso/Problema' => 'red',
+    ];
+
+    $grauSatisfacao = null;
+
+    foreach ($status as $key => $value) {
+
+        if ($value === 'yellow') {
+            $color = 'black';
+        } else {
+            $color = 'white';
+        }
+
+        $grauSatisfacao .= '<div class="px-1 py-1 pl-3 font-semibold rounded-md border-1 text-' . $color . ' bg-' . $value . '-500 text-sm antialiased sm:subpixel-antialiased md:antialiased">' . $key . '</div>';
+    }
+
+    return $grauSatisfacao;
+}
+
+function getGrauSatisfacaoEntrega($cor = null)
+{
+    $status = [
+        'Cancelado' => 'purple',
+        'Concluído' => 'green',
+        'Em andamento/Merece atenção' => 'yellow',
+        'Iniciado' => 'blue',
+        'Não iniciado' => 'gray',
+        'Suspenso/Problema' => 'red'
+    ];
+
+    $grauSatisfacao = [];
+
+    foreach ($status as $key => $value) {
+
+        if ($cor === $key) {
+            if ($value === 'yellow') {
+                $grauSatisfacao['font'] = 'black';
+            } else {
+                $grauSatisfacao['font'] = 'white';
+            }
+
+            $grauSatisfacao['cor'] = $value;
+        }
+    }
+
+    return $grauSatisfacao;
+}
+
+function consolidarStatus($cores)
+{
+    $prioridades = [
+        'red'       => 6,
+        'purple'    => 5,
+        'gray'      => 4,
+        'blue'      => 3,
+        'yellow'    => 2,
+        'green'     => 1,
+    ];
+
+    // Remove duplicatas para otimizar
+    $coresUnicas = array_unique($cores);
+
+    // Ordena as cores com base nas prioridades
+    usort($coresUnicas, function ($a, $b) use ($prioridades) {
+        return $prioridades[$a] <=> $prioridades[$b];
+    });
+
+    // Retorna a cor de maior prioridade (primeira na lista ordenada)
+    return $coresUnicas[0] ?? 'gray'; // Retorna 'gray' caso não haja cores definidas
+}
+
+function consolidarStatusGeral($cores)
+{
+    $prioridades = [
+        'red'    => 1,
+        'purple' => 2,
+        'yellow' => 3,
+        'gray'   => 4,
+        'green'  => 5,
+    ];
+
+    // Remove duplicatas para otimizar
+    $coresUnicas = array_unique($cores);
+
+    // Ordena as cores com base nas prioridades
+    usort($coresUnicas, function ($a, $b) use ($prioridades) {
+        return $prioridades[$a] <=> $prioridades[$b];
+    });
+
+    if ($coresUnicas[0] === 'purple') {
+        $coresUnicas[0] = 'gray';
+    }
+
+    // Retorna a cor de maior prioridade (primeira na lista ordenada)
+    return $coresUnicas[0] ?? 'gray'; // Retorna 'gray' caso não haja cores definidas
 }

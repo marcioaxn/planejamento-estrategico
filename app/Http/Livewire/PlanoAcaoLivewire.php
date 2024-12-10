@@ -69,6 +69,12 @@ class PlanoAcaoLivewire extends Component
 
     public $maxWidth = 'xl';
 
+    public function getPlanoAcaoPorCodPlanoAcao($codPlanoAcao = null)
+    {
+        return PlanoAcao::with('entregas')
+            ->find($codPlanoAcao);
+    }
+
     public function getPlanoDeAcaoPorCodsOrganizacao($cods_organizacao = '', $ano = '')
     {
 
@@ -95,13 +101,11 @@ class PlanoAcaoLivewire extends Component
             if (is_array($cods_organizacao) && count($cods_organizacao) > 0) {
 
                 $planosAcao = $planosAcao->whereIn('cod_organizacao', $cods_organizacao);
-
             } else {
 
                 // Esta é a exceção caso a variável $cods_organizacao não seja do tipo array e se o array é não maior que zero
 
                 $planosAcao = $planosAcao->where('cod_organizacao', $cods_organizacao);
-
             }
             // Fim do IF para verificar se a variável $cods_organizacao é do tipo array e se o array é maior que zero
             // --- x --- x --- x ---
@@ -115,7 +119,6 @@ class PlanoAcaoLivewire extends Component
 
             $planosAcao = $planosAcao->whereYear('dte_inicio', '<=', $ano)
                 ->whereYear('dte_fim', '>=', $ano);
-
         }
         // Fim do IF para verificar se a variável $ano contem algum conteúdo
         // --- x --- x --- x ---
@@ -126,7 +129,6 @@ class PlanoAcaoLivewire extends Component
 
         // Retorno com o resultado da função
         return $planosAcao;
-
     }
 
     protected function pesquisarCodigo($cod_objetivo_estrategico = '')
@@ -144,17 +146,13 @@ class PlanoAcaoLivewire extends Component
             if ($planoAcao) {
 
                 $this->num_nivel_hierarquico_apresentacao = (($planoAcao->num_nivel_hierarquico_apresentacao) + 1);
-
             } else {
 
                 $this->num_nivel_hierarquico_apresentacao = 1;
-
             }
-
         }
 
         return $this->num_nivel_hierarquico_apresentacao;
-
     }
 
     public function abrirFecharForm()
@@ -170,7 +168,6 @@ class PlanoAcaoLivewire extends Component
 
             $this->abrirFecharForm = 'block';
             $this->iconAbrirFechar = 'fas fa-minus text-xs';
-
         } else {
 
             $this->cod_perspectiva = null;
@@ -181,9 +178,7 @@ class PlanoAcaoLivewire extends Component
 
             $this->abrirFecharForm = 'none';
             $this->iconAbrirFechar = 'fas fa-plus text-xs';
-
         }
-
     }
 
     public function create()
@@ -207,7 +202,6 @@ class PlanoAcaoLivewire extends Component
                 $consultarObjetivoEstrategico = ObjetivoEstrategico::find($this->cod_objetivo_estrategico);
 
                 $modificacoes = $modificacoes . "Objetivo Estratégico: <span class='text-green-800'>" . $consultarObjetivoEstrategico->num_nivel_hierarquico_apresentacao . '. ' . $consultarObjetivoEstrategico->nom_objetivo_estrategico . "</span><br>";
-
             }
 
             if (isset($this->cod_tipo_execucao) && !is_null($this->cod_tipo_execucao) && $this->cod_tipo_execucao != '') {
@@ -217,7 +211,6 @@ class PlanoAcaoLivewire extends Component
                 $consultarTipoExecucao = TipoExecucao::find($this->cod_tipo_execucao);
 
                 $modificacoes = $modificacoes . "Tipo: <span class='text-green-800'>" . $consultarTipoExecucao->dsc_tipo_execucao . "</span><br>";
-
             }
 
             if (isset($this->cod_organizacao) && !is_null($this->cod_organizacao) && $this->cod_organizacao != '') {
@@ -227,7 +220,6 @@ class PlanoAcaoLivewire extends Component
                 $consultarOrganizacao = Organization::find($this->cod_organizacao);
 
                 $modificacoes = $modificacoes . "Unidade Responsável: <span class='text-green-800'>" . $consultarOrganizacao->sgl_organizacao . " - " . $consultarOrganizacao->nom_organizacao . "</span><br>";
-
             }
 
             if (isset($this->dsc_plano_de_acao) && !is_null($this->dsc_plano_de_acao) && $this->dsc_plano_de_acao != '') {
@@ -237,7 +229,6 @@ class PlanoAcaoLivewire extends Component
                 $save->dsc_plano_de_acao = $this->dsc_plano_de_acao;
 
                 $modificacoes = $modificacoes . "Descrição: <span class='text-green-800'>" . $this->num_nivel_hierarquico_apresentacao . '. ' . $this->dsc_plano_de_acao . "</span><br>";
-
             }
 
             // if (isset($this->txt_principais_entregas) && !is_null($this->txt_principais_entregas) && $this->txt_principais_entregas != '') {
@@ -253,7 +244,6 @@ class PlanoAcaoLivewire extends Component
                 $save->dte_inicio = $this->dte_inicio;
 
                 $modificacoes = $modificacoes . "Data de Início: <span class='text-green-800'>" . converterData('EN', 'PTBR', $this->dte_inicio) . "</span><br>";
-
             }
 
             if (isset($this->dte_fim) && !is_null($this->dte_fim) && $this->dte_fim != '') {
@@ -261,7 +251,6 @@ class PlanoAcaoLivewire extends Component
                 $save->dte_fim = $this->dte_fim;
 
                 $modificacoes = $modificacoes . "Data de Conclusão: <span class='text-green-800'>" . converterData('EN', 'PTBR', $this->dte_fim) . "</span><br>";
-
             }
 
             if (isset($this->bln_status) && !is_null($this->bln_status) && $this->bln_status != '') {
@@ -269,7 +258,6 @@ class PlanoAcaoLivewire extends Component
                 $save->bln_status = $this->bln_status;
 
                 $modificacoes = $modificacoes . "Status: <span class='text-green-800'>" . $this->bln_status . "</span><br>";
-
             }
 
             if (isset($this->vlr_orcamento_previsto) && !is_null($this->vlr_orcamento_previsto) && $this->vlr_orcamento_previsto != '') {
@@ -277,7 +265,6 @@ class PlanoAcaoLivewire extends Component
                 $save->vlr_orcamento_previsto = converteValor('PTBR', 'MYSQL', $this->vlr_orcamento_previsto);
 
                 $modificacoes = $modificacoes . "Orçamento Previsto: <span class='text-green-800'>" . $this->vlr_orcamento_previsto . "</span><br>";
-
             }
 
             if (isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
@@ -285,7 +272,6 @@ class PlanoAcaoLivewire extends Component
                 $consultarUsuarioResponsavel = User::find($this->user_id_responsavel);
 
                 $modificacoes = $modificacoes . "Servidor(a) Responsável: <span class='text-green-800'>" . $consultarUsuarioResponsavel->name . "</span><br>";
-
             }
 
             if (isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
@@ -293,7 +279,6 @@ class PlanoAcaoLivewire extends Component
                 $consultarUsuarioSubstituto = User::find($this->user_id_substituto);
 
                 $modificacoes = $modificacoes . "Servidor(a) Substituto: <span class='text-green-800'>" . $consultarUsuarioSubstituto->name . "</span><br>";
-
             }
 
             $save->save();
@@ -318,7 +303,6 @@ class PlanoAcaoLivewire extends Component
                 $saveUsuarioResponsavel->cod_perfil = 'c00b9ebc-7014-4d37-97dc-7875e55fff4c';
 
                 $saveUsuarioResponsavel->save();
-
             }
 
             if (isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
@@ -334,13 +318,11 @@ class PlanoAcaoLivewire extends Component
                 $saveUsuarioSubstituto->cod_perfil = 'c00b9ebc-7014-4d37-97dc-7875e55fff5d';
 
                 $saveUsuarioSubstituto->save();
-
             }
 
             $this->showModalResultadoEdicao = true;
 
             $this->mensagemResultadoEdicao = $modificacoes;
-
         } else {
 
             $editar = PlanoAcao::with('servidorResponsavel', 'servidorSubstituto')
@@ -358,7 +340,6 @@ class PlanoAcaoLivewire extends Component
                 if ($data_type === 'numeric') {
 
                     $this->$column_name = converteValor('PTBR', 'MYSQL', $this->$column_name);
-
                 }
 
                 // Fim da parte para igualar a formatação do campo de valor
@@ -382,11 +363,9 @@ class PlanoAcaoLivewire extends Component
                     if ($data_type === 'date') {
 
                         $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converterData('EN', 'PTBR', $editar->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . converterData('EN', 'PTBR', $this->$column_name) . ' )</span>;<br>';
-
                     } elseif ($data_type === 'numeric') {
 
                         $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . converteValor('MYSQL', 'PTBR', $editar->$column_name) . ' )</span> para <span style="color:#28a745;">( ' . converteValor('MYSQL', 'PTBR', $this->$column_name) . ' )</span>;<br>';
-
                     } elseif ($data_type === 'uuid') {
 
                         if ($column_name === 'cod_objetivo_estrategico') {
@@ -396,7 +375,6 @@ class PlanoAcaoLivewire extends Component
                             $consultarValorAtualizado = ObjetivoEstrategico::find($this->$column_name);
 
                             $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $consultarValorAntigo->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAntigo->nom_objetivo_estrategico . ' )</span> para <span style="color:#28a745;">( ' . $consultarValorAtualizado->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAtualizado->nom_objetivo_estrategico . ' )</span>;<br>';
-
                         } elseif ($column_name === 'cod_tipo_execucao') {
 
                             $consultarValorAntigo = TipoExecucao::find($editar->$column_name);
@@ -404,7 +382,6 @@ class PlanoAcaoLivewire extends Component
                             $consultarValorAtualizado = TipoExecucao::find($this->$column_name);
 
                             $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $consultarValorAntigo->dsc_tipo_execucao . ' )</span> para <span style="color:#28a745;">( ' . $consultarValorAtualizado->dsc_tipo_execucao . ' )</span>;<br>';
-
                         } elseif ($column_name === 'cod_organizacao') {
 
                             $consultarValorAntigo = Organization::find($editar->$column_name);
@@ -412,17 +389,12 @@ class PlanoAcaoLivewire extends Component
                             $consultarValorAtualizado = Organization::find($this->$column_name);
 
                             $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $consultarValorAntigo->sgl_organizacao . ' - ' . $consultarValorAntigo->nom_organizacao . ' )</span> para <span style="color:#28a745;">( ' . $consultarValorAtualizado->sgl_organizacao . ' - ' . $consultarValorAtualizado->nom_organizacao . ' )</span>;<br>';
-
                         }
-
                     } else {
 
                         $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado($column_name) . '</b> de <span style="color:#CD3333;">( ' . $editar->$column_name . ' )</span> para <span style="color:#28a745;">( ' . $this->$column_name . ' )</span>;<br>';
-
                     }
-
                 }
-
             }
 
             // Início da verificação se houve modificação do(a) servidor(a) responsável
@@ -436,7 +408,6 @@ class PlanoAcaoLivewire extends Component
 
                     $servidorResponsavelAntigo = $servidorResponsavel->name;
                     $idServidorResponsavelAntigo = $servidorResponsavel->id;
-
                 }
 
                 if ($idServidorResponsavelAntigo != $this->user_id_responsavel) {
@@ -486,9 +457,7 @@ class PlanoAcaoLivewire extends Component
                     // Fim cadastrar o(a) novo servidor(a) responsável
 
                     $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado('user_id_responsavel') . '</b> de <span style="color:#CD3333;">( ' . $servidorResponsavelAntigo . ' )</span> para <span style="color:#28a745;">( ' . $consultarNovoServidorResponsavel->name . ' )</span>;<br>';
-
                 }
-
             }
 
             // Fim da verificação se houve modificação do(a) servidor(a) responsável
@@ -506,7 +475,6 @@ class PlanoAcaoLivewire extends Component
 
                     $servidorSubstitutoAntigo = $servidorSubstituto->name;
                     $idServidorSubstitutoAntigo = $servidorSubstituto->id;
-
                 }
 
                 if (isset($idServidorSubstitutoAntigo) && !is_null($idServidorSubstitutoAntigo) && $idServidorSubstitutoAntigo != '') {
@@ -558,9 +526,7 @@ class PlanoAcaoLivewire extends Component
                         // Fim cadastrar o(a) novo servidor(a) substituto(a)
 
                         $modificacoes = $modificacoes . 'Alterou o(a) <b>' . nomeCampoTabelaNormalizado('user_id_substituto') . '</b> de <span style="color:#CD3333;">( ' . $servidorSubstitutoAntigo . ' )</span> para <span style="color:#28a745;">( ' . $consultarNovoServidorSubstituto->name . ' )</span>;<br>';
-
                     }
-
                 } else {
 
                     if (isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
@@ -576,11 +542,8 @@ class PlanoAcaoLivewire extends Component
                         $saveUsuarioSubstituto->cod_perfil = 'c00b9ebc-7014-4d37-97dc-7875e55fff5d';
 
                         $saveUsuarioSubstituto->save();
-
                     }
-
                 }
-
             } else {
 
                 $servidorSubstitutoAntigo = '';
@@ -590,7 +553,6 @@ class PlanoAcaoLivewire extends Component
 
                     $servidorSubstitutoAntigo = $servidorSubstituto->name;
                     $idServidorSubstitutoAntigo = $servidorSubstituto->id;
-
                 }
 
                 if (isset($idServidorSubstitutoAntigo) && !is_null($idServidorSubstitutoAntigo) && $idServidorSubstitutoAntigo != '') {
@@ -608,7 +570,6 @@ class PlanoAcaoLivewire extends Component
                     // Fim excluir o(a) atual servidor(a) substituto(a)
 
                 }
-
             }
 
             // Fim da verificação se houve modificação do(a) servidor(a) substituto(a)
@@ -629,15 +590,12 @@ class PlanoAcaoLivewire extends Component
                 $this->showModalResultadoEdicao = true;
 
                 $this->mensagemResultadoEdicao = $modificacoes;
-
             } else {
 
                 $this->showModalResultadoEdicao = true;
 
                 $this->mensagemResultadoEdicao = 'Por não ter nenhuma modificação nada foi feito.';
-
             }
-
         }
 
         $this->cod_plano_de_acao = null;
@@ -663,7 +621,6 @@ class PlanoAcaoLivewire extends Component
         $this->iconAbrirFechar = 'fas fa-plus text-xs';
 
         $this->editarForm = false;
-
     }
 
     public function editForm($cod_plano_de_acao = '')
@@ -696,13 +653,11 @@ class PlanoAcaoLivewire extends Component
         foreach ($singleData->servidorResponsavel as $servidorResponsavel) {
 
             $this->user_id_responsavel = $servidorResponsavel->id;
-
         }
 
         foreach ($singleData->servidorSubstituto as $servidorSubstituto) {
 
             $this->user_id_substituto = $servidorSubstituto->id;
-
         }
 
         $organizacoes = [];
@@ -747,27 +702,16 @@ class PlanoAcaoLivewire extends Component
                                                 if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
 
                                                     $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
-
                                                 }
-
                                             }
-
                                         }
-
                                     }
-
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         $this->organization = $organizacoes;
@@ -776,7 +720,6 @@ class PlanoAcaoLivewire extends Component
         $this->iconAbrirFechar = 'fas fa-minus text-xs';
 
         $this->editarForm = true;
-
     }
 
     public function deleteForm($cod_plano_de_acao = '')
@@ -796,13 +739,11 @@ class PlanoAcaoLivewire extends Component
         foreach ($singleData->servidorResponsavel as $servidorResponsavel) {
 
             $name_responsavel = $servidorResponsavel->name;
-
         }
 
         foreach ($singleData->servidorSubstituto as $servidorSubstituto) {
 
             $name_substituto = $servidorSubstituto->name;
-
         }
 
         $consultarOrganizacao = Organization::find($singleData->cod_organizacao);
@@ -819,7 +760,6 @@ class PlanoAcaoLivewire extends Component
         $this->cod_pei = null;
         $this->cod_organizacao = null;
         $this->editarForm = false;
-
     }
 
     public function audit($cod_plano_de_acao = '')
@@ -839,7 +779,6 @@ class PlanoAcaoLivewire extends Component
             $corpoModalAudit .= '<tr><td class="px-2 py-2 border border-gray-200">' . $contAcao . '</td><td class="px-2 py-2 border border-gray-200">' . $resultadoAcao->acao . '</td><td class="px-2 py-2 border border-gray-200">' . $resultadoAcao->usuario->name . '</td><td class="px-2 py-2 border border-gray-200">' . formatarDataComCarbonForHumans($resultadoAcao->created_at) . ' em ' . formatarTimeStampComCarbonParaBR($resultadoAcao->created_at) . '</td></tr>';
 
             $contAcao = $contAcao + 1;
-
         }
 
         $corpoModalAudit .= '</tbody></table>';
@@ -849,7 +788,6 @@ class PlanoAcaoLivewire extends Component
         $this->showModalAudit = true;
 
         $this->editarForm = false;
-
     }
 
     public function delete($cod_plano_de_acao = '')
@@ -869,13 +807,11 @@ class PlanoAcaoLivewire extends Component
         foreach ($singleData->servidorResponsavel as $servidorResponsavel) {
 
             $name_responsavel = $servidorResponsavel->name;
-
         }
 
         foreach ($singleData->servidorSubstituto as $servidorSubstituto) {
 
             $name_substituto = $servidorSubstituto->name;
-
         }
 
         $consultarOrganizacao = Organization::find($singleData->cod_organizacao);
@@ -917,7 +853,6 @@ class PlanoAcaoLivewire extends Component
         $this->showModalResultadoEdicao = true;
 
         $this->mensagemResultadoEdicao = $texto;
-
     }
 
     public function cancelar()
@@ -943,7 +878,6 @@ class PlanoAcaoLivewire extends Component
         $this->cod_perspectiva = null;
 
         $this->editarForm = false;
-
     }
 
     public function render()
@@ -960,29 +894,24 @@ class PlanoAcaoLivewire extends Component
         if (isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '') {
 
             $perspectiva = $perspectiva->where('cod_pei', $this->cod_pei);
-
         } else {
 
             $perspectiva = $perspectiva->whereNull('cod_pei');
-
         }
 
         $perspectiva = $perspectiva->orderBy('num_nivel_hierarquico_apresentacao', 'desc')
             ->pluck('dsc_perspectiva', 'cod_perspectiva');
 
-        $perspectiva && isset($perspectiva) && !empty($perspectiva) ? $this->perspectiva = $perspectiva : $this->perspectiva = [];
-        ;
+        $perspectiva && isset($perspectiva) && !empty($perspectiva) ? $this->perspectiva = $perspectiva : $this->perspectiva = [];;
 
         $objetivoEstrategico = ObjetivoEstrategico::select(DB::raw("num_nivel_hierarquico_apresentacao||'. '||nom_objetivo_estrategico AS nom_objetivo_estrategico, cod_objetivo_estrategico"));
 
         if (isset($this->cod_pei) && !is_null($this->cod_pei) && $this->cod_pei != '' && isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '' && $perspectiva->count() > 0) {
 
             $objetivoEstrategico = $objetivoEstrategico->where('cod_perspectiva', $this->cod_perspectiva);
-
         } else {
 
             $objetivoEstrategico = $objetivoEstrategico->whereNull('cod_perspectiva');
-
         }
 
         $objetivoEstrategico = $objetivoEstrategico->orderBy('num_nivel_hierarquico_apresentacao')
@@ -1003,13 +932,11 @@ class PlanoAcaoLivewire extends Component
             $this->primeiroAnoDoPeiSelecionado = $primeiroAnoDoPeiSelecionado . '-01-01';
 
             $this->ultimoAnoDoPeiSelecionado = $ultimoAnoDoPeiSelecionado . '-12-31';
-
         } else {
 
             $this->primeiroAnoDoPeiSelecionado = '2020-01-01';
 
             $this->ultimoAnoDoPeiSelecionado = '2051-12-31';
-
         }
 
         $this->estruturaTable = $this->estruturaTable();
@@ -1019,17 +946,13 @@ class PlanoAcaoLivewire extends Component
             if (isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
 
                 $this->num_nivel_hierarquico_apresentacao = $this->pesquisarCodigo($this->cod_objetivo_estrategico);
-
             }
-
         } else {
 
             if (isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '' && $this->editarForm == false) {
 
                 $this->num_nivel_hierarquico_apresentacao = $this->num_nivel_hierarquico_apresentacao;
-
             }
-
         }
 
         $this->niveis_hierarquico_apresentacao = NumNivelHierarquico::pluck('num_nivel_hierarquico_apresentacao', 'num_nivel_hierarquico_apresentacao');
@@ -1049,11 +972,9 @@ class PlanoAcaoLivewire extends Component
             if ($this->editarForm == false) {
 
                 $organizacoes[$result->cod_organizacao] = $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
-
             } else {
 
                 $organizacoes[$result->cod_organizacao] = $result->nom_organizacao . $this->hierarquiaUnidade($result->cod_organizacao);
-
             }
 
             foreach ($organizationChild as $resultChild1) {
@@ -1063,11 +984,9 @@ class PlanoAcaoLivewire extends Component
                     if ($this->editarForm == false) {
 
                         $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
-
                     } else {
 
                         $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->nom_organizacao . $this->hierarquiaUnidade($resultChild1->cod_organizacao);
-
                     }
 
                     foreach ($resultChild1->deshierarquia as $resultChild2) {
@@ -1077,11 +996,9 @@ class PlanoAcaoLivewire extends Component
                             if ($this->editarForm == false) {
 
                                 $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
-
                             } else {
 
                                 $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->nom_organizacao . $this->hierarquiaUnidade($resultChild2->cod_organizacao);
-
                             }
 
                             foreach ($resultChild2->deshierarquia as $resultChild3) {
@@ -1091,11 +1008,9 @@ class PlanoAcaoLivewire extends Component
                                     if ($this->editarForm == false) {
 
                                         $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
-
                                     } else {
 
                                         $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->nom_organizacao . $this->hierarquiaUnidade($resultChild3->cod_organizacao);
-
                                     }
 
                                     foreach ($resultChild3->deshierarquia as $resultChild4) {
@@ -1105,11 +1020,9 @@ class PlanoAcaoLivewire extends Component
                                             if ($this->editarForm == false) {
 
                                                 $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
-
                                             } else {
 
                                                 $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->nom_organizacao . $this->hierarquiaUnidade($resultChild4->cod_organizacao);
-
                                             }
 
                                             foreach ($resultChild4->deshierarquia as $resultChild5) {
@@ -1119,33 +1032,20 @@ class PlanoAcaoLivewire extends Component
                                                     if ($this->editarForm == false) {
 
                                                         $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
-
                                                     } else {
 
                                                         $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->nom_organizacao . $this->hierarquiaUnidade($resultChild5->cod_organizacao);
-
                                                     }
-
                                                 }
-
                                             }
-
                                         }
-
                                     }
-
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         $this->organization = $organizacoes;
@@ -1164,7 +1064,6 @@ class PlanoAcaoLivewire extends Component
             $planoAcao = $planoAcao->where('dte_inicio', '>=', $primeiroAnoDoPeiSelecionado . '-01-01');
 
             $planoAcao = $planoAcao->where('dte_fim', '<=', $ultimoAnoDoPeiSelecionado . '-12-31');
-
         }
 
         if (isset($this->cod_perspectiva) && !is_null($this->cod_perspectiva) && $this->cod_perspectiva != '') {
@@ -1180,7 +1079,6 @@ class PlanoAcaoLivewire extends Component
                 if (isset($result->cod_objetivo_estrategico) && !empty($result->cod_objetivo_estrategico)) {
                     $cods_objetivo_estrategico = $cods_objetivo_estrategico . $result->cod_objetivo_estrategico . ",";
                 }
-
             }
 
             if (isset($cods_objetivo_estrategico) && !empty($cods_objetivo_estrategico)) {
@@ -1192,19 +1090,16 @@ class PlanoAcaoLivewire extends Component
                     $planoAcao = $planoAcao->whereIn('cod_objetivo_estrategico', $cods_objetivo_estrategico);
                 }
             }
-
         }
 
         if (isset($this->cod_objetivo_estrategico) && !is_null($this->cod_objetivo_estrategico) && $this->cod_objetivo_estrategico != '') {
 
             $planoAcao = $planoAcao->where('cod_objetivo_estrategico', $this->cod_objetivo_estrategico);
-
         }
 
         if (isset($this->dte_inicio) && !is_null($this->dte_inicio) && $this->dte_inicio != '') {
 
             $this->primeiroAnoDoPeiSelecionado = $this->dte_inicio;
-
         }
 
         $planoAcao && isset($planoAcao) && !empty($planoAcao) ? $this->planoAcao = $planoAcao->get() : $this->planoAcao = [];
@@ -1215,7 +1110,6 @@ class PlanoAcaoLivewire extends Component
         if (isset($this->user_id_substituto) && !is_null($this->user_id_substituto) && $this->user_id_substituto != '') {
 
             $usuariosResponsaveis = $usuariosResponsaveis->where('id', '!=', $this->user_id_substituto);
-
         }
 
         $this->usuariosResponsaveis = $usuariosResponsaveis->pluck('name', 'id');
@@ -1226,13 +1120,11 @@ class PlanoAcaoLivewire extends Component
         if (isset($this->user_id_responsavel) && !is_null($this->user_id_responsavel) && $this->user_id_responsavel != '') {
 
             $usuariosSubstitutos = $usuariosSubstitutos->where('id', '!=', $this->user_id_responsavel);
-
         }
 
         $this->usuariosSubstitutos = $usuariosSubstitutos->pluck('name', 'id');
 
         return view('livewire.plano-acao-livewire');
-
     }
 
     protected function estruturaTable()
@@ -1248,7 +1140,6 @@ class PlanoAcaoLivewire extends Component
             AND column_name NOT IN ('cod_plano_de_acao','cod_objetivo_estrategico','cod_organizacao','created_at','updated_at','deleted_at');");
 
         return $estrutura;
-
     }
 
     protected function estruturaTableParaEditar()
@@ -1264,7 +1155,6 @@ class PlanoAcaoLivewire extends Component
             AND column_name NOT IN ('cod_plano_de_acao','cod_ppa','cod_loa','created_at','updated_at','deleted_at');");
 
         return $estrutura;
-
     }
 
     protected function hierarquiaUnidade($cod_organizacao)
@@ -1319,33 +1209,19 @@ class PlanoAcaoLivewire extends Component
                                                     foreach ($result7->hierarquia as $result8) {
 
                                                         $hierarquiaSuperior = $hierarquiaSuperior . '/' . $result8->sgl_organizacao;
-
                                                     }
-
                                                 }
-
                                             }
-
                                         }
-
                                     }
-
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         return $hierarquiaSuperior;
-
     }
-
 }

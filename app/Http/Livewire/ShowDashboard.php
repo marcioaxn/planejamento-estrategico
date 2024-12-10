@@ -34,6 +34,8 @@ class ShowDashboard extends Component
 
     public $calcularAcumuladoObjetivoEstrategico;
 
+    public $calcularConsolidadoEntregasObjetivoEstrategico;
+
     public $calculoPorArea = null;
 
     public $existePei = false;
@@ -97,6 +99,16 @@ class ShowDashboard extends Component
         $calcular = new CalculoLivewire;
 
         $result = $calcular->calcularAcumuladoObjetivoEstrategico($cod_organizacao, $cod_objetivo_estrategico, $anoSelecionado);
+
+        return $result;
+    }
+
+    protected function calcularConsolidadoEntregasObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '', $anoSelecionado = '')
+    {
+
+        $calcular = new CalculoLivewire;
+
+        $result = $calcular->calcularConsolidadoEntregasObjetivoEstrategico($cod_organizacao, $cod_objetivo_estrategico, $anoSelecionado);
 
         return $result;
     }

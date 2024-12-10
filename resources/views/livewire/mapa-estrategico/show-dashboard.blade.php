@@ -47,14 +47,27 @@
 
             <div>
 
-                <p class="">Legenda:</p>
+                <p class="pb-2">Grau de satisfação dos Indicadores:</p>
 
             </div>
 
             <div
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-5 gap-2 mt-0">
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-5 gap-2 mt-0 pb-2">
 
                 {!! $this->grau_satisfacao !!}
+
+            </div>
+
+            <div class="mt-4">
+
+                <p class="pb-2">Grau de satisfação das Entregas:</p>
+
+            </div>
+
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-2 mt-0">
+
+                {!! getGrauSatisfacaoEntregas() !!}
 
             </div>
 

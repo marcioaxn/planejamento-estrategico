@@ -27,7 +27,7 @@ class TabStatusSeeder extends Seeder
             ],
             [
                 'cod_status' => Str::uuid(),
-                'dsc_status' => 'Em andamento',
+                'dsc_status' => 'Em andamento/Merece atenção',
             ],
             [
                 'cod_status' => Str::uuid(),
@@ -39,7 +39,7 @@ class TabStatusSeeder extends Seeder
             ],
             [
                 'cod_status' => Str::uuid(),
-                'dsc_status' => 'Suspenso',
+                'dsc_status' => 'Suspenso/Problema',
             ],
         ]);
     }

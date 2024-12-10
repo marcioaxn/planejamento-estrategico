@@ -30,6 +30,12 @@ set_time_limit(900000000);
 
 class CalculoLivewire extends Component
 {
+
+    public function instanciarPlanoAcao()
+    {
+        return new PlanoAcaoLivewire;
+    }
+
     // Início do cálculo para encontrar o percentual alcançado por um determinado grupo de cod_organizacao
 
     public function calcularPercentualMesSelecionadoCodsOrganizacao($cod_organizacao = '', $anoSelecionado = '', $mesSelecionado = '', $calcularSomenteOMes = false)
@@ -913,5 +919,127 @@ class CalculoLivewire extends Component
         }
 
         return $prc_alcancado;
+    }
+
+    public function getCorConsolildadaPlanoAcao($codPlanoAcao = null)
+    {
+        $planoAcaoComponent = $this->instanciarPlanoAcao();
+
+        $planoAcao = $planoAcaoComponent->getPlanoAcaoPorCodPlanoAcao($codPlanoAcao);
+
+        $cores = null;
+
+        foreach ($planoAcao->entregas as $value) {
+            $grauSatisfacao = getGrauSatisfacaoEntrega($value->bln_status);
+            $cores .= $grauSatisfacao['cor'] . ',';
+        }
+
+        $cores = trim($cores, ',');
+
+        $grauConsolidado = consolidarStatus(explode(',', $cores));
+
+        return $grauConsolidado;
+    }
+
+    public function calcularConsolidadoEntregasObjetivoEstrategico($cod_organizacao = '', $cod_objetivo_estrategico = '', $anoSelecionado = '')
+    {
+        $resultado = [];
+
+        $prc_alcancado = 0;
+
+        if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '' && isset($cod_objetivo_estrategico) && !is_null($cod_objetivo_estrategico) && $cod_objetivo_estrategico != '' && isset($anoSelecionado) && !is_null($anoSelecionado) && $anoSelecionado != '') {
+            if (isset($cod_organizacao) && !is_null($cod_organizacao) && $cod_organizacao != '') {
+                $organizacoes = [];
+
+                $organization = Organization::where('cod_organizacao', $cod_organizacao)->get();
+
+                $organizationChild = Organization::orderBy('nom_organizacao')->get();
+
+                foreach ($organization as $result) {
+                    $organizacoes[$result->cod_organizacao] = $result->cod_organizacao;
+
+                    foreach ($organizationChild as $resultChild1) {
+                        if ($result->cod_organizacao == $resultChild1->rel_cod_organizacao) {
+                            $organizacoes[$resultChild1->cod_organizacao] = $resultChild1->cod_organizacao;
+
+                            foreach ($resultChild1->deshierarquia as $resultChild2) {
+                                if ($resultChild1->cod_organizacao == $resultChild2->rel_cod_organizacao) {
+                                    $organizacoes[$resultChild2->cod_organizacao] = $resultChild2->cod_organizacao;
+
+                                    foreach ($resultChild2->deshierarquia as $resultChild3) {
+                                        if ($resultChild2->cod_organizacao == $resultChild3->rel_cod_organizacao) {
+                                            $organizacoes[$resultChild3->cod_organizacao] = $resultChild3->cod_organizacao;
+
+                                            foreach ($resultChild3->deshierarquia as $resultChild4) {
+                                                if ($resultChild3->cod_organizacao == $resultChild4->rel_cod_organizacao) {
+                                                    $organizacoes[$resultChild4->cod_organizacao] = $resultChild4->cod_organizacao;
+
+                                                    foreach ($resultChild4->deshierarquia as $resultChild5) {
+                                                        if ($resultChild4->cod_organizacao == $resultChild5->rel_cod_organizacao) {
+                                                            $organizacoes[$resultChild5->cod_organizacao] = $resultChild5->cod_organizacao;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $planosAcao = PlanoAcao::where('cod_objetivo_estrategico', $cod_objetivo_estrategico)->whereIn('cod_organizacao', $organizacoes)->whereYear('dte_inicio', '<=', $anoSelecionado)->whereYear('dte_fim', '>=', $anoSelecionado)->get();
+
+                $resultadoGeralCalculo = 0;
+
+                $contPlanoAcao = 0;
+
+                $coresPlanoAcao = null;
+
+                foreach ($planosAcao as $planoAcao) {
+                    $resultadoCalculo = 0;
+
+
+                    $coresPlanoAcao .= $this->getCorConsolildadaPlanoAcao($planoAcao->cod_plano_de_acao) . ',';
+                }
+
+                $coresPlanoAcao = trim($coresPlanoAcao, ',');
+
+                $grauConsolidado = consolidarStatusGeral(explode(',', $coresPlanoAcao));
+
+                return $grauConsolidado;
+            } else {
+                $grauConsolidado = 'gray';
+
+                return $grauConsolidado;
+            }
+
+            // print("Resultado: " . $resultado['quantidadePlanosDeAcao'] . ' - ' . $resultado['percentual_alcancado'] . ' - ' . $resultado['grau_de_satisfacao']);
+        }
+
+        // print("Resultado: " . $resultado['quantidadePlanosDeAcao'] . ' - ' . $resultado['percentual_alcancado'] . ' - ' . $resultado['grau_de_satisfacao']);
+
+        return $resultado;
+    }
+
+    public function getCorConsolildadaObjetivoEstrategico($codObjetivoEstrategico = null)
+    {
+        $planoAcaoComponent = $this->instanciarPlanoAcao();
+
+        $planoAcao = $planoAcaoComponent->getPlanoAcaoPorCodPlanoAcao($codObjetivoEstrategico);
+
+        $cores = null;
+
+        foreach ($planoAcao->entregas as $value) {
+            $grauSatisfacao = getGrauSatisfacaoEntrega($value->bln_status);
+            $cores .= $grauSatisfacao['cor'] . ',';
+        }
+
+        $cores = trim($cores, ',');
+
+        $grauConsolidado = consolidarStatus(explode(',', $cores));
+
+        return $grauConsolidado;
     }
 }
