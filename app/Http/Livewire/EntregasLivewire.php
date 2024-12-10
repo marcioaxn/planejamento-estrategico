@@ -49,6 +49,10 @@ class EntregasLivewire extends Component
 
     public $cod_entrega = null;
 
+    public $niveis_hierarquico_apresentacao = [];
+
+    public $num_nivel_hierarquico_apresentacao = null;
+
     public $dsc_entrega = null;
 
     public $status = [];
@@ -103,7 +107,6 @@ class EntregasLivewire extends Component
         $this->ano = $ano;
 
         $this->unidadesMedida = ['Quantidade' => 'Quantidade', 'Porcentagem' => 'Porcentagem', 'Dinheiro' => 'Dinheiro R$ 0,00 (real)'];
-
     }
 
     public function instanciarShowOrganization()
@@ -114,6 +117,30 @@ class EntregasLivewire extends Component
     public function instanciarAtualizarOuCriarPorModeloDadosController()
     {
         return new AtualizarOuCriarPorModeloDadosController;
+    }
+
+    protected function pesquisarCodigo($codPlanoAcao = '')
+    {
+
+        $this->num_nivel_hierarquico_apresentacao = '';
+
+        if (isset($codPlanoAcao) && !is_null($codPlanoAcao) && $codPlanoAcao != '') {
+
+            $entrega = TabEntregas::select('num_nivel_hierarquico_apresentacao')
+                ->where('cod_plano_de_acao', $codPlanoAcao)
+                ->orderBy('num_nivel_hierarquico_apresentacao', 'desc')
+                ->first();
+
+            if ($entrega) {
+
+                $this->num_nivel_hierarquico_apresentacao = (($entrega->num_nivel_hierarquico_apresentacao) + 1);
+            } else {
+
+                $this->num_nivel_hierarquico_apresentacao = 1;
+            }
+        }
+
+        return $this->num_nivel_hierarquico_apresentacao;
     }
 
     public function create()
@@ -185,7 +212,6 @@ class EntregasLivewire extends Component
                             'antes' => $consultarValorAntigo->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAntigo->dsc_plano_de_acao,
                             'depois' => $consultarValorAtualizado->num_nivel_hierarquico_apresentacao . '. ' . $consultarValorAtualizado->dsc_plano_de_acao
                         ));
-
                     } else {
 
                         if ($this->$column_name != $entrega->$column_name) {
@@ -205,11 +231,8 @@ class EntregasLivewire extends Component
                                 'antes' => $entrega->$column_name,
                                 'depois' => $this->$column_name
                             ));
-
                         }
-
                     }
-
                 } else {
 
                     // if ($this->$column_name != $entrega->$column_name) {
@@ -232,18 +255,13 @@ class EntregasLivewire extends Component
 
                 $this->mensagemResultadoEdicao = $cabecalhoModificacoes . $modificacoes;
 
-                // dd($model, $id, $campos);
-
                 $atualizarOuCriarPorModeloDados->atualizarOuCriarPorModeloDados($model, $id, $campos);
-
             } else {
 
                 $this->showModalResultadoEdicao = true;
 
                 $this->mensagemResultadoEdicao = 'Por não ter nenhuma modificação nada foi feito.';
-
             }
-
         } else {
 
             /** Inserir */
@@ -279,16 +297,23 @@ class EntregasLivewire extends Component
                 $this->mensagemResultadoEdicao = $cabecalhoModificacoes . $modificacoes;
 
                 $atualizarOuCriarPorModeloDados->atualizarOuCriarPorModeloDados($model, $id, $campos);
-
             }
-
-
         }
 
         $this->abrirFecharForm = 'none';
         $this->iconAbrirFechar = 'fas fa-plus text-xs';
 
         $this->editarForm = false;
+    }
+
+    public function setBlnStatus($codEntrega = null, $blnStatus = null)
+    {
+
+        $entrega = TabEntregas::find($codEntrega);
+
+        $entrega->bln_status = $blnStatus;
+
+        $entrega->save();
     }
 
     public function adequarMascara()
@@ -339,6 +364,8 @@ class EntregasLivewire extends Component
         $this->cod_perspectiva = $consultarObjetivoEstrategico->cod_perspectiva;
 
         $this->cod_pei = $consultarPerspectiva->cod_pei;
+
+        $this->num_nivel_hierarquico_apresentacao = $singleData->num_nivel_hierarquico_apresentacao;
 
         $this->dsc_entrega = $singleData->dsc_entrega;
         // $this->dsc_unidade_medida = $singleData->dsc_unidade_medida;
@@ -541,6 +568,20 @@ class EntregasLivewire extends Component
             $this->ultimoAnoDoPeiSelecionado = '2051-12-31';
         }
 
+        if ($this->editarForm == false) {
+
+            if (isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '') {
+
+                $this->num_nivel_hierarquico_apresentacao = $this->pesquisarCodigo($this->cod_plano_de_acao);
+            }
+        } else {
+
+            if (isset($this->cod_plano_de_acao) && !is_null($this->cod_plano_de_acao) && $this->cod_plano_de_acao != '' && $this->editarForm == false) {
+
+                $this->num_nivel_hierarquico_apresentacao = $this->num_nivel_hierarquico_apresentacao;
+            }
+        }
+
         $this->status = TabStatus::orderBy('dsc_status')
             ->pluck('dsc_status', 'dsc_status');
 
@@ -549,6 +590,8 @@ class EntregasLivewire extends Component
             ->orderBy('tab_plano_de_acao.num_nivel_hierarquico_apresentacao', 'asc') // Ordena pela coluna desejada
             ->select('tab_entregas.*') // Garante que você trará apenas os campos de TabEntregas
             ->get();
+
+        $this->niveis_hierarquico_apresentacao = NumNivelHierarquico::pluck('num_nivel_hierarquico_apresentacao', 'num_nivel_hierarquico_apresentacao');
 
         return view('livewire.entregas-livewire');
     }
@@ -578,7 +621,7 @@ class EntregasLivewire extends Component
             WHERE
             table_schema = 'pei'
             AND table_name = 'tab_entregas'
-            AND column_name NOT IN ('cod_entrega', 'cod_plano_de_acao','created_at','updated_at','deleted_at');");
+            AND column_name NOT IN ('cod_entrega', 'num_nivel_hierarquico_apresentacao', 'cod_plano_de_acao','created_at','updated_at','deleted_at');");
 
         return $estrutura;
     }
@@ -627,12 +670,11 @@ class EntregasLivewire extends Component
         $this->planoAcao = [];
         $this->tabEntregas = [];
         $this->cod_entrega = null;
+        $this->num_nivel_hierarquico_apresentacao = null;
         $this->dsc_entrega = null;
         $this->status = [];
         $this->bln_status = 'Não iniciado';
 
         $this->dsc_periodo_medicao = null;
-
-
     }
 }

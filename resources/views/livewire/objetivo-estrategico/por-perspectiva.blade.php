@@ -79,6 +79,14 @@
                                         $resultObjetivoEstragico->cod_objetivo_estrategico,
                                         $this->anoSelecionado,
                                     );
+
+                                    $resultEntregas = $this->calcularConsolidadoEntregasObjetivoEstrategico(
+                                        $this->cod_organizacao,
+                                        $resultObjetivoEstragico->cod_objetivo_estrategico,
+                                        $this->anoSelecionado,
+                                    );
+
+                                    $resultEntregas === 'yellow' ? $font = 'black' : $font = 'white';
                                 @endphp
                                 <div class="bg-white rounded-xl shadow-md overflow-hidden border-2 h-full">
 
@@ -154,13 +162,12 @@
                                                         {{ $textoAcao }}
                                                     </span>
                                                     <span
-                                                        class="text-sm font-medium text-{{ $result['grau_de_satisfacao'] }}-700 dark:text-white">
-                                                        {{ $result['percentual_alcancado'] }}%
+                                                        class="text-sm font-medium text-{{ $resultEntregas }}-700 dark:text-white">
                                                     </span>
                                                 </div>
                                                 <div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
-                                                    <div class="bg-{{ $result['grau_de_satisfacao'] }}-600 h-1.5 rounded-full"
-                                                        style="width: {{ $result['percentual_alcancado'] }}%">
+                                                    <div class="bg-{{ $resultEntregas }}-600 h-1.5 rounded-full"
+                                                        style="width: 100%">
                                                     </div>
                                                 </div>
                                             </div>

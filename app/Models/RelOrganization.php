@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class RelOrganization extends Model implements Auditable
+class RelOrganization extends Model
 {
-    use Uuids, \OwenIt\Auditing\Auditable, SoftDeletes;
-    
+    use Uuids, SoftDeletes;
+
     protected $keyType = 'string';
     public $incrementing = false;
 

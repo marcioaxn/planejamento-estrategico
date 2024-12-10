@@ -11,7 +11,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class RelArquivoOrigem extends Model implements Auditable
 {
     use Uuids, \OwenIt\Auditing\Auditable, SoftDeletes;
-    
+
     protected $keyType = 'string';
     public $incrementing = false;
 

@@ -123,18 +123,33 @@
 
     <div class="mb-4 p-2">
 
+        @if ($this->cod_origem != '3ac5e10e-8960-4b7c-a1cf-455597c875a7')
+            <div>
+
+                <p class="pb-2">Grau de satisfação dos Indicadores:</p>
+
+            </div>
+
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-5 gap-2 mt-0">
+
+                {!! $this->grau_satisfacao !!}
+
+            </div>
+        @else
         <div>
 
-            <p class="pb-2">Legenda do Grau de satisfação:</p>
+            <p class="pb-2">Grau de satisfação das Entregas:</p>
 
         </div>
 
         <div
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-5 gap-2 mt-0">
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-2 mt-0">
 
-            {!! $this->grau_satisfacao !!}
+            {!! getGrauSatisfacaoEntregas() !!}
 
         </div>
+        @endif
 
     </div>
 

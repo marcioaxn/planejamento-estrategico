@@ -1,4 +1,4 @@
-<div class="flex flex-wrap w-full text-lg md:text-sm pt-1 pb-3 pl-3 pr-3 rounded-md border-1 border-gray-100"
+<div class="flex flex-wrap w-full text-lg md:text-sm pt-1 pl-3 pr-3 rounded-md border-1 border-gray-100"
     style="font-size: 0.91rem!Important;">
 
     @if (!is_null($this->collectionPlanoAcao) && $this->collectionPlanosAcao->count() > 0)
@@ -19,6 +19,8 @@
 
                     $resultado = $this->calcularAcumuladoPlanoDeAcao($resultPlanoAcao->cod_plano_de_acao,$this->anoSelecionado);
 
+                    $this->getCor($resultPlanoAcao->cod_plano_de_acao) === 'yellow' ? $font = 'black' : $font = 'white';
+
                     if($resultPlanoAcao->indicadores->count() > 0) {
 
                     ?>
@@ -33,7 +35,7 @@
                             $resultPlanoAcao->cod_plano_de_acao,
                         ]) }}">
 
-                        <div class="text-lg text-center bg-{!! $resultado['grau_de_satisfacao'] !!}-500 text-white rounded-md border-2 border-{!! $resultado['grau_de_satisfacao'] !!}-50 border-opacity-25 shadow-md mb-2 cursor-pointer"
+                        <div class="text-lg text-center bg-{{ $this->getCor($resultPlanoAcao->cod_plano_de_acao) }}-500 text-{{ $font }} rounded-md border-2 border-{!! $resultado['grau_de_satisfacao'] !!}-50 border-opacity-25 shadow-md mb-2 cursor-pointer"
                             onclick="javascript: alterarPlanoAcao('<?php print $resultPlanoAcao->cod_plano_de_acao; ?>');">
                             <?php is_null($this->cod_plano_de_acao) && $contPlanoAcao == 1 ? print '<i class="fas fa-arrow-circle-right"></i> ' : print ''; ?><?php $resultPlanoAcao->cod_plano_de_acao == $this->cod_plano_de_acao ? print '<i class="fas fa-arrow-circle-right"></i> ' : print ''; ?>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $this->objetivoEstrategico->num_nivel_hierarquico_apresentacao !!}.{!! $resultPlanoAcao->num_nivel_hierarquico_apresentacao !!}
                         </div>
@@ -55,7 +57,7 @@
                             $resultPlanoAcao->cod_plano_de_acao,
                         ]) }}">
 
-                        <div class="text-lg text-center bg-gray-500 text-white rounded-md border-2 border-gray-50 border-opacity-25 shadow-md mb-1 cursor-pointer"
+                        <div class="text-lg text-center bg-{{ $this->getCor($resultPlanoAcao->cod_plano_de_acao) != '' ? $this->getCor($resultPlanoAcao->cod_plano_de_acao) : 'gray' }}-500 text-{{ $font }} rounded-md border-2 border-gray-50 border-opacity-25 shadow-md mb-1 cursor-pointer"
                             onclick="javascript: alterarPlanoAcao('<?php print $resultPlanoAcao->cod_plano_de_acao; ?>');">
                             <?php is_null($this->cod_plano_de_acao) && $contPlanoAcao == 1 ? print '<i class="fas fa-arrow-circle-right"></i> ' : print ''; ?><?php $resultPlanoAcao->cod_plano_de_acao == $this->cod_plano_de_acao ? print '<i class="fas fa-arrow-circle-right"></i> ' : print ''; ?>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $this->objetivoEstrategico->num_nivel_hierarquico_apresentacao !!}.{!! $resultPlanoAcao->num_nivel_hierarquico_apresentacao !!}
                         </div>

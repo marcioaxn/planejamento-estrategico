@@ -73,6 +73,7 @@ class PlanoAcao extends Model implements Auditable
 
     public function entregas()
     {
-        return $this->hasMany(TabEntregas::class, 'cod_plano_de_acao');
+        return $this->hasMany(TabEntregas::class, 'cod_plano_de_acao')
+            ->orderBy('num_nivel_hierarquico_apresentacao');
     }
 }
