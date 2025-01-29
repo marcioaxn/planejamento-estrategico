@@ -54,14 +54,13 @@
         </div>
 
         <div class="w-full md:w-11/12 text-lg border-b-2 border-gray-100 pt-1 pb-2 pl-1">
-            <strong>{!! $this->perspectiva->num_nivel_hierarquico_apresentacao !!}. {!! $this->perspectiva->dsc_perspectiva !!}</strong>
+            <strong>{!! $this->perspectiva->dsc_perspectiva !!}</strong>
         </div>
 
     </div>
 
     <div class="rounded-t-lg pt-1 pb-1 pl-3 pr-2 bg-blue-600 text-white text-xl font-bold text-lg ">
-        Objetivo Estratégico <span class="text-yellow-300">{{ $this->perspectiva->num_nivel_hierarquico_apresentacao }}.
-            {{ $this->objetivoEstrategico->num_nivel_hierarquico_apresentacao }}.</span>
+        Objetivo Estratégico
     </div>
 
     <div

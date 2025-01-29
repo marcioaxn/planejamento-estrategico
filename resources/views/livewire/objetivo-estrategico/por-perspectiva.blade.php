@@ -32,7 +32,7 @@
         <div class="bg-white rounded-lg overflow-hidden border-2 {{ $border }} mb-2">
 
             <div class="bg-{{ $colorBg }} text-lg pt-1 pb-1 pl-3 pr-3">
-                <strong>{!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}. {!! $resultPerspectiva->dsc_perspectiva !!}</strong>
+                <strong>{!! $resultPerspectiva->dsc_perspectiva !!}</strong>
             </div>
 
             @if ($resultPerspectiva->objetivosEstrategicos->count() > 0)
@@ -86,17 +86,9 @@
                                         $this->anoSelecionado,
                                     );
 
-                                    $resultEntregas === 'yellow' ? $font = 'black' : $font = 'white';
+                                    $resultEntregas === 'yellow' ? ($font = 'black') : ($font = 'white');
                                 @endphp
                                 <div class="bg-white rounded-xl shadow-md overflow-hidden border-2 h-full">
-
-                                    <div class="relative">
-                                        <div class="bg-{{ $colorBg . ' ' . $border }} text-lg px-1 pt-1 pb-1 pl-3 pr-3">
-                                            <span class="text-sm"><strong>OE
-                                                    {!! $resultPerspectiva->num_nivel_hierarquico_apresentacao !!}.{!! $resultObjetivoEstragico->num_nivel_hierarquico_apresentacao !!}.</strong>
-                                            </span>
-                                        </div>
-                                    </div>
 
                                     <div class="h-full" id="divChartIndicadoresEPlanoAcao">
                                         <div class="cabecalho_div mt-0 pt-0 mb-0 pb-0">
